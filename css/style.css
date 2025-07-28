@@ -3060,3 +3060,187 @@
     }
 }
 
+/* --- BANNER CONTAINER FIX PARA MOBILE --- */
+
+/* Arreglar el contenedor del banner en mobile */
+@media (max-width: 768px) {
+    .banner .position-absolute {
+        width: 200px !important;
+        height: 80px !important;
+        top: 10px !important;
+        left: 10px !important;
+        padding: 10px !important;
+    }
+    
+    .banner .position-absolute span {
+        font-size: 28px !important;
+        line-height: 1 !important;
+    }
+    
+    .banner .position-absolute span:last-of-type {
+        font-size: 20px !important;
+    }
+    
+    .banner .position-absolute small {
+        font-size: 10px !important;
+    }
+}
+
+/* Ajuste para mobile muy pequeño */
+@media (max-width: 576px) {
+    .banner .position-absolute {
+        width: 180px !important;
+        height: 70px !important;
+        top: 8px !important;
+        left: 8px !important;
+        padding: 8px !important;
+    }
+    
+    .banner .position-absolute span {
+        font-size: 24px !important;
+    }
+    
+    .banner .position-absolute span:last-of-type {
+        font-size: 16px !important;
+    }
+    
+    .banner .position-absolute small {
+        font-size: 9px !important;
+    }
+}
+
+/* --- CSS ESPECÍFICO PARA BANNER Y BÚSQUEDA --- */
+
+/* Banner badge específico */
+.custom-banner-badge {
+    width: 280px !important;
+    height: 120px !important;
+    top: 20px !important;
+    left: 20px !important;
+    border: 3px solid #28a745 !important;
+}
+
+.custom-banner-text {
+    font-size: 36px !important;
+    font-weight: bold !important;
+    color: #28a745 !important;
+    line-height: 1 !important;
+    letter-spacing: -3px !important;
+}
+
+.custom-banner-subtitle {
+    font-size: 12px !important;
+    margin-top: 5px !important;
+}
+
+/* Botón de búsqueda específico */
+.custom-search-container {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 600px !important;
+}
+
+.custom-search-button {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 120px !important;
+    height: 100% !important;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0 50px 50px 0 !important;
+    z-index: 10 !important;
+    border: none !important;
+}
+
+.custom-search-input {
+    padding-right: 130px !important;
+    border-radius: 50px !important;
+    width: 100% !important;
+}
+
+/* Mobile específico para banner */
+@media (max-width: 768px) {
+    .custom-banner-badge {
+        width: 200px !important;
+        height: 80px !important;
+        top: 10px !important;
+        left: 10px !important;
+    }
+    
+    .custom-banner-text {
+        font-size: 28px !important;
+        letter-spacing: -2px !important;
+    }
+    
+    .custom-banner-subtitle {
+        font-size: 10px !important;
+    }
+    
+    .custom-search-container {
+        width: 100% !important;
+        position: relative !important;
+        max-width: 100% !important;
+    }
+    
+    .custom-search-input {
+        width: 100% !important;
+        padding-right: 90px !important;
+        border-radius: 50px !important;
+        font-size: 14px !important;
+    }
+    
+    .custom-search-button {
+        width: 80px !important;
+        right: 0 !important;
+        top: 0 !important;
+        height: 100% !important;
+        border-radius: 0 50px 50px 0 !important;
+        font-size: 12px !important;
+        border: none !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .custom-banner-badge {
+        width: 180px !important;
+        height: 70px !important;
+        top: 8px !important;
+        left: 8px !important;
+    }
+    
+    .custom-banner-text {
+        font-size: 24px !important;
+        letter-spacing: -1px !important;
+    }
+    
+    .custom-banner-subtitle {
+        font-size: 9px !important;
+    }
+    
+    .custom-search-container {
+        width: 100% !important;
+        position: relative !important;
+        max-width: 100% !important;
+    }
+    
+    .custom-search-input {
+        width: 100% !important;
+        padding-right: 75px !important;
+        font-size: 13px !important;
+        border-radius: 50px !important;
+    }
+    
+    .custom-search-button {
+        width: 70px !important;
+        right: 0 !important;
+        top: 0 !important;
+        height: 100% !important;
+        border-radius: 0 50px 50px 0 !important;
+        font-size: 11px !important;
+        border: none !important;
+    }
+}
+

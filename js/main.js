@@ -149,3 +149,23 @@
 
 })(jQuery);
 
+// Custom JavaScript for navbar hide on scroll
+let lastScrollTop = 0;
+const navbar = document.getElementById('mainNavbar');
+
+window.addEventListener('scroll', function() {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    if (scrollTop > lastScrollTop) {
+        // Scrolling down - hide navbar
+        navbar.style.transform = 'translateY(-100%)';
+        navbar.style.transition = 'transform 0.3s ease-in-out';
+    } else {
+        // Scrolling up - show navbar
+        navbar.style.transform = 'translateY(0)';
+        navbar.style.transition = 'transform 0.3s ease-in-out';
+    }
+    
+    lastScrollTop = scrollTop;
+});
+

@@ -26,6 +26,294 @@
 
         <!-- Template Stylesheet -->
         <link href="css/style.css" rel="stylesheet">
+        
+        <!-- Estilos específicos para el botón de búsqueda -->
+        <style>
+            .search-section {
+                display: flex !important;
+                gap: 15px !important;
+                align-items: center !important;
+                position: relative !important;
+                z-index: 1 !important;
+            }
+            
+            .search-input-container {
+                flex: 1 !important;
+                position: relative !important;
+            }
+            
+            .input-wrapper {
+                position: relative !important;
+                background: white !important;
+                border: 2px solid #e9ecef !important;
+                border-radius: 12px !important;
+                padding: 4px !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+                transition: all 0.3s ease !important;
+            }
+            
+            .input-wrapper:hover {
+                border-color: #28a745 !important;
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15) !important;
+            }
+            
+            .search-input {
+                border: none !important;
+                outline: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                color: #495057 !important;
+                font-weight: 400 !important;
+                padding-left: 45px !important;
+                border-radius: 8px !important;
+            }
+            
+            .search-input::placeholder {
+                color: #6c757d !important;
+                opacity: 0.8 !important;
+            }
+            
+            .search-button {
+                border: none !important;
+                font-weight: 600 !important;
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25) !important;
+                transition: all 0.3s ease !important;
+                border-radius: 12px !important;
+                white-space: nowrap !important;
+                min-width: 120px !important;
+                position: relative !important;
+                z-index: 100 !important;
+            }
+            
+            .search-button-container {
+                display: flex !important;
+                justify-content: center !important;
+            }
+            
+            @media (max-width: 768px) {
+                .search-button-container {
+                    justify-content: stretch !important;
+                    width: 100% !important;
+                    display: block !important;
+                }
+                .search-button {
+                    width: 100% !important;
+                    min-width: 100% !important;
+                    display: block !important;
+                }
+            }
+            
+            @media (min-width: 769px) {
+                .search-button-container {
+                    justify-content: center !important;
+                    width: auto !important;
+                    display: flex !important;
+                }
+                .search-button {
+                    width: auto !important;
+                    min-width: 120px !important;
+                    display: inline-block !important;
+                }
+                .search-section {
+                    flex-direction: row !important;
+                    align-items: center !important;
+                }
+            }
+            
+            .search-button:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 6px 16px rgba(40, 167, 69, 0.35) !important;
+            }
+            
+            @media (max-width: 768px) {
+                .search-section {
+                    flex-direction: column !important;
+                    gap: 15px !important;
+                    align-items: stretch !important;
+                }
+                .search-input-container {
+                    width: 100% !important;
+                    order: 1 !important;
+                }
+                .search-button-container {
+                    width: 100% !important;
+                    order: 2 !important;
+                    justify-content: stretch !important;
+                    display: block !important;
+                    position: relative !important;
+                }
+                .search-input {
+                    font-size: 14px !important;
+                }
+                .search-button {
+                    font-size: 14px !important;
+                    padding: 12px 24px !important;
+                    width: 100% !important;
+                    min-width: 100% !important;
+                    max-width: 100% !important;
+                    display: block !important;
+                    position: relative !important;
+                    left: 0 !important;
+                    right: 0 !important;
+                }
+                .input-wrapper i {
+                    font-size: 14px !important;
+                    left: 12px !important;
+                }
+                .search-input {
+                    padding-left: 40px !important;
+                }
+            }
+            
+            @media (max-width: 576px) {
+                .search-section {
+                    flex-direction: column !important;
+                    gap: 12px !important;
+                    align-items: stretch !important;
+                }
+                .search-input-container {
+                    width: 100% !important;
+                    order: 1 !important;
+                }
+                .search-button-container {
+                    width: 100% !important;
+                    order: 2 !important;
+                    justify-content: stretch !important;
+                    display: block !important;
+                    position: relative !important;
+                }
+                .search-input {
+                    font-size: 13px !important;
+                }
+                .search-button {
+                    font-size: 13px !important;
+                    padding: 10px 20px !important;
+                    width: 100% !important;
+                    min-width: 100% !important;
+                    max-width: 100% !important;
+                    display: block !important;
+                    position: relative !important;
+                    left: 0 !important;
+                    right: 0 !important;
+                }
+                .input-wrapper i {
+                    font-size: 13px !important;
+                    left: 10px !important;
+                }
+                .search-input {
+                    padding-left: 35px !important;
+                }
+            }
+            
+            /* Estilos para el newsletter del footer */
+            .footer-newsletter-section {
+                display: flex !important;
+                gap: 12px !important;
+                align-items: center !important;
+            }
+            
+            .newsletter-input-container {
+                flex: 1 !important;
+                position: relative !important;
+            }
+            
+            .newsletter-input-wrapper {
+                position: relative !important;
+                background: white !important;
+                border: 2px solid #e9ecef !important;
+                border-radius: 12px !important;
+                padding: 4px !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+                transition: all 0.3s ease !important;
+            }
+            
+            .newsletter-input-wrapper:hover {
+                border-color: #28a745 !important;
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15) !important;
+            }
+            
+            .newsletter-input {
+                border: none !important;
+                outline: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                color: #495057 !important;
+                font-weight: 400 !important;
+                padding-left: 45px !important;
+                border-radius: 8px !important;
+            }
+            
+            .newsletter-input::placeholder {
+                color: #6c757d !important;
+                opacity: 0.8 !important;
+            }
+            
+            .newsletter-button {
+                border: none !important;
+                font-weight: 600 !important;
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25) !important;
+                transition: all 0.3s ease !important;
+                border-radius: 12px !important;
+                white-space: nowrap !important;
+                min-width: 120px !important;
+            }
+            
+            .newsletter-button:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 6px 16px rgba(40, 167, 69, 0.35) !important;
+            }
+            
+            @media (max-width: 768px) {
+                .footer-newsletter-section {
+                    gap: 10px !important;
+                }
+                .newsletter-input {
+                    font-size: 14px !important;
+                }
+                .newsletter-button {
+                    font-size: 14px !important;
+                    padding: 12px 20px !important;
+                    min-width: 100px !important;
+                }
+                .newsletter-input-wrapper i {
+                    font-size: 14px !important;
+                    left: 12px !important;
+                }
+                .newsletter-input {
+                    padding-left: 40px !important;
+                }
+            }
+            
+            @media (max-width: 576px) {
+                .footer-newsletter-section {
+                    flex-direction: column !important;
+                    gap: 8px !important;
+                }
+                .newsletter-input-container {
+                    width: 100% !important;
+                    order: 1 !important;
+                }
+                .newsletter-input {
+                    font-size: 13px !important;
+                }
+                .newsletter-button {
+                    font-size: 13px !important;
+                    padding: 10px 18px !important;
+                    width: 100% !important;
+                    min-width: auto !important;
+                    order: 2 !important;
+                }
+                .newsletter-input-wrapper i {
+                    font-size: 13px !important;
+                    left: 10px !important;
+                }
+                .newsletter-input {
+                    padding-left: 35px !important;
+                }
+            }
+        </style>
     </head>
 
     <body>
@@ -107,10 +395,17 @@
                     <div class="col-md-12 col-lg-7" style="padding-left: 80px; padding-right: 80px; padding-top: 100px;">
                         <h4 class="mb-3 text-secondary">100% Productos Biodegradables</h4>
                         <h1 class="mb-5 display-3 text-primary">Distribuidora y Comercializadora NEW LIFE</h1>
-                        <p class="mb-4 text-dark">Productos biodegradables creados a base de bagazo de caña de azúcar y cáscara de piña. Una alternativa eco-friendly al icopor que ayuda a conservar el medio ambiente. Nuestros productos se descomponen naturalmente en 90 días, convirtiéndose en nutrientes para el suelo. Fabricados con materiales 100% naturales y compostables, contribuimos activamente a la reducción de residuos plásticos y la conservación de nuestros ecosistemas. Ideal para restaurantes, eventos, cafeterías y cualquier negocio comprometido con la sostenibilidad ambiental.</p>
-                        <div class="position-relative mx-auto">
-                            <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="text" placeholder="Buscar productos biodegradables...">
-                            <button type="submit" class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 25%;">Buscar</button>
+                        <p class="mb-4 text-dark" style="position: relative; z-index: 1;">Productos biodegradables creados a base de bagazo de caña de azúcar y cáscara de piña. Una alternativa eco-friendly al icopor que ayuda a conservar el medio ambiente. Nuestros productos se descomponen naturalmente en 90 días, convirtiéndose en nutrientes para el suelo. Fabricados con materiales 100% naturales y compostables, contribuimos activamente a la reducción de residuos plásticos y la conservación de nuestros ecosistemas. Ideal para restaurantes, eventos, cafeterías y cualquier negocio comprometido con la sostenibilidad ambiental.</p>
+                        <div class="search-section mx-auto" style="max-width: 600px; width: 100%; display: flex; gap: 20px; align-items: flex-start; position: relative; z-index: 10; margin-top: 20px;">
+                            <div class="search-input-container" style="flex: 1; position: relative;">
+                                <div class="input-wrapper" style="position: relative; background: white; border: 2px solid #e9ecef; border-radius: 12px; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s ease;">
+                                    <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6c757d; font-size: 16px; z-index: 2;"></i>
+                                    <input class="form-control border-0 w-100 py-3 px-4 search-input" type="text" placeholder="Buscar productos biodegradables..." style="border: none !important; outline: none !important; box-shadow: none !important; background: transparent !important; font-size: 16px !important; color: #495057 !important; font-weight: 400 !important; padding-left: 45px !important; border-radius: 8px !important;">
+                                </div>
+                            </div>
+                            <div class="search-button-container" style="position: relative; display: flex; justify-content: center;">
+                                <button type="submit" class="btn btn-success text-white search-button" style="border: none !important; font-size: 15px !important; font-weight: 600 !important; padding: 14px 28px !important; border-radius: 12px !important; background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25) !important; transition: all 0.3s ease !important; letter-spacing: 0.5px !important; white-space: nowrap !important; min-width: 120px !important; width: 100% !important; max-width: 100% !important;">Buscar</button>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12 col-lg-5 d-flex justify-content-center align-items-center">
@@ -118,11 +413,11 @@
                             <div class="carousel-inner" role="listbox">
                                 <div class="carousel-item active rounded">
                                     <img src="img/slide1.jfif" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;" alt="First slide">
-                                    <a href="#" class="btn px-3 py-0 text-white rounded position-absolute" style="bottom: 30px; right: 10px; background-color: rgba(255, 165, 0, 0.9); border: 2px solid white; font-weight: bold; font-size: 16px; text-align: center; display: flex; align-items: center; justify-content: center; height: 50px;">🌱 100% Natural</a>
+                                    <a href="#" class="btn px-3 py-0 text-white rounded position-absolute" style="top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; background-color: rgba(255, 165, 0, 0.9) !important; border: 2px solid white !important; font-weight: bold !important; font-size: 16px !important; text-align: center !important; display: flex !important; align-items: center !important; justify-content: center !important; height: 50px !important; z-index: 1000 !important;">🌱 100% Natural</a>
                                 </div>
                                 <div class="carousel-item rounded">
                                     <img src="img/slide2.jfif" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;" alt="Second slide">
-                                    <a href="#" class="btn px-3 py-0 text-white rounded position-absolute" style="bottom: 30px; right: 10px; background-color: rgba(34, 139, 34, 0.9); border: 2px solid white; font-weight: bold; font-size: 16px; text-align: center; display: flex; align-items: center; justify-content: center; height: 50px;">♻️ Eco-Friendly</a>
+                                    <a href="#" class="btn px-3 py-0 text-white rounded position-absolute" style="top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; background-color: rgba(34, 139, 34, 0.9) !important; border: 2px solid white !important; font-weight: bold !important; font-size: 16px !important; text-align: center !important; display: flex !important; align-items: center !important; justify-content: center !important; height: 50px !important; z-index: 1000 !important;">♻️ Eco-Friendly</a>
                                 </div>
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
@@ -439,11 +734,10 @@
                     <div class="col-lg-6">
                         <div class="position-relative" style="max-width: 550px; margin: 0 auto;">
                             <img src="img/baner-1.jfif" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;" alt="">
-                            <div class="d-flex align-items-center justify-content-center bg-white rounded-circle position-absolute" style="width: 250px; height: 100px; top: 15px; left: 15px;">
-                                <h1 style="font-size: 60px;">20.</h1>
-                                <div class="d-flex flex-column">
-                                    <span class="h3 mb-0">000$</span>
-                                    
+                            <div class="d-flex align-items-center justify-content-center bg-white rounded-circle position-absolute shadow-lg custom-banner-badge" style="width: 280px; height: 120px; top: 20px; left: 20px; border: 3px solid #28a745;">
+                                <div class="d-flex flex-column align-items-center text-center">
+                                    <div class="custom-banner-text" style="font-size: 36px; font-weight: bold; color: #28a745; line-height: 1; letter-spacing: -3px;">20.000$</div>
+                                    <small class="text-muted custom-banner-subtitle" style="font-size: 12px; margin-top: 5px;">DESCUENTO</small>
                                 </div>
                             </div>
                         </div>
@@ -743,9 +1037,14 @@
                             </a>
                         </div>
                         <div class="col-lg-6">
-                            <div class="position-relative mx-auto">
-                                <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="email" placeholder="Tu Email">
-                                <button type="submit" class="btn btn-success border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white" style="top: 0; right: 0;">Suscribirse</button>
+                            <div class="footer-newsletter-section mx-auto" style="display: flex; gap: 12px; align-items: center;">
+                                <div class="newsletter-input-container" style="flex: 1; position: relative;">
+                                    <div class="newsletter-input-wrapper" style="position: relative; background: white; border: 2px solid #e9ecef; border-radius: 12px; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s ease;">
+                                        <i class="fas fa-envelope" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6c757d; font-size: 16px; z-index: 2;"></i>
+                                        <input class="form-control border-0 w-100 py-3 px-4 newsletter-input" type="email" placeholder="Tu Email" style="border: none !important; outline: none !important; box-shadow: none !important; background: transparent !important; font-size: 16px !important; color: #495057 !important; font-weight: 400 !important; padding-left: 45px !important; border-radius: 8px !important;">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success text-white newsletter-button" style="border: none !important; font-size: 15px !important; font-weight: 600 !important; padding: 14px 24px !important; border-radius: 12px !important; background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25) !important; transition: all 0.3s ease !important; letter-spacing: 0.5px !important; white-space: nowrap !important; min-width: 120px !important;">Suscribirse</button>
                             </div>
                         </div>
                         <div class="col-lg-3">
@@ -835,27 +1134,7 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
     
-    <!-- Custom JavaScript for navbar hide on scroll -->
-    <script>
-        let lastScrollTop = 0;
-        const navbar = document.getElementById('mainNavbar');
-        
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            if (scrollTop > lastScrollTop) {
-                // Scrolling down - hide navbar
-                navbar.style.transform = 'translateY(-100%)';
-                navbar.style.transition = 'transform 0.3s ease-in-out';
-            } else {
-                // Scrolling up - show navbar
-                navbar.style.transform = 'translateY(0)';
-                navbar.style.transition = 'transform 0.3s ease-in-out';
-            }
-            
-            lastScrollTop = scrollTop;
-        });
-    </script>
+
     </body>
 
 </html>
