@@ -1,4 +1,3 @@
-
 /*** Spinner Start ***/
 #spinner {
     opacity: 0;
@@ -792,5 +791,2272 @@
   .vesitable .owl-carousel .vesitable-item {
     width: 300px !important;
   }
+}
+
+/* --- CSS MIGRADO DESDE INDEX.HTML --- */
+
+/* Estilos para pantallas pequeñas y medianas - mantener comportamiento actual */
+@media (max-width: 1199px) {
+    #navbarCollapse {
+        background: #198754 !important;
+        background-color: #198754 !important;
+        margin-top: 10px !important;
+        border-radius: 8px !important;
+        padding: 15px !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+        border: 2px solid rgba(255,255,255,0.3) !important;
+    }
+    
+    #navbarCollapse .navbar-nav {
+        background: #198754 !important;
+        background-color: #198754 !important;
+    }
+    
+    #navbarCollapse .nav-link {
+        padding: 12px 15px !important;
+        margin: 5px 0 !important;
+        border-radius: 6px !important;
+    }
+}
+
+/* Estilos para pantallas extra grandes (xl) - mantener navbar horizontal */
+@media (min-width: 1200px) {
+    #navbarCollapse {
+        background: transparent !important;
+        background-color: transparent !important;
+        margin-top: 0 !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    #navbarCollapse .navbar-nav {
+        background: transparent !important;
+        background-color: transparent !important;
+        flex-direction: row !important;
+    }
+    
+    #navbarCollapse .nav-item {
+        margin: 0 10px !important;
+    }
+    
+    #navbarCollapse .nav-link {
+        padding: 8px 15px !important;
+        margin: 0 !important;
+        border-radius: 4px !important;
+    }
+    
+    #navbarCollapse .nav-link:hover {
+        background-color: rgba(255,255,255,0.1) !important;
+    }
+}
+
+/* Padding para pantallas extra grandes (xxl) */
+@media (min-width: 1400px) {
+    .container-fluid {
+        padding-left: 80px !important;
+        padding-right: 80px !important;
+    }
+    
+    .container-fluid > .container {
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
+    }
+    
+    /* Secciones específicas con padding adicional */
+    .hero-header,
+    .featurs,
+    .vesitable,
+    .banner,
+    .testimonial,
+    .footer,
+    .copyright {
+        padding-left: 80px !important;
+        padding-right: 80px !important;
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
+    }
+}
+
+/* ===== RESPONSIVE MOBILE COMPLETO ===== */
+
+/* Mobile - Pantallas pequeñas (hasta 768px) */
+@media (max-width: 768px) {
+    /* Layout general mobile - 100% pantalla */
+    .container-fluid {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .container {
+        padding: 0.5rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    /* Navbar mobile - DEJAR COMO ESTABA */
+    .navbar-brand h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .navbar-brand img {
+        height: 30px !important;
+    }
+    
+    /* Botón de búsqueda del navbar - CIRCULAR Y PEQUEÑO */
+    .btn-search {
+        width: 35px !important;
+        height: 35px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        font-size: 14px !important;
+    }
+    
+    .btn-search i {
+        font-size: 14px !important;
+    }
+    
+    /* Botón hamburguesa del navbar - CIRCULAR Y PEQUEÑO */
+    .navbar-toggler {
+        width: 35px !important;
+        height: 35px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        border: 1px solid white !important;
+        background: transparent !important;
+    }
+    
+    .navbar-toggler .fa-bars {
+        font-size: 14px !important;
+        color: white !important;
+    }
+    
+    /* Hero section mobile - 100% pantalla */
+    .hero-header {
+        padding: 0 !important;
+        margin-top: 80px !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    .hero-header .container {
+        padding: 1rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .hero-header h1 {
+        font-size: 2rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .hero-header h4 {
+        font-size: 1.1rem !important;
+    }
+    
+    .hero-header p {
+        font-size: 0.9rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* Search bar mobile - BOTÓN 1/4 DEL PLACEHOLDER Y UBICADO A LA DERECHA */
+    .hero-header .form-control {
+        font-size: 0.9rem !important;
+        padding: 0.75rem !important;
+        padding-right: 25% !important;
+        width: 100% !important;
+        border: 2px solid #dee2e6 !important;
+        border-radius: 8px !important;
+        background-color: white !important;
+        color: #495057 !important;
+    }
+    
+    .hero-header .form-control::placeholder {
+        color: #6c757d !important;
+        opacity: 1 !important;
+    }
+    
+    .hero-header .btn {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.7rem !important;
+        background-color: #198754 !important;
+        border-color: #198754 !important;
+        color: white !important;
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+        width: 20% !important;
+        height: 35px !important;
+        position: absolute !important;
+        right: 0 !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        z-index: 10 !important;
+    }
+    
+    .hero-header .btn:hover {
+        background-color: #157347 !important;
+        border-color: #157347 !important;
+    }
+    
+    .hero-header .input-group {
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        position: relative !important;
+    }
+    
+    .hero-header .position-relative {
+        width: 100% !important;
+        max-width: 100% !important;
+        position: relative !important;
+    }
+    
+    /* Carousel mobile - 100% pantalla */
+    .carousel {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    
+    .carousel-item img {
+        max-height: 250px !important;
+        width: 100% !important;
+        object-fit: cover !important;
+    }
+    
+    /* Features section mobile - 100% pantalla */
+    .featurs {
+        padding: 1rem !important;
+        width: 100% !important;
+        margin: 0 !important;
+        text-align: center !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+    }
+    
+    .featurs .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.5rem !important;
+    }
+    
+    .featurs-item {
+        margin-bottom: 1rem !important;
+        padding: 1rem !important;
+        width: 100% !important;
+        text-align: center !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+    }
+    
+    .featurs-icon {
+        width: 80px !important;
+        height: 80px !important;
+        margin-bottom: 1rem !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: white !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    }
+    
+    .featurs-icon i {
+        font-size: 2rem !important;
+        color: #198754 !important;
+    }
+    
+    .featurs-content h5 {
+        font-size: 1.2rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+        color: white !important;
+    }
+    
+    .featurs-content p {
+        font-size: 0.9rem !important;
+        color: white !important;
+        margin-bottom: 0 !important;
+    }
+    
+    /* Productos section mobile - 100% pantalla */
+    .vesitable {
+        padding: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        overflow: visible !important;
+    }
+    
+    .vesitable .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .vesitable h1 {
+        font-size: 1.8rem !important;
+        text-align: center !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Product cards mobile - 100% ancho y centradas - FORZAR CAMBIOS */
+    .vesitable .owl-carousel .vesitable-item {
+        margin: 0.5rem !important;
+        padding: 1.5rem !important;
+        width: calc(100% - 1rem) !important;
+        max-width: calc(100% - 1rem) !important;
+        height: auto !important;
+        display: block !important;
+        text-align: center !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+        flex: 0 0 calc(100% - 1rem) !important;
+    }
+    
+    .vesitable .owl-carousel .vesitable-img {
+        height: 200px !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .vesitable .owl-carousel .vesitable-img img {
+        max-height: 180px !important;
+        max-width: 100% !important;
+        object-fit: contain !important;
+    }
+    
+    .vesitable .owl-carousel .vesitable-item h4 {
+        font-size: 1.3rem !important;
+        line-height: 1.3 !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.8rem !important;
+        text-align: center !important;
+    }
+    
+    .vesitable .owl-carousel .vesitable-item p {
+        font-size: 1rem !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .vesitable .owl-carousel .vesitable-item .btn {
+        font-size: 1rem !important;
+        padding: 0.8rem 1.5rem !important;
+        width: 100% !important;
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+    }
+    
+    /* Forzar que el carousel ocupe 100% width */
+    .vesitable .owl-carousel {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .vesitable .owl-carousel .owl-stage {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .vesitable .owl-carousel .owl-item {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 0.5rem !important;
+    }
+    
+    /* Banner section mobile - 100% pantalla */
+    .banner {
+        padding: 1rem !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .banner .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.5rem !important;
+    }
+    
+    .banner h1 {
+        font-size: 1.8rem !important;
+    }
+    
+    .banner p {
+        font-size: 0.9rem !important;
+    }
+    
+    .banner-btn {
+        font-size: 0.9rem !important;
+        padding: 0.75rem 1.5rem !important;
+        width: 100% !important;
+    }
+    
+    /* Bestsaler section mobile - 100% pantalla */
+    .bestsaler {
+        padding: 1rem !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .bestsaler .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.5rem !important;
+    }
+    
+    .bestsaler h1 {
+        font-size: 1.8rem !important;
+        text-align: center !important;
+    }
+    
+    .bestsaler p {
+        font-size: 0.9rem !important;
+        text-align: center !important;
+    }
+    
+    /* Product cards in bestsaler - 100% ancho */
+    .bestsaler .p-4 {
+        padding: 1rem !important;
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .bestsaler img {
+        height: 80px !important;
+        width: 100% !important;
+        object-fit: cover !important;
+    }
+    
+    .bestsaler h5 {
+        font-size: 0.9rem !important;
+    }
+    
+    .bestsaler h4 {
+        font-size: 1.1rem !important;
+    }
+    
+    .bestsaler .btn {
+        font-size: 0.8rem !important;
+        padding: 0.5rem 1rem !important;
+        width: 100% !important;
+    }
+    
+    /* Fact section mobile - 100% pantalla */
+    .fact {
+        padding: 1rem !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .fact .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.5rem !important;
+    }
+    
+    .counter {
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+        width: 100% !important;
+    }
+    
+    .counter h4 {
+        font-size: 0.9rem !important;
+    }
+    
+    .counter h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Testimonial section mobile - 100% pantalla */
+    .testimonial {
+        padding: 1rem !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .testimonial .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.5rem !important;
+    }
+    
+    .testimonial-header h4 {
+        font-size: 1.1rem !important;
+    }
+    
+    .testimonial-header h1 {
+        font-size: 1.8rem !important;
+        margin-bottom: 3rem !important;
+    }
+    
+    .testimonial-item {
+        padding: 1rem !important;
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .testimonial-item p {
+        font-size: 0.9rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    .testimonial-item img {
+        width: 60px !important;
+        height: 60px !important;
+    }
+    
+    .testimonial-item h4 {
+        font-size: 1rem !important;
+    }
+    
+    .testimonial-item p.m-0 {
+        font-size: 0.8rem !important;
+    }
+    
+    /* Footer mobile mejorado */
+    .footer {
+        padding: 1rem !important;
+        width: 100% !important;
+        margin: 0 !important;
+        text-align: center !important;
+    }
+    
+    .footer .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.5rem !important;
+    }
+    
+    .footer h1 {
+        font-size: 1.2rem !important;
+        text-align: center !important;
+    }
+    
+    .footer h4 {
+        font-size: 0.9rem !important;
+        text-align: center !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .footer p {
+        font-size: 0.8rem !important;
+        text-align: center !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .footer .btn-link {
+        font-size: 0.7rem !important;
+        padding: 0.2rem 0.5rem !important;
+        margin: 0.1rem !important;
+        display: inline-block !important;
+        text-align: center !important;
+    }
+    
+    .footer .d-flex {
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+    }
+    
+    .footer .btn {
+        font-size: 0.7rem !important;
+        padding: 0.3rem 0.6rem !important;
+        margin: 0.2rem !important;
+    }
+    
+    .footer .form-control {
+        font-size: 0.8rem !important;
+        padding: 0.4rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .footer .input-group {
+        justify-content: center !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .footer .btn-outline-light {
+        font-size: 0.7rem !important;
+        padding: 0.3rem !important;
+        margin: 0.1rem !important;
+    }
+    
+    .footer .btn-md-square {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 0.7rem !important;
+    }
+    
+    /* Copyright mobile mejorado */
+    .copyright {
+        padding: 0.5rem !important;
+        width: 100% !important;
+        margin: 0 !important;
+        text-align: center !important;
+    }
+    
+    .copyright .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.3rem !important;
+    }
+    
+    .copyright span {
+        font-size: 0.7rem !important;
+        text-align: center !important;
+    }
+    
+    .copyright .row {
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    
+    /* Centrar elementos de navegación */
+    .navbar-nav {
+        text-align: center !important;
+    }
+    
+    .navbar-nav .nav-link {
+        text-align: center !important;
+    }
+    
+    /* Centrar botones y elementos interactivos */
+    .btn {
+        text-align: center !important;
+    }
+    
+    .form-control {
+        text-align: center !important;
+    }
+    
+    /* Centrar imágenes y contenido */
+    .img-fluid {
+        margin: 0 auto !important;
+        display: block !important;
+    }
+    
+    .text-center {
+        text-align: center !important;
+    }
+    
+    /* Centrar carousel */
+    .carousel {
+        text-align: center !important;
+    }
+    
+    .carousel-item {
+        text-align: center !important;
+    }
+    
+    /* Centrar testimonials */
+    .testimonial-item {
+        text-align: center !important;
+    }
+    
+    .testimonial-item .d-flex {
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    
+    /* Centrar fact counters */
+    .counter {
+        text-align: center !important;
+    }
+    
+    .counter i {
+        margin: 0 auto !important;
+        display: block !important;
+    }
+    
+    .counter h4,
+    .counter h1 {
+        text-align: center !important;
+    }
+    
+    /* General mobile optimizations */
+    .py-4 {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+    
+    .py-5 {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+    
+    .mb-4 {
+        margin-bottom: 1rem !important;
+    }
+    
+    .mb-5 {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Eliminar márgenes laterales */
+    .mx-3,
+    .mx-auto {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    /* Forzar ancho completo en todos los elementos */
+    * {
+        box-sizing: border-box !important;
+    }
+    
+    .card,
+    .btn,
+    .form-control,
+    .input-group {
+        width: 100% !important;
+    }
+}
+
+/* Mobile muy pequeño (hasta 576px) */
+@media (max-width: 576px) {
+    /* Navbar ultra mobile */
+    .navbar-brand h1 {
+        font-size: 1.2rem !important;
+    }
+    
+    .navbar-brand img {
+        height: 25px !important;
+    }
+    
+    /* Hero ultra mobile */
+    .hero-header h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .hero-header h4 {
+        font-size: 1rem !important;
+    }
+    
+    .hero-header p {
+        font-size: 0.8rem !important;
+    }
+    
+    /* Search bar ultra mobile - BOTÓN 1/5 DEL PLACEHOLDER */
+    .hero-header .form-control {
+        font-size: 0.8rem !important;
+        padding: 0.5rem !important;
+        padding-right: 20% !important;
+    }
+    
+    .hero-header .btn {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.8rem !important;
+        width: 18% !important;
+        right: 0 !important;
+    }
+    
+    /* Carousel ultra mobile */
+    .carousel-item img {
+        max-height: 200px !important;
+    }
+    
+    /* Features ultra mobile */
+    .featurs-item {
+        padding: 0.75rem !important;
+    }
+    
+    .featurs-icon {
+        width: 50px !important;
+        height: 50px !important;
+    }
+    
+    .featurs-icon i {
+        font-size: 1.2rem !important;
+    }
+    
+    .featurs-content h5 {
+        font-size: 1rem !important;
+    }
+    
+    .featurs-content p {
+        font-size: 0.8rem !important;
+    }
+    
+    /* Productos ultra mobile */
+    .vesitable h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .vesitable-item {
+        min-width: 180px !important;
+        padding: 0.75rem !important;
+    }
+    
+    .vesitable-img {
+        height: 80px !important;
+    }
+    
+    .vesitable-img img {
+        max-height: 60px !important;
+    }
+    
+    .vesitable-item h4 {
+        font-size: 0.8rem !important;
+    }
+    
+    .vesitable-item p {
+        font-size: 0.7rem !important;
+    }
+    
+    .vesitable-item .btn {
+        font-size: 0.7rem !important;
+        padding: 0.4rem 0.8rem !important;
+    }
+    
+    /* Banner ultra mobile */
+    .banner h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .banner p {
+        font-size: 0.8rem !important;
+    }
+    
+    .banner-btn {
+        font-size: 0.8rem !important;
+        padding: 0.6rem 1.2rem !important;
+    }
+    
+    /* Bestsaler ultra mobile */
+    .bestsaler h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .bestsaler p {
+        font-size: 0.8rem !important;
+    }
+    
+    .bestsaler .p-4 {
+        padding: 0.75rem !important;
+    }
+    
+    .bestsaler img {
+        height: 60px !important;
+    }
+    
+    .bestsaler h5 {
+        font-size: 0.8rem !important;
+    }
+    
+    .bestsaler h4 {
+        font-size: 1rem !important;
+    }
+    
+    .bestsaler .btn {
+        font-size: 0.7rem !important;
+        padding: 0.4rem 0.8rem !important;
+    }
+    
+    /* Fact ultra mobile */
+    .counter {
+        padding: 0.75rem !important;
+    }
+    
+    .counter h4 {
+        font-size: 0.8rem !important;
+    }
+    
+    .counter h1 {
+        font-size: 1.2rem !important;
+    }
+    
+    /* Testimonial ultra mobile */
+    .testimonial-header h4 {
+        font-size: 1rem !important;
+    }
+    
+    .testimonial-header h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .testimonial-item {
+        padding: 0.75rem !important;
+    }
+    
+    .testimonial-item p {
+        font-size: 0.8rem !important;
+    }
+    
+    .testimonial-item img {
+        width: 50px !important;
+        height: 50px !important;
+    }
+    
+    .testimonial-item h4 {
+        font-size: 0.9rem !important;
+    }
+    
+    .testimonial-item p.m-0 {
+        font-size: 0.7rem !important;
+    }
+    
+    /* Footer ultra mobile */
+    .footer h1 {
+        font-size: 1.2rem !important;
+    }
+    
+    .footer h4 {
+        font-size: 1rem !important;
+    }
+    
+    .footer p {
+        font-size: 0.8rem !important;
+    }
+    
+    .footer .btn-link {
+        font-size: 0.8rem !important;
+    }
+    
+    /* Copyright ultra mobile */
+    .copyright span {
+        font-size: 0.8rem !important;
+    }
+    
+    /* General ultra mobile optimizations */
+    .container-fluid {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    
+    .container {
+        padding: 0.75rem !important;
+    }
+    
+    .py-4 {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+    
+    .py-5 {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+    
+    .mb-4 {
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .mb-5 {
+        margin-bottom: 1rem !important;
+    }
+}
+
+/* Landscape mobile (orientación horizontal) */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero-header {
+        margin-top: 60px !important;
+        padding: 0.5rem !important;
+    }
+    
+    .hero-header h1 {
+        font-size: 1.8rem !important;
+    }
+    
+    .carousel-item img {
+        max-height: 180px !important;
+    }
+    
+    .featurs-item {
+        padding: 0.5rem !important;
+    }
+    
+    .vesitable-item {
+        min-width: 160px !important;
+        padding: 0.5rem !important;
+    }
+}
+
+/* FORZAR CAMBIOS EN MOBILE - ESTILOS CON MAYOR PRIORIDAD */
+@media (max-width: 768px) {
+    /* Botón hamburguesa FORZADO */
+    .navbar-toggler {
+        width: 35px !important;
+        height: 35px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        border: 1px solid white !important;
+        background: transparent !important;
+        min-width: 35px !important;
+        min-height: 35px !important;
+    }
+    
+    .navbar-toggler .fa-bars {
+        font-size: 14px !important;
+        color: white !important;
+    }
+    
+    /* Botón de búsqueda FORZADO */
+    .btn-search {
+        width: 35px !important;
+        height: 35px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        min-width: 35px !important;
+        min-height: 35px !important;
+    }
+    
+    .btn-search i {
+        font-size: 14px !important;
+    }
+    
+    /* Cards del slider FORZADAS */
+    .vesitable .owl-carousel .vesitable-item {
+        margin: 0.5rem !important;
+        padding: 1.5rem !important;
+        width: calc(100% - 1rem) !important;
+        max-width: calc(100% - 1rem) !important;
+        height: auto !important;
+        display: block !important;
+        text-align: center !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+        flex: 0 0 calc(100% - 1rem) !important;
+    }
+    
+    .vesitable .owl-carousel .vesitable-img {
+        height: 200px !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .vesitable .owl-carousel .vesitable-img img {
+        max-height: 180px !important;
+        max-width: 100% !important;
+        object-fit: contain !important;
+    }
+    
+    .vesitable .owl-carousel .vesitable-item h4 {
+        font-size: 1.3rem !important;
+        line-height: 1.3 !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.8rem !important;
+        text-align: center !important;
+    }
+    
+    .vesitable .owl-carousel .vesitable-item p {
+        font-size: 1rem !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .vesitable .owl-carousel .vesitable-item .btn {
+        font-size: 1rem !important;
+        padding: 0.8rem 1.5rem !important;
+        width: 100% !important;
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+    }
+    
+    /* Carousel FORZADO */
+    .vesitable .owl-carousel {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .vesitable .owl-carousel .owl-stage {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .vesitable .owl-carousel .owl-item {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 0.5rem !important;
+    }
+}
+
+/* Mobile muy pequeño (hasta 576px) - FORZAR AÚN MÁS */
+@media (max-width: 576px) {
+    .navbar-toggler {
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+        min-height: 30px !important;
+    }
+    
+    .btn-search {
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+        min-height: 30px !important;
+    }
+    
+    .navbar-toggler .fa-bars,
+    .btn-search i {
+        font-size: 12px !important;
+    }
+}
+
+/* --- CSS MIGRADO DESDE CART.HTML --- */
+
+/* ===== LAYOUT PERFECTO DEL CARRITO ===== */
+
+/* Contenedor principal */
+.cart-page-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 80vh;
+}
+
+/* Sección del carrito */
+.cart-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Sección del resumen */
+.summary-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 120px;
+    height: fit-content;
+}
+
+/* Cards principales */
+.cart-card,
+.summary-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: none;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.cart-card:hover,
+.summary-card:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+/* Headers de las cards */
+.cart-card .card-header,
+.summary-card .card-header {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    border: none;
+    padding: 1.5rem;
+    color: white;
+}
+
+.cart-card .card-header h4,
+.summary-card .card-header h5 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+/* Body de las cards */
+.cart-card .card-body,
+.summary-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Tabla del carrito */
+.table {
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table th {
+    background: #f8f9fa;
+    border: none;
+    padding: 1rem 0.75rem;
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    border: none;
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+/* Imágenes de productos */
+.product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+}
+
+/* Controles de cantidad */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 120px;
+}
+
+.quantity-controls .btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    border: 1px solid #dee2e6;
+    background: white;
+    color: #6c757d;
+    transition: all 0.2s ease;
+}
+
+.quantity-controls .btn:hover {
+    background: #198754;
+    color: white;
+    border-color: #198754;
+}
+
+.quantity-controls input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 0.25rem;
+    font-size: 0.9rem;
+}
+
+/* Botón eliminar */
+.btn-remove {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #dc3545;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-remove:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+/* Sección de cupón */
+.coupon-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #dee2e6;
+}
+
+.coupon-section .input-group {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.coupon-section .form-control {
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+}
+
+.coupon-section .btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border: none;
+}
+
+/* Resumen de compra */
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #198754;
+}
+
+.summary-total {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+/* Botón de pago */
+.btn-payment {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3);
+}
+
+.btn-payment:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(25, 135, 84, 0.4);
+    color: white;
+}
+
+/* Beneficios eco-friendly */
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.benefits-list li {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.benefits-list li i {
+    color: #198754;
+    margin-right: 0.75rem;
+    font-size: 1rem;
+}
+
+/* Responsive design para carrito */
+@media (max-width: 1200px) {
+    .cart-page-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+    
+    .summary-section {
+        position: static;
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .cart-page-container {
+        padding: 0.5rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .product-image {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .quantity-controls {
+        max-width: 100px;
+    }
+    
+    .quantity-controls .btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+    
+    .quantity-controls input {
+        width: 40px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Estilos para la tabla del carrito en móvil */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: visible !important;
+    }
+    .table {
+        font-size: 14px !important;
+    }
+    .table th,
+    .table td {
+        padding: 8px 4px !important;
+        vertical-align: middle !important;
+    }
+    .table th {
+        font-size: 12px !important;
+        white-space: nowrap !important;
+    }
+    .quantity {
+        width: 100px !important;
+    }
+    .quantity .input-group-text {
+        padding: 4px 8px !important;
+    }
+    .quantity input {
+        font-size: 12px !important;
+    }
+}
+
+/* Estilos para pantallas muy pequeñas - cambiar a cards */
+@media (max-width: 576px) {
+    .table-responsive {
+        display: none !important;
+    }
+    .mobile-cart-items {
+        display: block !important;
+    }
+    .cart-item-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .cart-item-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .cart-item-image {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        border-radius: 6px;
+        margin-right: 12px;
+    }
+    .cart-item-info h6 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+    .cart-item-info small {
+        color: #6c757d;
+        font-size: 12px;
+    }
+    .cart-item-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .cart-item-price {
+        font-weight: bold;
+        color: #198754;
+        font-size: 16px;
+    }
+    .cart-item-total {
+        font-weight: bold;
+        color: #198754;
+        font-size: 18px;
+    }
+    .cart-item-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .quantity-mobile {
+        width: 120px;
+        flex-direction: row !important;
+        display: flex !important;
+    }
+    .quantity-mobile .input-group-text {
+        padding: 6px 10px;
+    }
+    .quantity-mobile input {
+        text-align: center;
+        font-size: 14px;
+    }
+    .quantity-mobile .btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    .remove-btn-mobile {
+        padding: 8px 12px;
+        border-radius: 6px;
+    }
+}
+
+/* Ocultar cards en pantallas grandes */
+@media (min-width: 577px) {
+    .mobile-cart-items {
+        display: none !important;
+    }
+}
+
+/* Estilos para títulos blancos */
+.card-header h4,
+.card-header h5 {
+    color: white !important;
+}
+.card-header.bg-success h4,
+.card-header.bg-success h5 {
+    color: white !important;
+}
+
+/* Animaciones para el carrito */
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(-20px); }
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+.quantity input {
+    border: none;
+    text-align: center;
+    font-weight: bold;
+}
+
+.quantity input:focus {
+    box-shadow: none;
+    border-color: #28a745;
+}
+
+/* --- CSS MIGRADO DESDE CHACKOUT.HTML --- */
+
+/* Estilos para formularios de checkout */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: #28a745;
+}
+
+.form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+.form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.btn-success {
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+}
+
+.form-check-label {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.form-check-label:hover {
+    color: #28a745;
+}
+
+/* --- CSS MIGRADO DESDE 404.HTML --- */
+
+/* Estilos para página 404 */
+.error-icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+.error-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: bold;
+    color: #28a745;
+    opacity: 0.8;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Animaciones para página 404 */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.input-group .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.input-group .btn:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* --- ESTILOS GLOBALES PARA NAVBAR - APLICABLE A TODAS LAS PÁGINAS --- */
+
+/* Padding global para navbar en todas las vistas */
+.navbar .container-fluid {
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+}
+
+/* Padding específico para mobile (hasta 768px) */
+@media (max-width: 768px) {
+    .navbar .container-fluid {
+        padding-left: 25px !important;
+        padding-right: 25px !important;
+    }
+    
+    /* Asegurar que el navbar tenga el padding correcto en mobile */
+    .navbar {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+/* Padding para tablets (768px - 1199px) */
+@media (min-width: 769px) and (max-width: 1199px) {
+    .navbar .container-fluid {
+        padding-left: 25px !important;
+        padding-right: 25px !important;
+    }
+}
+
+/* Padding para desktop (1200px y superior) */
+@media (min-width: 1200px) {
+    .navbar .container-fluid {
+        padding-left: 25px !important;
+        padding-right: 25px !important;
+    }
+}
+
+/* Padding para pantallas extra grandes (1400px y superior) */
+@media (min-width: 1400px) {
+    .navbar .container-fluid {
+        padding-left: 25px !important;
+        padding-right: 25px !important;
+    }
+}
+
+/* Asegurar que el navbar mantenga el padding en todas las situaciones */
+.navbar .container-fluid.px-5 {
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+}
+
+/* Override cualquier padding que pueda estar definido en Bootstrap */
+.navbar .container-fluid[class*="px-"] {
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+}
+
+/* --- MARGIN TOP SOLO PARA MOBILE --- */
+
+/* Margin superior para la sección Features SOLO en mobile */
+@media (max-width: 768px) {
+    .featurs {
+        margin-top: 0px !important;
+    }
+    
+    /* Asegurar que el margin se aplique en mobile */
+    .container-fluid.featurs {
+        margin-top: 0px !important;
+    }
+    
+    /* Margin adicional para mobile muy pequeño */
+    @media (max-width: 576px) {
+        .featurs {
+            margin-top: 0px !important;
+        }
+        
+        .container-fluid.featurs {
+            margin-top: 0px !important;
+        }
+    }
+}
+
+/* Reset margin para desktop y otras pantallas */
+@media (min-width: 769px) {
+    .featurs {
+        margin-top: 100px !important;
+    }
+    
+    .container-fluid.featurs {
+        margin-top: 100px !important;
+    }
+}
+
+/* --- WIDTH 100% PARA TEXTO EN SECCIÓN INFORMATIVA MOBILE --- */
+
+/* Hacer que el texto de la sección informativa tenga width 100% en mobile */
+@media (max-width: 768px) {
+    .custom-info-section .col-lg-6 {
+        width: 100% !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+    
+    .custom-info-section .py-4 {
+        width: 100% !important;
+    }
+    
+    .custom-info-section h1,
+    .custom-info-section h2,
+    .custom-info-section p {
+        width: 100% !important;
+    }
+    
+    /* Ajuste para mobile muy pequeño */
+    @media (max-width: 576px) {
+        .custom-info-section .col-lg-6 {
+            width: 100% !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+    }
+}
+
+/* --- ARREGLO DEL CARRUSEL EN MOBILE --- */
+
+/* Arreglar el carrusel para que funcione en mobile */
+@media (max-width: 768px) {
+    .owl-carousel {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 400px !important;
+        overflow: visible !important;
+        position: relative !important;
+        margin-top: -50px !important;
+    }
+    
+    .owl-carousel .owl-stage {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    
+    .owl-carousel .owl-item {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        height: auto !important;
+        flex: 1 !important;
+    }
+    
+    .owl-carousel .vesitable-item {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        height: auto !important;
+        min-height: 450px !important;
+        background: white !important;
+        border: 2px solid #28a745 !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .owl-carousel .testimonial-item {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        height: auto !important;
+        min-height: 250px !important;
+        background: white !important;
+        border: 2px solid #28a745 !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    /* OCULTAR BOTONES DE NAVEGACIÓN EN MOBILE */
+    .owl-carousel .owl-nav {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    .owl-carousel .owl-prev,
+    .owl-carousel .owl-next {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    /* Forzar que los elementos del carrusel sean visibles */
+    .owl-carousel * {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Asegurar que las imágenes se muestren */
+    .owl-carousel img {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        max-width: 100% !important;
+        height: auto !important;
+        object-fit: contain !important;
+    }
+    
+    /* Asegurar que el texto se muestre */
+    .owl-carousel h4,
+    .owl-carousel p,
+    .owl-carousel .text-dark {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        color: #333 !important;
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* Ajuste para mobile muy pequeño */
+    @media (max-width: 576px) {
+        .owl-carousel {
+            min-height: 350px !important;
+            margin-top: -60px !important;
+        }
+        
+        .owl-carousel .owl-item {
+            width: 100% !important;
+            min-width: 100% !important;
+        }
+        
+        .owl-carousel .vesitable-item {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: 400px !important;
+            padding: 15px !important;
+        }
+        
+        .owl-carousel .testimonial-item {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: 200px !important;
+            padding: 15px !important;
+        }
+    }
+}
+
+/* --- OCULTAR BOTÓN BACK TO TOP EN MOBILE --- */
+
+/* Ocultar el botón "Back to Top" en mobile */
+@media (max-width: 768px) {
+    .back-to-top {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    /* Asegurar que no aparezca en mobile pequeño */
+    @media (max-width: 576px) {
+        .back-to-top {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+    }
+}
+
+/* --- WIDTH 100% PARA ABOUT US EN MOBILE --- */
+
+/* Hacer que todas las cards y elementos en About Us ocupen 100% del width en mobile */
+@media (max-width: 768px) {
+    /* Contenedores principales */
+    .container-fluid {
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin: 0 !important;
+    }
+    
+    /* Cards y elementos */
+    .card,
+    .card-body,
+    .card-header,
+    .card-footer {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 15px !important;
+    }
+    
+    /* Filas y columnas */
+    .row {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .col-md-6,
+    .col-lg-4,
+    .col-lg-6,
+    .col-xl-3,
+    .col-xl-4 {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 10px !important;
+        margin: 0 !important;
+    }
+    
+    /* Elementos específicos de About Us */
+    .about-section,
+    .team-section,
+    .mission-section,
+    .values-section {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 15px !important;
+    }
+    
+    /* Imágenes */
+    .img-fluid,
+    .img-thumbnail {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    
+    /* Texto y contenido */
+    h1, h2, h3, h4, h5, h6,
+    p, span, div {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    /* Ajuste para mobile muy pequeño */
+    @media (max-width: 576px) {
+        .container {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+        
+        .card,
+        .card-body,
+        .card-header,
+        .card-footer {
+            padding: 10px !important;
+        }
+        
+        .col-md-6,
+        .col-lg-4,
+        .col-lg-6,
+        .col-xl-3,
+        .col-xl-4 {
+            padding: 5px !important;
+        }
+    }
+}
+
+/* --- DROPDOWN VERDE CLARO Y MARGEN SUPERIOR 10px --- */
+
+/* Estilo para el dropdown del carrito */
+.dropdown-menu {
+    background-color: #90EE90 !important; /* Verde claro */
+    border: 1px solid #32CD32 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+    margin-top: 10px !important;
+}
+
+.dropdown-menu .dropdown-item {
+    color: #333 !important;
+    padding: 8px 15px !important;
+    margin-top: 10px !important;
+    border-bottom: 1px solid #7CFC00 !important;
+    transition: background-color 0.3s ease !important;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #7CFC00 !important; /* Verde más claro al hover */
+    color: #333 !important;
+}
+
+.dropdown-menu .dropdown-item:last-child {
+    border-bottom: none !important;
+}
+
+/* Margen superior de 10px para todas las clases principales */
+.container-fluid,
+.container,
+.row,
+.col-md-6,
+.col-lg-4,
+.col-lg-6,
+.col-xl-3,
+.col-xl-4,
+.card,
+.card-body,
+.card-header,
+.card-footer,
+.hero-header,
+.features-section,
+.products-section,
+.banner-section,
+.testimonials-section,
+.footer-section,
+.navbar,
+.navbar-brand,
+.navbar-nav,
+.nav-item,
+.nav-link,
+.btn,
+.btn-primary,
+.btn-success,
+.btn-warning,
+.btn-info,
+.btn-light,
+.btn-dark,
+.form-control,
+.input-group,
+.modal,
+.modal-content,
+.modal-header,
+.modal-body,
+.modal-footer,
+.carousel,
+.carousel-item,
+.owl-carousel,
+.owl-item,
+.testimonial-item,
+.vesitable-item,
+.counter,
+.fact,
+.banner,
+.features-item,
+.product-item,
+.team-member,
+.about-content,
+.contact-info,
+.footer-item,
+.copyright {
+    margin-top: 10px !important;
+}
+
+/* --- MARGIN TOP PARA HERO SECTION SOLO MOBILE --- */
+
+/* Margin superior para la sección del hero SOLO en mobile */
+@media (max-width: 768px) {
+    .custom-hero-section .col-md-12.col-lg-7 {
+        margin-top: 90px !important;
+    }
+    
+    /* Margin adicional para mobile muy pequeño */
+    @media (max-width: 576px) {
+        .custom-hero-section .col-md-12.col-lg-7 {
+            margin-top: 140px !important;
+        }
+    }
+}
+
+/* Reset margin para desktop y otras pantallas */
+@media (min-width: 769px) {
+    .custom-hero-section .col-md-12.col-lg-7 {
+        margin-top: 100px !important;
+    }
+}
+
+/* --- AJUSTE DEL BOTÓN DE BÚSQUEDA SOLO MOBILE --- */
+
+/* Aumentar el tamaño del botón de búsqueda en mobile */
+@media (max-width: 768px) {
+    .custom-hero-section .btn {
+        width: calc(20% + 5px) !important;
+        right: 0 !important;
+        text-align: center !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Ajuste para mobile muy pequeño */
+    @media (max-width: 576px) {
+        .custom-hero-section .btn {
+            width: calc(18% + 5px) !important;
+            right: 0 !important;
+            text-align: center !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+    }
+}
+
+/* --- AJUSTE DEL CONTENEDOR DE TEXTO EN EL SLIDER --- */
+
+/* Centrar el contenedor de texto en el slider para mobile */
+@media (max-width: 768px) {
+    .custom-hero-section .carousel-item .btn {
+        width: auto !important;
+        min-width: 120px !important;
+        padding: 8px 16px !important;
+        font-size: 14px !important;
+        text-align: center !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        position: absolute !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        bottom: 40px !important;
+    }
+    
+    /* Ajuste para mobile muy pequeño */
+    @media (max-width: 576px) {
+        .custom-hero-section .carousel-item .btn {
+            width: auto !important;
+            min-width: 100px !important;
+            padding: 6px 12px !important;
+            font-size: 12px !important;
+            text-align: center !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            bottom: 40px !important;
+        }
+    }
 }
 
