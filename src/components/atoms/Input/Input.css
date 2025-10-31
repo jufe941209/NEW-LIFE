@@ -1,0 +1,29 @@
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon i {
+  position: absolute;
+  z-index: 2;
+  color: var(--color-text-light);
+  font-size: 16px;
+}
+
+.input-icon-left i {
+  left: 16px;
+}
+
+.input-icon-left input {
+  padding-left: 45px !important;
+}
+
+.input-icon-right i {
+  right: 16px;
+}
+
+.input-icon-right input {
+  padding-right: 45px !important;
+}
+

@@ -1,0 +1,26 @@
+.product-grid {
+  padding: 1rem 0;
+}
+
+.product-grid-empty {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.empty-content {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.empty-content i {
+  opacity: 0.5;
+}
+
+.empty-content h4 {
+  margin-bottom: 0.5rem;
+}
+
+.empty-content p {
+  margin-bottom: 0;
+}
+

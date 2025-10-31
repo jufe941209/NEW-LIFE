@@ -1,0 +1,44 @@
+/* Importar Bootstrap CSS */
+@import '/css/bootstrap.min.css';
+@import '/css/style.css';
+
+/* Importar librerías CSS */
+@import '/lib/lightbox/css/lightbox.min.css';
+@import '/lib/owlcarousel/assets/owl.carousel.min.css';
+@import '/lib/owlcarousel/assets/owl.theme.green.css';
+
+/* Variables CSS Globales */
+:root {
+  --color-success: #28a745;
+  --color-success-dark: #20c997;
+  --color-primary: #ffffff;
+  --color-text: #495057;
+  --color-text-light: #6c757d;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 6px 16px rgba(0,0,0,0.2);
+  --transition: all 0.3s ease;
+}
+
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  color: var(--color-text);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+}
+

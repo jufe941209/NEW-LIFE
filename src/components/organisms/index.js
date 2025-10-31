@@ -1,0 +1,10 @@
+// Exportar todos los organismos desde aquí
+export { default as Navbar } from './Navbar/Navbar'
+export { default as Footer } from './Footer/Footer'
+export { default as Layout } from './Layout/Layout'
+export { default as HeroSlider } from './HeroSlider/HeroSlider'
+export { default as FeaturesSection } from './FeaturesSection/FeaturesSection'
+export { default as StatsSection } from './StatsSection/StatsSection'
+export { default as ProductGrid } from './ProductGrid/ProductGrid'
+export { default as ProductFilters } from './ProductFilters/ProductFilters'
+export { default as PageHeader } from './PageHeader/PageHeader'
