@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { SearchBar } from '../../molecules'
+import { useAuth } from '../../../context/AuthContext'
 import './Navbar.css'
 
 /**
@@ -14,6 +15,7 @@ const Navbar = () => {
   const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
+  const { admin, cliente, logout, isAdmin, isCliente } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -209,16 +211,58 @@ const Navbar = () => {
                 </div>
               </div>
               
-              {/* Login Button */}
-              <Link 
-                to="/login" 
-                className="navbar-action-btn login-btn"
-                onClick={() => setIsMobileMenuOpen(false)}
-                aria-label="Iniciar Sesión"
-              >
-                <i className="fas fa-sign-in-alt"></i>
-                <span className="d-none d-lg-inline ms-2">Iniciar Sesión</span>
-              </Link>
+              {/* Sección usuario: Admin */}
+              {isAdmin() && (
+                <div className="navbar-admin-section d-flex align-items-center gap-2">
+                  <Link
+                    to="/admin"
+                    className="navbar-action-btn admin-btn"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    title="Panel de Administración"
+                  >
+                    <i className="fas fa-user-shield"></i>
+                    <span className="d-none d-lg-inline ms-2">{admin?.nombres?.split(' ')[0] || 'Admin'}</span>
+                  </Link>
+                  <button
+                    className="navbar-action-btn logout-btn"
+                    onClick={() => { logout(); navigate('/') }}
+                    title="Cerrar Sesión"
+                  >
+                    <i className="fas fa-sign-out-alt"></i>
+                    <span className="d-none d-lg-inline ms-2">Salir</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Sección usuario: Cliente logueado */}
+              {isCliente() && (
+                <div className="navbar-cliente-section d-flex align-items-center gap-2">
+                  <div className="navbar-action-btn cliente-info" title={cliente?.correo}>
+                    <i className="fas fa-user-circle"></i>
+                    <span className="d-none d-lg-inline ms-2">{cliente?.nombres?.split(' ')[0] || 'Cliente'}</span>
+                  </div>
+                  <button
+                    className="navbar-action-btn logout-btn"
+                    onClick={() => { logout(); navigate('/login') }}
+                    title="Cerrar Sesión"
+                  >
+                    <i className="fas fa-sign-out-alt"></i>
+                    <span className="d-none d-lg-inline ms-2">Salir</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Sin sesión */}
+              {!isAdmin() && !isCliente() && (
+                <Link
+                  to="/login"
+                  className="navbar-action-btn login-btn"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <i className="fas fa-sign-in-alt"></i>
+                  <span className="d-none d-lg-inline ms-2">Iniciar Sesión</span>
+                </Link>
+              )}
             </div>
           </div>
         </div>

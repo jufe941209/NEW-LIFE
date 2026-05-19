@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Button } from '../components/atoms'
+import { Button } from '../../components/atoms'
 import './NotFound.css'
 
 /**
@@ -28,4 +28,3 @@ const NotFound = () => {
 }
 
 export default NotFound
-

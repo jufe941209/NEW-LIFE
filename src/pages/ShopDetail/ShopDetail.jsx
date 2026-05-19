@@ -1,6 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { PageHeader } from '../components/organisms'
+import { PageHeader } from '../../components/organisms'
 import './ShopDetail.css'
 
 /**
@@ -31,4 +31,3 @@ const ShopDetail = () => {
 }
 
 export default ShopDetail
-

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { FeaturesSection, StatsSection, PageHeader } from '../components/organisms'
-import { ProductCard, SearchBar } from '../components/molecules'
-import { Button } from '../components/atoms'
+import { FeaturesSection, StatsSection, PageHeader } from '../../components/organisms'
+import { ProductCard, SearchBar } from '../../components/molecules'
+import { Button } from '../../components/atoms'
 import './Home.css'
 
 /**
@@ -108,23 +108,23 @@ const Home = () => {
                   Productos Biodegradables
                 </h1>
                 <p className="hero-description lead mb-4">
-                  Alternativa eco-friendly al icopor. Productos 100% biodegradables 
+                  Alternativa eco-friendly al icopor. Productos 100% biodegradables
                   fabricados con fibras naturales de piña y maíz.
                 </p>
                 <p className="hero-sub-description mb-4">
-                  Nuestros productos se descomponen naturalmente en 90 días, convirtiéndose 
-                  en nutrientes para el suelo. Fabricados con materiales 100% naturales y 
-                  compostables, contribuimos activamente a la reducción de residuos plásticos 
+                  Nuestros productos se descomponen naturalmente en 90 días, convirtiéndose
+                  en nutrientes para el suelo. Fabricados con materiales 100% naturales y
+                  compostables, contribuimos activamente a la reducción de residuos plásticos
                   y la conservación de nuestros ecosistemas.
                 </p>
                 <p className="hero-sub-description mb-4">
-                  Ideal para restaurantes, eventos, cafeterías y cualquier negocio comprometido 
+                  Ideal para restaurantes, eventos, cafeterías y cualquier negocio comprometido
                   con la sostenibilidad ambiental.
                 </p>
-                
+
                 {/* Search Bar */}
                 <div className="hero-search-section mt-4">
-                  <SearchBar 
+                  <SearchBar
                     onSearch={handleSearch}
                     placeholder="Buscar productos biodegradables..."
                   />
@@ -133,8 +133,8 @@ const Home = () => {
             </div>
             <div className="col-lg-6">
               <div className="hero-image-wrapper">
-                <img 
-                  src="/img/baner-1.jfif" 
+                <img
+                  src="/img/baner-1.jfif"
                   alt="Productos Biodegradables NEW LIFE"
                   className="hero-image img-fluid rounded shadow-lg"
                 />
@@ -158,9 +158,9 @@ const Home = () => {
               Productos biodegradables para un futuro sostenible
             </p>
             <p className="products-intro mb-5">
-              Descubre nuestra amplia gama de productos biodegradables diseñados para 
-              reemplazar completamente el icopor. Cada producto está fabricado con materias 
-              primas naturales como bagazo de caña de azúcar, cáscara de piña y maíz, 
+              Descubre nuestra amplia gama de productos biodegradables diseñados para
+              reemplazar completamente el icopor. Cada producto está fabricado con materias
+              primas naturales como bagazo de caña de azúcar, cáscara de piña y maíz,
               garantizando una descomposición natural en 90 días.
             </p>
           </div>
@@ -207,14 +207,14 @@ const Home = () => {
                   <span className="text-dark">NEW LIFE</span>
                 </h2>
                 <p className="lead text-muted mb-4">
-                  Alternativa eco-friendly al icopor. Productos fabricados con fibras naturales 
-                  que se convierten en semillas germinables después de su uso. Contribuimos a 
+                  Alternativa eco-friendly al icopor. Productos fabricados con fibras naturales
+                  que se convierten en semillas germinables después de su uso. Contribuimos a
                   la conservación del medio ambiente con soluciones sostenibles.
                 </p>
                 <p className="text-muted mb-4">
-                  Nuestros productos biodegradables están diseñados para descomponerse naturalmente 
-                  en el medio ambiente, contribuyendo significativamente a la reducción de residuos 
-                  plásticos. Cada producto que fabricamos está pensado para minimizar el impacto 
+                  Nuestros productos biodegradables están diseñados para descomponerse naturalmente
+                  en el medio ambiente, contribuyendo significativamente a la reducción de residuos
+                  plásticos. Cada producto que fabricamos está pensado para minimizar el impacto
                   ambiental y maximizar la sostenibilidad.
                 </p>
                 <ul className="about-features-list">
@@ -248,8 +248,8 @@ const Home = () => {
             <div className="col-lg-6">
               <div className="about-images">
                 <div className="about-image-main">
-                  <img 
-                    src="/img/baner-2.jfif" 
+                  <img
+                    src="/img/baner-2.jfif"
                     alt="Productos Biodegradables NEW LIFE"
                     className="img-fluid rounded shadow-lg"
                   />
@@ -281,7 +281,7 @@ const Home = () => {
                 </div>
                 <h4 className="benefit-title">100% Biodegradable</h4>
                 <p className="benefit-description">
-                  Nuestros productos se descomponen completamente en 90 días, 
+                  Nuestros productos se descomponen completamente en 90 días,
                   transformándose en nutrientes para el suelo sin dejar residuos tóxicos.
                 </p>
               </div>
@@ -294,7 +294,7 @@ const Home = () => {
                 </div>
                 <h4 className="benefit-title">Semillas Germinables</h4>
                 <p className="benefit-description">
-                  Cada producto contiene semillas que puedes plantar después de su uso, 
+                  Cada producto contiene semillas que puedes plantar después de su uso,
                   dando vida a nuevas plantas y árboles.
                 </p>
               </div>
@@ -307,7 +307,7 @@ const Home = () => {
                 </div>
                 <h4 className="benefit-title">Resistente al Calor</h4>
                 <p className="benefit-description">
-                  Nuestros productos resisten altas temperaturas sin deformarse, 
+                  Nuestros productos resisten altas temperaturas sin deformarse,
                   perfectos para comidas calientes y bebidas.
                 </p>
               </div>
@@ -320,7 +320,7 @@ const Home = () => {
                 </div>
                 <h4 className="benefit-title">Resistente al Agua</h4>
                 <p className="benefit-description">
-                  Fabricados con tecnología especial que los hace impermeables, 
+                  Fabricados con tecnología especial que los hace impermeables,
                   ideales para líquidos y alimentos húmedos.
                 </p>
               </div>
@@ -333,7 +333,7 @@ const Home = () => {
                 </div>
                 <h4 className="benefit-title">Compostable</h4>
                 <p className="benefit-description">
-                  Pueden ser compostados en casa o en instalaciones industriales, 
+                  Pueden ser compostados en casa o en instalaciones industriales,
                   cerrando el ciclo de vida de manera sostenible.
                 </p>
               </div>
@@ -346,7 +346,7 @@ const Home = () => {
                 </div>
                 <h4 className="benefit-title">Certificados de Calidad</h4>
                 <p className="benefit-description">
-                  Cumplimos con los más altos estándares internacionales de calidad 
+                  Cumplimos con los más altos estándares internacionales de calidad
                   y sostenibilidad ambiental.
                 </p>
               </div>
@@ -377,7 +377,7 @@ const Home = () => {
                 </div>
                 <h5 className="step-title">Compra</h5>
                 <p className="step-description">
-                  Adquiere nuestros productos biodegradables en nuestra tienda online 
+                  Adquiere nuestros productos biodegradables en nuestra tienda online
                   o puntos de venta autorizados.
                 </p>
               </div>
@@ -391,7 +391,7 @@ const Home = () => {
                 </div>
                 <h5 className="step-title">Usa</h5>
                 <p className="step-description">
-                  Utiliza nuestros productos para tus comidas y eventos, 
+                  Utiliza nuestros productos para tus comidas y eventos,
                   disfrutando de su calidad y resistencia.
                 </p>
               </div>
@@ -405,7 +405,7 @@ const Home = () => {
                 </div>
                 <h5 className="step-title">Planta</h5>
                 <p className="step-description">
-                  Después de usar el producto, siémbralo en una matera o jardín 
+                  Después de usar el producto, siémbralo en una matera o jardín
                   y observa cómo germina una nueva planta.
                 </p>
               </div>
@@ -419,7 +419,7 @@ const Home = () => {
                 </div>
                 <h5 className="step-title">Vida Nueva</h5>
                 <p className="step-description">
-                  Disfruta de la nueva planta que crece mientras contribuyes 
+                  Disfruta de la nueva planta que crece mientras contribuyes
                   al cuidado del medio ambiente.
                 </p>
               </div>
@@ -440,7 +440,7 @@ const Home = () => {
                   Descuento Especial del 20%
                 </h3>
                 <p className="discount-text mb-4">
-                  Aprovecha nuestra oferta especial. Obtén <strong>20.000$ de descuento</strong> en 
+                  Aprovecha nuestra oferta especial. Obtén <strong>20.000$ de descuento</strong> en
                   productos seleccionados. ¡No dejes pasar esta oportunidad única!
                 </p>
                 <p className="discount-note">
@@ -476,7 +476,7 @@ const Home = () => {
               ¡Lo que dicen nuestros clientes!
             </p>
           </div>
-          
+
           <div className="row g-4 mb-4">
             <div className="col-lg-4 col-md-6">
               <div className="testimonial-preview-card">
@@ -488,7 +488,7 @@ const Home = () => {
                   <i className="fas fa-star text-warning"></i>
                 </div>
                 <p className="testimonial-text">
-                  "Excelente calidad en los productos. Nos ayudó mucho a reducir nuestro impacto 
+                  "Excelente calidad en los productos. Nos ayudó mucho a reducir nuestro impacto
                   ambiental. Nuestros clientes están muy contentos con la iniciativa ecológica."
                 </p>
                 <div className="testimonial-author">
@@ -508,7 +508,7 @@ const Home = () => {
                   <i className="fas fa-star text-warning"></i>
                 </div>
                 <p className="testimonial-text">
-                  "Productos de alta calidad y servicio excepcional. La mejor alternativa al icopor. 
+                  "Productos de alta calidad y servicio excepcional. La mejor alternativa al icopor.
                   Recomendado 100% para empresas comprometidas con el medio ambiente."
                 </p>
                 <div className="testimonial-author">
@@ -528,7 +528,7 @@ const Home = () => {
                   <i className="fas fa-star text-warning"></i>
                 </div>
                 <p className="testimonial-text">
-                  "Me encantó la idea de poder plantar los platos después de usarlos. Mis hijos 
+                  "Me encantó la idea de poder plantar los platos después de usarlos. Mis hijos
                   están fascinados viendo crecer las plantas. ¡Increíble concepto!"
                 </p>
                 <div className="testimonial-author">
@@ -560,7 +560,7 @@ const Home = () => {
                   ¿Listo para Contribuir al Medio Ambiente?
                 </h2>
                 <p className="cta-text">
-                  Únete a miles de empresas y personas que ya están haciendo la diferencia. 
+                  Únete a miles de empresas y personas que ya están haciendo la diferencia.
                   Comienza a usar productos biodegradables hoy mismo.
                 </p>
               </div>
