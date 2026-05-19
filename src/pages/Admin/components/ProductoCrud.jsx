@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import productoService from '../../../services/productoService'
 import CrudTable from './CrudTable'
+import ConfirmDeleteModal from './ConfirmDeleteModal'
 
 const EMPTY_FORM = {
   nombre: '', categoria: '', precio: '', stock: '', responsable: '',
@@ -18,6 +19,8 @@ const ProductoCrud = () => {
   const [form, setForm] = useState(EMPTY_FORM)
   const [formError, setFormError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const load = async () => {
     setIsLoading(true)
@@ -62,6 +65,20 @@ const ProductoCrud = () => {
     } catch (e) { setFormError('Error al guardar. Intenta nuevamente.') } finally { setIsSaving(false) }
   }
 
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      await productoService.remove(getId(deleteTarget))
+      setDeleteTarget(null)
+      await load()
+    } catch (e) {
+      const msg = e?.response?.data?.Message || 'No se pudo eliminar. Puede tener registros asociados.'
+      alert(msg)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   const handleToggleStatus = async (row) => {
     const isActive = row.estado === 'Activo'
     const accion = isActive ? 'desactivar' : 'reactivar'
@@ -74,7 +91,8 @@ const ProductoCrud = () => {
 
   return (
     <div className="crud-section">
-      <CrudTable title="Productos" columns={columns} data={filtered} onEdit={openEdit} onToggleStatus={handleToggleStatus} onCreate={openCreate} filterValue={filter} onFilterChange={setFilter} isLoading={isLoading} />
+      <CrudTable title="Productos" columns={columns} data={filtered} onEdit={openEdit} onToggleStatus={handleToggleStatus} onDelete={(row) => setDeleteTarget(row)} onCreate={openCreate} filterValue={filter} onFilterChange={setFilter} isLoading={isLoading} />
+      <ConfirmDeleteModal show={!!deleteTarget} itemName={deleteTarget?.nombre} isDeleting={isDeleting} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} />
 
       {/* Extra: Stock info links per row */}
       {data.length > 0 && !isLoading && (

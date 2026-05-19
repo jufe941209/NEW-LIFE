@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 
+const DEFAULT_PASSWORD = '111111'
+
 const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
@@ -13,6 +15,10 @@ export const AuthProvider = ({ children }) => {
     return stored ? JSON.parse(stored) : null
   })
 
+  const [needsPasswordChange, setNeedsPasswordChange] = useState(
+    () => localStorage.getItem('needsPasswordChange') === 'true'
+  )
+
   // --- Admin ---
   const loginAdmin = (adminData) => {
     localStorage.setItem('admin', JSON.stringify(adminData))
@@ -25,14 +31,26 @@ export const AuthProvider = ({ children }) => {
   }
 
   // --- Cliente ---
-  const loginCliente = (clienteData) => {
+  // passwordUsed: la contraseña que el cliente ingresó en el login
+  const loginCliente = (clienteData, passwordUsed = '') => {
     localStorage.setItem('cliente', JSON.stringify(clienteData))
     setCliente(clienteData)
+
+    const mustChange = passwordUsed === DEFAULT_PASSWORD
+    localStorage.setItem('needsPasswordChange', mustChange)
+    setNeedsPasswordChange(mustChange)
   }
 
   const logoutCliente = () => {
     localStorage.removeItem('cliente')
+    localStorage.removeItem('needsPasswordChange')
     setCliente(null)
+    setNeedsPasswordChange(false)
+  }
+
+  const clearPasswordChange = () => {
+    localStorage.setItem('needsPasswordChange', 'false')
+    setNeedsPasswordChange(false)
   }
 
   const logout = () => {
@@ -47,8 +65,10 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       admin, cliente,
+      needsPasswordChange,
       loginAdmin, logoutAdmin,
       loginCliente, logoutCliente,
+      clearPasswordChange,
       logout,
       isAdmin, isCliente, isLoggedIn
     }}>

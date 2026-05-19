@@ -44,14 +44,18 @@ const Login = () => {
       }
 
       // 2) Intentar como cliente (verifica correo + estado Activo)
-      const clienteData = await clienteService.login(formData.correo)
-      if (clienteData) {
-        loginCliente(clienteData)
-        navigate('/')
+      const result = await clienteService.login(formData.correo)
+      if (result?.cliente) {
+        loginCliente(result.cliente, formData.contrasena)
+        navigate(formData.contrasena === '111111' ? '/cambiar-password' : '/')
+        return
+      }
+      if (result?.inactivo) {
+        setErrors({ general: 'Tu cuenta está desactivada. Contacta al administrador para reactivarla.' })
         return
       }
 
-      setErrors({ general: 'Credenciales incorrectas o cuenta inactiva.' })
+      setErrors({ general: 'Correo o contraseña incorrectos. Verifica tus datos.' })
     } catch (error) {
       setErrors({ general: 'Error al conectar con el servidor. Intenta nuevamente.' })
     } finally {

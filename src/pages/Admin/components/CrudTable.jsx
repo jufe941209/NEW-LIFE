@@ -2,13 +2,15 @@ import React from 'react'
 
 /**
  * CrudTable - Tabla reutilizable para operaciones CRUD
- * El botón de "eliminar" hace soft-delete (cambia estado a Inactivo/Activo)
+ * onToggleStatus: cambia estado (soft-delete)
+ * onDelete: eliminación definitiva de la base de datos
  */
 const CrudTable = ({
   columns,
   data,
   onEdit,
   onToggleStatus,
+  onDelete,
   onCreate,
   filterValue,
   onFilterChange,
@@ -93,6 +95,15 @@ const CrudTable = ({
                         >
                           <i className={`fas ${isActive ? 'fa-ban' : 'fa-check-circle'}`}></i>
                         </button>
+                        {onDelete && (
+                          <button
+                            className="crud-delete-btn"
+                            onClick={() => onDelete(row)}
+                            title="Eliminar definitivamente"
+                          >
+                            <i className="fas fa-trash-alt"></i>
+                          </button>
+                        )}
                       </td>
                     </tr>
                   )

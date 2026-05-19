@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react'
 import clienteService from '../../../services/clienteService'
+import { useAuth } from '../../../context/AuthContext'
 import CrudTable from './CrudTable'
+import ConfirmDeleteModal from './ConfirmDeleteModal'
 
 const TIPOS_DOCUMENTO = ['CC', 'CE', 'NIT', 'Pasaporte', 'TI']
 const TIPOS_CLIENTE = ['Natural', 'Juridico']
 const EMPTY_FORM = {
   numero_identificacion: '', tipo_documento: 'CC', tipo_cliente: 'Natural',
   nombres: '', correo: '', telefono: '', direccion: '',
-  contrasena: '', estado: 'Activo', cedula_adm: '10000001'
+  contrasena: '', estado: 'Activo', cedula_adm: ''
 }
 
 const ClienteCrud = () => {
+  const { admin } = useAuth()
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [filter, setFilter] = useState('')
@@ -19,6 +22,8 @@ const ClienteCrud = () => {
   const [form, setForm] = useState(EMPTY_FORM)
   const [formError, setFormError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const load = async () => {
     setIsLoading(true)
@@ -56,7 +61,12 @@ const ClienteCrud = () => {
     )}
   ]
 
-  const openCreate = () => { setEditingItem(null); setForm(EMPTY_FORM); setFormError(''); setShowModal(true) }
+  const openCreate = () => {
+    setEditingItem(null)
+    setForm({ ...EMPTY_FORM, contrasena: '111111', cedula_adm: admin?.cedula_adm || '1001234567' })
+    setFormError('')
+    setShowModal(true)
+  }
   const openEdit = (row) => {
     setEditingItem(row)
     setForm({
@@ -90,7 +100,9 @@ const ClienteCrud = () => {
         if (!form.contrasena) delete payload.contrasena
         await clienteService.update(getId(editingItem), payload)
       } else {
-        await clienteService.create({ ...form, fecha_registro: new Date().toISOString() })
+        const payload = { ...form, fecha_registro: new Date().toISOString() }
+        if (!form.contrasena) delete payload.contrasena
+        await clienteService.create(payload)
       }
       await load()
       closeModal()
@@ -98,6 +110,20 @@ const ClienteCrud = () => {
       const msg = e?.response?.data?.Message || 'Error al guardar. Verifica los datos.'
       setFormError(msg)
     } finally { setIsSaving(false) }
+  }
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      await clienteService.remove(getId(deleteTarget))
+      setDeleteTarget(null)
+      await load()
+    } catch (e) {
+      const msg = e?.response?.data?.Message || 'No se pudo eliminar. Puede tener registros asociados.'
+      alert(msg)
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   const handleToggleStatus = async (row) => {
@@ -118,10 +144,19 @@ const ClienteCrud = () => {
         data={filtered}
         onEdit={openEdit}
         onToggleStatus={handleToggleStatus}
+        onDelete={(row) => setDeleteTarget(row)}
         onCreate={openCreate}
         filterValue={filter}
         onFilterChange={setFilter}
         isLoading={isLoading}
+      />
+
+      <ConfirmDeleteModal
+        show={!!deleteTarget}
+        itemName={deleteTarget?.nombres || deleteTarget?.numero_identificacion}
+        isDeleting={isDeleting}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
       />
 
       {showModal && (

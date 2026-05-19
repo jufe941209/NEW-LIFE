@@ -1,6 +1,6 @@
 import api from './api'
 
-const ENDPOINT = '/factura-venta'
+const ENDPOINT = '/facturaventa'
 
 const facturaService = {
   getAll: async () => {
@@ -26,6 +26,12 @@ const facturaService = {
   remove: async (id) => {
     const response = await api.delete(`${ENDPOINT}/${id}`)
     return response.data
+  },
+
+  // Facturas de un cliente específico
+  getByCliente: async (cedula_cli) => {
+    const all = await facturaService.getAll()
+    return all.filter(f => f.cedula_cli === String(cedula_cli))
   }
 }
 

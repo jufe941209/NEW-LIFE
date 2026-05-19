@@ -28,13 +28,25 @@ const clienteService = {
     return response.data
   },
 
-  // Login: busca por correo (el API no devuelve contrasena en GET por seguridad)
+  // Login: busca por correo activo. Retorna { cliente, inactivo } para distinguir casos
   login: async (correo) => {
     const clientes = await clienteService.getAll()
-    const found = clientes.find(
-      (c) => c.correo === correo && c.estado === 'Activo'
-    )
-    return found || null
+    const activo = clientes.find((c) => c.correo === correo && c.estado === 'Activo')
+    if (activo) return { cliente: activo, inactivo: false }
+    const inactivo = clientes.find((c) => c.correo === correo && c.estado === 'Inactivo')
+    if (inactivo) return { cliente: null, inactivo: true }
+    return null
+  },
+
+  // Verifica si un correo o número de identificación ya existe (activo o inactivo)
+  existsByCorreo: async (correo) => {
+    const clientes = await clienteService.getAll()
+    return clientes.find((c) => c.correo === correo) || null
+  },
+
+  existsByIdentificacion: async (numero_identificacion) => {
+    const clientes = await clienteService.getAll()
+    return clientes.find((c) => c.numero_identificacion === numero_identificacion) || null
   }
 }
 

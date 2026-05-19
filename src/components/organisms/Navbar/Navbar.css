@@ -453,14 +453,75 @@
 }
 
 /* Cliente logueado en navbar */
-.navbar-cliente-section { display: flex; align-items: center; }
+.navbar-cliente-section { display: flex; align-items: center; position: relative; }
 
-.cliente-info {
+.cliente-trigger {
   background: rgba(255, 255, 255, 0.15) !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  cursor: default !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
 }
+.cliente-trigger:hover { background: rgba(255, 255, 255, 0.28) !important; }
 
-.cliente-info:hover {
-  background: rgba(255, 255, 255, 0.25) !important;
+/* Dropdown panel */
+.cliente-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 260px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+  z-index: 9999;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.18s ease;
 }
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cliente-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+}
+.cliente-dropdown-avatar { font-size: 2.25rem; line-height: 1; flex-shrink: 0; }
+.cliente-dropdown-name { font-weight: 700; font-size: 0.95rem; line-height: 1.2; }
+.cliente-dropdown-email { font-size: 0.75rem; opacity: 0.85; word-break: break-all; }
+
+.cliente-dropdown-divider { height: 1px; background: #f3f4f6; margin: 0.25rem 0; }
+
+.cliente-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1.25rem;
+  color: #374151;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.cliente-dropdown-item i {
+  width: 18px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+.cliente-dropdown-item:hover {
+  background: #f0fdf4;
+  color: #28a745;
+}
+.cliente-dropdown-item:hover i { color: #28a745; }
+
+.cliente-dropdown-logout { color: #ef4444 !important; }
+.cliente-dropdown-logout i { color: #ef4444 !important; }
+.cliente-dropdown-logout:hover { background: #fef2f2 !important; }

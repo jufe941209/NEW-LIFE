@@ -16,6 +16,9 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import NotFound from './pages/NotFound'
 import Admin from './pages/Admin'
+import MiPerfil from './pages/MiPerfil'
+import MisCompras from './pages/MisCompras'
+import CambiarPassword from './pages/CambiarPassword'
 
 /**
  * PublicLayout - Envuelve rutas públicas con Navbar y Footer
@@ -53,6 +56,9 @@ function App() {
         <Route path="/testimonials" element={<PublicLayout><Testimonial /></PublicLayout>} />
         <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
         <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
+        <Route path="/mi-perfil" element={<PublicLayout><MiPerfil /></PublicLayout>} />
+        <Route path="/mis-compras" element={<PublicLayout><MisCompras /></PublicLayout>} />
+        <Route path="/cambiar-password" element={<PublicLayout><CambiarPassword /></PublicLayout>} />
         <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
       </Routes>
     </AuthProvider>

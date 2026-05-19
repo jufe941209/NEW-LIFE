@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import domiciliarioService from '../../../services/domiciliarioService'
 import CrudTable from './CrudTable'
+import ConfirmDeleteModal from './ConfirmDeleteModal'
 
 const EMPTY_FORM = { cedula_dom: '', nombres: '', telefono: '', zona: '', estado: 'Activo' }
 
@@ -13,6 +14,8 @@ const DomiciliarioCrud = () => {
   const [form, setForm] = useState(EMPTY_FORM)
   const [formError, setFormError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const load = async () => {
     setIsLoading(true)
@@ -55,6 +58,20 @@ const DomiciliarioCrud = () => {
     } catch (e) { setFormError('Error al guardar. Intenta nuevamente.') } finally { setIsSaving(false) }
   }
 
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      await domiciliarioService.remove(getId(deleteTarget))
+      setDeleteTarget(null)
+      await load()
+    } catch (e) {
+      const msg = e?.response?.data?.Message || 'No se pudo eliminar. Puede tener registros asociados.'
+      alert(msg)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   const handleToggleStatus = async (row) => {
     const isActive = row.estado === 'Activo'
     const accion = isActive ? 'desactivar' : 'reactivar'
@@ -67,7 +84,8 @@ const DomiciliarioCrud = () => {
 
   return (
     <div className="crud-section">
-      <CrudTable title="Domiciliarios" columns={columns} data={filtered} onEdit={openEdit} onToggleStatus={handleToggleStatus} onCreate={openCreate} filterValue={filter} onFilterChange={setFilter} isLoading={isLoading} />
+      <CrudTable title="Domiciliarios" columns={columns} data={filtered} onEdit={openEdit} onToggleStatus={handleToggleStatus} onDelete={(row) => setDeleteTarget(row)} onCreate={openCreate} filterValue={filter} onFilterChange={setFilter} isLoading={isLoading} />
+      <ConfirmDeleteModal show={!!deleteTarget} itemName={deleteTarget?.nombres || deleteTarget?.cedula_dom} isDeleting={isDeleting} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} />
       {showModal && (
         <div className="crud-modal-overlay" onClick={closeModal}>
           <div className="crud-modal" onClick={e => e.stopPropagation()}>

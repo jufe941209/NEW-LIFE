@@ -3,11 +3,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Button, Input } from '../../components/atoms'
 import { PageHeader } from '../../components/organisms'
 import clienteService from '../../services/clienteService'
+import administradorService from '../../services/administradorService'
+
 import './Register.css'
 
 const TIPOS_DOCUMENTO = ['CC', 'CE', 'NIT', 'Pasaporte', 'TI']
 const TIPOS_CLIENTE = ['Natural', 'Juridico']
-const DEFAULT_ADMIN_CEDULA = '10000001'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -51,6 +52,30 @@ const Register = () => {
     if (!validate()) return
     setIsLoading(true)
     try {
+      // Verificar si ya existe un cliente con ese correo o identificación (activo o inactivo)
+      const [porCorreo, porId] = await Promise.all([
+        clienteService.existsByCorreo(formData.correo),
+        clienteService.existsByIdentificacion(formData.numero_identificacion)
+      ])
+      if (porCorreo || porId) {
+        const estaInactivo = (porCorreo?.estado === 'Inactivo') || (porId?.estado === 'Inactivo')
+        if (estaInactivo) {
+          setErrors({ general: 'Esta cuenta fue desactivada por un administrador. Contacta al administrador para reactivarla.' })
+        } else {
+          setErrors({ general: 'Ya existe una cuenta con ese correo o número de identificación. Inicia sesión.' })
+        }
+        setIsLoading(false)
+        return
+      }
+
+      // Buscar cualquier admin activo para asociar el registro
+      let cedula_adm = '1001234567' // fallback
+      try {
+        const admins = await administradorService.getAll()
+        const activo = admins.find(a => a.estado === 'Activo')
+        if (activo) cedula_adm = activo.cedula_adm
+      } catch { /* usa el fallback */ }
+
       await clienteService.create({
         numero_identificacion: formData.numero_identificacion,
         tipo_documento: formData.tipo_documento,
@@ -62,7 +87,7 @@ const Register = () => {
         contrasena: formData.contrasena,
         estado: 'Activo',
         fecha_registro: new Date().toISOString(),
-        cedula_adm: DEFAULT_ADMIN_CEDULA
+        cedula_adm
       })
       navigate('/login', { state: { message: '¡Cuenta creada! Ya puedes iniciar sesión.', registeredEmail: formData.correo } })
     } catch (error) {

@@ -15,7 +15,7 @@ export default defineConfig({
     open: true
   },
   publicDir: 'public',
-  base: './', // Asegura rutas relativas para el despliegue
+  base: '/', // Rutas absolutas — necesario para Vercel SPA routing
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

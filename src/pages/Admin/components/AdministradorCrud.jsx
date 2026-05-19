@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import administradorService from '../../../services/administradorService'
 import CrudTable from './CrudTable'
+import ConfirmDeleteModal from './ConfirmDeleteModal'
 
 const EMPTY_FORM = { cedula_adm: '', nombres: '', correo: '', contrasena: '', estado: 'Activo' }
 
@@ -13,6 +14,8 @@ const AdministradorCrud = () => {
   const [form, setForm] = useState(EMPTY_FORM)
   const [formError, setFormError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const load = async () => {
     setIsLoading(true)
@@ -78,6 +81,20 @@ const AdministradorCrud = () => {
     }
   }
 
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      await administradorService.remove(deleteTarget.cedula_adm)
+      setDeleteTarget(null)
+      await load()
+    } catch (e) {
+      const msg = e?.response?.data?.Message || 'No se pudo eliminar. Puede tener registros asociados.'
+      alert(msg)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   const handleToggleStatus = async (row) => {
     const isActive = row.estado === 'Activo'
     const accion = isActive ? 'desactivar' : 'reactivar'
@@ -99,10 +116,19 @@ const AdministradorCrud = () => {
         data={filtered}
         onEdit={openEdit}
         onToggleStatus={handleToggleStatus}
+        onDelete={(row) => setDeleteTarget(row)}
         onCreate={openCreate}
         filterValue={filter}
         onFilterChange={setFilter}
         isLoading={isLoading}
+      />
+
+      <ConfirmDeleteModal
+        show={!!deleteTarget}
+        itemName={deleteTarget?.nombres || deleteTarget?.cedula_adm}
+        isDeleting={isDeleting}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
       />
 
       {showModal && (

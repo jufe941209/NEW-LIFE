@@ -13,6 +13,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false)
+  const [isClienteDropdownOpen, setIsClienteDropdownOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const { admin, cliente, logout, isAdmin, isCliente } = useAuth()
@@ -31,22 +32,15 @@ const Navbar = () => {
     setIsMobileMenuOpen(false)
   }, [location])
 
-  // Cerrar dropdown al hacer click fuera
+  // Cerrar dropdowns al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest('.cart-dropdown-container')) {
-        setIsCartDropdownOpen(false)
-      }
+      if (!event.target.closest('.cart-dropdown-container')) setIsCartDropdownOpen(false)
+      if (!event.target.closest('.navbar-cliente-section')) setIsClienteDropdownOpen(false)
     }
-
-    if (isCartDropdownOpen) {
-      document.addEventListener('click', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside)
-    }
-  }, [isCartDropdownOpen])
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [])
 
   const isActive = (path) => {
     return location.pathname === path ? 'active' : ''
@@ -234,21 +228,58 @@ const Navbar = () => {
                 </div>
               )}
 
-              {/* Sección usuario: Cliente logueado */}
+              {/* Sección usuario: Cliente logueado con dropdown */}
               {isCliente() && (
-                <div className="navbar-cliente-section d-flex align-items-center gap-2">
-                  <div className="navbar-action-btn cliente-info" title={cliente?.correo}>
+                <div className="navbar-cliente-section position-relative">
+                  <button
+                    className="navbar-action-btn cliente-trigger"
+                    onClick={() => setIsClienteDropdownOpen(!isClienteDropdownOpen)}
+                    title={cliente?.correo}
+                  >
                     <i className="fas fa-user-circle"></i>
                     <span className="d-none d-lg-inline ms-2">{cliente?.nombres?.split(' ')[0] || 'Cliente'}</span>
-                  </div>
-                  <button
-                    className="navbar-action-btn logout-btn"
-                    onClick={() => { logout(); navigate('/login') }}
-                    title="Cerrar Sesión"
-                  >
-                    <i className="fas fa-sign-out-alt"></i>
-                    <span className="d-none d-lg-inline ms-2">Salir</span>
+                    <i className="fas fa-chevron-down ms-1" style={{ fontSize: '0.7rem' }}></i>
                   </button>
+
+                  {isClienteDropdownOpen && (
+                    <div className="cliente-dropdown">
+                      <div className="cliente-dropdown-header">
+                        <div className="cliente-dropdown-avatar">
+                          <i className="fas fa-user-circle"></i>
+                        </div>
+                        <div>
+                          <div className="cliente-dropdown-name">{cliente?.nombres}</div>
+                          <div className="cliente-dropdown-email">{cliente?.correo}</div>
+                        </div>
+                      </div>
+                      <div className="cliente-dropdown-divider"></div>
+                      <Link to="/mi-perfil" className="cliente-dropdown-item" onClick={() => setIsClienteDropdownOpen(false)}>
+                        <i className="fas fa-user"></i><span>Mi Perfil</span>
+                      </Link>
+                      <Link to="/mi-perfil" className="cliente-dropdown-item" onClick={() => { setIsClienteDropdownOpen(false) }}>
+                        <i className="fas fa-edit"></i><span>Editar Perfil</span>
+                      </Link>
+                      <Link to="/mis-compras" className="cliente-dropdown-item" onClick={() => setIsClienteDropdownOpen(false)}>
+                        <i className="fas fa-shopping-bag"></i><span>Mis Compras</span>
+                      </Link>
+                      <Link to="/cart" className="cliente-dropdown-item" onClick={() => setIsClienteDropdownOpen(false)}>
+                        <i className="fas fa-shopping-cart"></i><span>Mi Carrito</span>
+                      </Link>
+                      <Link to="/shop" className="cliente-dropdown-item" onClick={() => setIsClienteDropdownOpen(false)}>
+                        <i className="fas fa-store"></i><span>Ver Tienda</span>
+                      </Link>
+                      <Link to="/contact" className="cliente-dropdown-item" onClick={() => setIsClienteDropdownOpen(false)}>
+                        <i className="fas fa-headset"></i><span>Soporte</span>
+                      </Link>
+                      <div className="cliente-dropdown-divider"></div>
+                      <button
+                        className="cliente-dropdown-item cliente-dropdown-logout"
+                        onClick={() => { logout(); navigate('/login'); setIsClienteDropdownOpen(false) }}
+                      >
+                        <i className="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 
