@@ -456,6 +456,19 @@
   padding: 0.5rem 1.25rem;
 }
 
+.confirm-delete-modal .crud-modal-footer {
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.confirm-delete-modal .crud-modal-footer .btn {
+  min-width: 140px;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.95rem;
+}
+
 /* Fila inactiva */
 .crud-table tbody tr.row-inactive {
   opacity: 0.55;
