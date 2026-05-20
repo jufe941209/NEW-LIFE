@@ -100,16 +100,6 @@ const FacturaCrud = () => {
     }
   }
 
-  const handleToggleStatus = async (row) => {
-    const isCancelled = row.estado_pago === 'Cancelado'
-    const accion = isCancelled ? 'reactivar (Pendiente)' : 'cancelar'
-    if (!window.confirm(`¿Deseas ${accion} la factura ${getId(row)}?`)) return
-    try {
-      await facturaService.update(getId(row), { ...row, estado_pago: isCancelled ? 'Pendiente' : 'Cancelado' })
-      await load()
-    } catch (e) { alert('Error al cambiar el estado') }
-  }
-
   return (
     <div className="crud-section">
       <CrudTable
@@ -117,14 +107,11 @@ const FacturaCrud = () => {
         columns={columns}
         data={filtered}
         onEdit={openEdit}
-        onToggleStatus={handleToggleStatus}
         onDelete={(row) => setDeleteTarget(row)}
         onCreate={openCreate}
         filterValue={filter}
         onFilterChange={setFilter}
         isLoading={isLoading}
-        statusField="estado_pago"
-        activeValue="Pagado"
       />
       <ConfirmDeleteModal
         show={!!deleteTarget}
