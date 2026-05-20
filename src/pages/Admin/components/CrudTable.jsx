@@ -69,7 +69,7 @@ const CrudTable = ({
                 </tr>
               ) : (
                 data.map((row, index) => {
-                  const isActive = row[statusField] === activeValue
+                  const isActive = onToggleStatus ? row[statusField] === activeValue : true
                   return (
                     <tr
                       key={row.id || row.cedula_adm || row.cedula_cli || row.cedula_dom || index}
@@ -88,13 +88,15 @@ const CrudTable = ({
                         >
                           <i className="fas fa-edit"></i>
                         </button>
-                        <button
-                          className={isActive ? 'crud-deactivate-btn' : 'crud-activate-btn'}
-                          onClick={() => onToggleStatus(row)}
-                          title={isActive ? 'Desactivar' : 'Reactivar'}
-                        >
-                          <i className={`fas ${isActive ? 'fa-ban' : 'fa-check-circle'}`}></i>
-                        </button>
+                        {onToggleStatus && (
+                          <button
+                            className={isActive ? 'crud-deactivate-btn' : 'crud-activate-btn'}
+                            onClick={() => onToggleStatus(row)}
+                            title={isActive ? 'Desactivar' : 'Reactivar'}
+                          >
+                            <i className={`fas ${isActive ? 'fa-ban' : 'fa-check-circle'}`}></i>
+                          </button>
+                        )}
                         {onDelete && (
                           <button
                             className="crud-delete-btn"

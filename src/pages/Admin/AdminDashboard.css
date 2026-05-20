@@ -456,17 +456,231 @@
   padding: 0.5rem 1.25rem;
 }
 
+/* ===== CARD PRODUCTOS POR CATEGORÍA ===== */
+.cat-productos-section {
+  margin-top: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.cat-productos-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a472a;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.cat-productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.cat-card {
+  background: #f8fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  background: linear-gradient(135deg, #1a472a, #2d7a4f);
+  color: #fff;
+}
+
+.cat-card-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cat-card-empty {
+  padding: 0.75rem 1rem;
+  color: #aaa;
+  font-size: 0.85rem;
+  font-style: italic;
+  margin: 0;
+}
+
+.cat-card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.cat-card-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.85rem;
+  gap: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cat-card-item:last-child {
+  border-bottom: none;
+}
+
+.cat-prod-name {
+  font-size: 0.82rem;
+  color: #333;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cat-prod-move {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  max-width: 110px;
+}
+
+.cat-prod-move:focus {
+  outline: none;
+  border-color: #28a745;
+}
+
+.categoria-productos-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  justify-content: center;
+}
+
 .confirm-delete-modal .crud-modal-footer {
+  display: flex;
   justify-content: center;
   gap: 1rem;
   padding: 1.25rem 1.5rem;
   border-top: 1px solid #f3f4f6;
+  flex-wrap: wrap;
 }
 
 .confirm-delete-modal .crud-modal-footer .btn {
   min-width: 140px;
   padding: 0.6rem 1.25rem;
   font-size: 0.95rem;
+}
+
+/* ===== REASSIGN MODAL (Categoria con productos / Admin con clientes) ===== */
+.reassign-modal-body {
+  padding: 1.75rem 1.5rem;
+}
+
+.reassign-modal-icon {
+  width: 68px;
+  height: 68px;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(220, 53, 69, 0.1));
+  border: 2px solid rgba(255, 193, 7, 0.35);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.reassign-modal-icon i {
+  font-size: 1.75rem;
+  color: #e67e22;
+}
+
+.reassign-modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.reassign-modal-desc {
+  color: #555;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.reassign-badges-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: center;
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+}
+
+.reassign-select-label {
+  font-size: 0.88rem;
+  color: #444;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.reassign-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #7b5a00;
+}
+
+.reassign-warning i {
+  margin-top: 0.1rem;
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.reassign-no-target {
+  background: #fff3f3;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.88rem;
+  color: #721c24;
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+.reassign-modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid #f3f4f6;
+  background: #fafafa;
+  border-radius: 0 0 16px 16px;
+}
+
+.reassign-modal-footer .btn {
+  min-width: 145px;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.93rem;
+  font-weight: 600;
 }
 
 /* Fila inactiva */
