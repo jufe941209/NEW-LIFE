@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import domiciliarioService from '../../../services/domiciliarioService'
 import CrudTable from './CrudTable'
-import ConfirmDeleteModal from './ConfirmDeleteModal'
 
-const EMPTY_FORM = { cedula_dom: '', nombres: '', telefono: '', zona: '', estado: 'Activo' }
+const DISPONIBILIDAD = ['Disponible', 'No disponible']
+const EMPTY_FORM = { cedula_domi: '', nombres: '', telefono: '', disponibilidad: 'Disponible', estado: 'Activo' }
 
 const DomiciliarioCrud = () => {
   const [data, setData] = useState([])
@@ -14,8 +14,6 @@ const DomiciliarioCrud = () => {
   const [form, setForm] = useState(EMPTY_FORM)
   const [formError, setFormError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
-  const [deleteTarget, setDeleteTarget] = useState(null)
-  const [isDeleting, setIsDeleting] = useState(false)
 
   const load = async () => {
     setIsLoading(true)
@@ -27,24 +25,47 @@ const DomiciliarioCrud = () => {
 
   useEffect(() => { load() }, [])
 
-  const getId = (item) => item.cedula_dom || item.id
+  const getId = (item) => item.cedula_domi
 
   const filtered = data.filter(item =>
     (item.nombres || '').toLowerCase().includes(filter.toLowerCase()) ||
-    (item.zona || '').toLowerCase().includes(filter.toLowerCase()) ||
-    (item.cedula_dom || '').toString().includes(filter)
+    (item.disponibilidad || '').toLowerCase().includes(filter.toLowerCase()) ||
+    (item.cedula_domi || '').toString().includes(filter)
   )
 
   const columns = [
-    { key: 'cedula_dom', label: 'Cédula', render: (_, row) => getId(row) },
+    { key: 'cedula_domi', label: 'Cédula' },
     { key: 'nombres', label: 'Nombres' },
     { key: 'telefono', label: 'Teléfono' },
-    { key: 'zona', label: 'Zona' },
-    { key: 'estado', label: 'Estado', render: (val) => <span className={`status-badge ${val === 'Activo' ? 'active' : 'inactive'}`}>{val}</span> }
+    {
+      key: 'disponibilidad', label: 'Disponibilidad',
+      render: (val) => (
+        <span className={`status-badge ${val === 'Disponible' ? 'active' : 'inactive'}`}>{val}</span>
+      )
+    },
+    {
+      key: 'fecha_registro', label: 'Desde',
+      render: (val) => val ? new Date(val).toLocaleDateString('es-CO') : '-'
+    },
+    {
+      key: 'estado', label: 'Estado',
+      render: (val) => <span className={`status-badge ${val === 'Activo' ? 'active' : 'inactive'}`}>{val}</span>
+    }
   ]
 
   const openCreate = () => { setEditingItem(null); setForm(EMPTY_FORM); setFormError(''); setShowModal(true) }
-  const openEdit = (row) => { setEditingItem(row); setForm({ cedula_dom: row.cedula_dom || '', nombres: row.nombres || '', telefono: row.telefono || '', zona: row.zona || '', estado: row.estado || 'Activo' }); setFormError(''); setShowModal(true) }
+  const openEdit = (row) => {
+    setEditingItem(row)
+    setForm({
+      cedula_domi: row.cedula_domi || '',
+      nombres: row.nombres || '',
+      telefono: row.telefono || '',
+      disponibilidad: row.disponibilidad || 'Disponible',
+      estado: row.estado || 'Activo'
+    })
+    setFormError('')
+    setShowModal(true)
+  }
   const closeModal = () => setShowModal(false)
 
   const handleSave = async (e) => {
@@ -52,24 +73,16 @@ const DomiciliarioCrud = () => {
     if (!form.nombres) { setFormError('El nombre es requerido'); return }
     setIsSaving(true)
     try {
-      if (editingItem) await domiciliarioService.update(getId(editingItem), form)
-      else await domiciliarioService.create(form)
-      await load(); closeModal()
-    } catch (e) { setFormError('Error al guardar. Intenta nuevamente.') } finally { setIsSaving(false) }
-  }
-
-  const handleDelete = async () => {
-    setIsDeleting(true)
-    try {
-      await domiciliarioService.remove(getId(deleteTarget))
-      setDeleteTarget(null)
+      if (editingItem) {
+        await domiciliarioService.update(getId(editingItem), form)
+      } else {
+        await domiciliarioService.create(form)
+      }
       await load()
+      closeModal()
     } catch (e) {
-      const msg = e?.response?.data?.Message || 'No se pudo eliminar. Puede tener registros asociados.'
-      alert(msg)
-    } finally {
-      setIsDeleting(false)
-    }
+      setFormError(e?.response?.data?.Message || 'Error al guardar. Intenta nuevamente.')
+    } finally { setIsSaving(false) }
   }
 
   const handleToggleStatus = async (row) => {
@@ -84,8 +97,18 @@ const DomiciliarioCrud = () => {
 
   return (
     <div className="crud-section">
-      <CrudTable title="Domiciliarios" columns={columns} data={filtered} onEdit={openEdit} onToggleStatus={handleToggleStatus} onDelete={(row) => setDeleteTarget(row)} onCreate={openCreate} filterValue={filter} onFilterChange={setFilter} isLoading={isLoading} />
-      <ConfirmDeleteModal show={!!deleteTarget} itemName={deleteTarget?.nombres || deleteTarget?.cedula_dom} isDeleting={isDeleting} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} />
+      <CrudTable
+        title="Domiciliarios"
+        columns={columns}
+        data={filtered}
+        onEdit={openEdit}
+        onToggleStatus={handleToggleStatus}
+        onCreate={openCreate}
+        filterValue={filter}
+        onFilterChange={setFilter}
+        isLoading={isLoading}
+      />
+
       {showModal && (
         <div className="crud-modal-overlay" onClick={closeModal}>
           <div className="crud-modal" onClick={e => e.stopPropagation()}>
@@ -97,19 +120,38 @@ const DomiciliarioCrud = () => {
               {formError && <div className="alert alert-danger py-2">{formError}</div>}
               <div className="form-group mb-3">
                 <label className="form-label">Cédula</label>
-                <input className="form-control" value={form.cedula_dom} onChange={e => setForm(p => ({ ...p, cedula_dom: e.target.value }))} disabled={!!editingItem} placeholder="12345678" />
+                <input
+                  className="form-control"
+                  value={form.cedula_domi}
+                  onChange={e => setForm(p => ({ ...p, cedula_domi: e.target.value }))}
+                  disabled={!!editingItem}
+                  placeholder="1070809001"
+                />
               </div>
               <div className="form-group mb-3">
                 <label className="form-label">Nombres *</label>
-                <input className="form-control" value={form.nombres} onChange={e => setForm(p => ({ ...p, nombres: e.target.value }))} placeholder="Juan Pérez" required />
+                <input
+                  className="form-control"
+                  value={form.nombres}
+                  onChange={e => setForm(p => ({ ...p, nombres: e.target.value }))}
+                  placeholder="Carlos Ramírez"
+                  required
+                />
               </div>
               <div className="form-group mb-3">
                 <label className="form-label">Teléfono</label>
-                <input className="form-control" value={form.telefono} onChange={e => setForm(p => ({ ...p, telefono: e.target.value }))} placeholder="3001234567" />
+                <input
+                  className="form-control"
+                  value={form.telefono}
+                  onChange={e => setForm(p => ({ ...p, telefono: e.target.value }))}
+                  placeholder="3201112233"
+                />
               </div>
               <div className="form-group mb-3">
-                <label className="form-label">Zona</label>
-                <input className="form-control" value={form.zona} onChange={e => setForm(p => ({ ...p, zona: e.target.value }))} placeholder="Norte, Sur, Centro..." />
+                <label className="form-label">Disponibilidad</label>
+                <select className="form-select" value={form.disponibilidad} onChange={e => setForm(p => ({ ...p, disponibilidad: e.target.value }))}>
+                  {DISPONIBILIDAD.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
               </div>
               <div className="form-group mb-4">
                 <label className="form-label">Estado</label>
@@ -121,7 +163,10 @@ const DomiciliarioCrud = () => {
               <div className="crud-modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancelar</button>
                 <button type="submit" className="btn btn-success" disabled={isSaving}>
-                  {isSaving ? <><span className="spinner-border spinner-border-sm me-2"></span>Guardando...</> : <><i className="fas fa-save me-2"></i>Guardar</>}
+                  {isSaving
+                    ? <><span className="spinner-border spinner-border-sm me-2"></span>Guardando...</>
+                    : <><i className="fas fa-save me-2"></i>Guardar</>
+                  }
                 </button>
               </div>
             </form>
