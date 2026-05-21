@@ -9,10 +9,10 @@ import './ResponsableDashboard.css'
 const ESTADOS = ['Pendiente', 'En camino', 'Entregado', 'Cancelado']
 
 const estadoMeta = {
-  Pendiente:  { color: '#6b7280', bg: '#f3f4f6', icon: 'fa-clock' },
-  'En camino':{ color: '#3b82f6', bg: '#eff6ff', icon: 'fa-truck' },
-  Entregado:  { color: '#22c55e', bg: '#f0fdf4', icon: 'fa-check-circle' },
-  Cancelado:  { color: '#ef4444', bg: '#fff5f5', icon: 'fa-times-circle' },
+  Pendiente:   { color: '#6b7280', bg: '#f3f4f6', icon: 'fa-clock' },
+  'En camino': { color: '#3b82f6', bg: '#eff6ff', icon: 'fa-truck' },
+  Entregado:   { color: '#22c55e', bg: '#f0fdf4', icon: 'fa-check-circle' },
+  Cancelado:   { color: '#ef4444', bg: '#fff5f5', icon: 'fa-times-circle' },
 }
 
 const EstadoBadge = ({ estado }) => {
@@ -36,6 +36,10 @@ const ResponsableDashboard = () => {
   const [filter, setFilter] = useState('')
   const [filterEstado, setFilterEstado] = useState('')
 
+  // Modal para asignar domiciliario obligatorio
+  const [assignModal, setAssignModal] = useState(null) // { despacho, nuevoEstado }
+  const [selectedDomi, setSelectedDomi] = useState('')
+
   const load = async () => {
     setLoading(true)
     try {
@@ -44,9 +48,36 @@ const ResponsableDashboard = () => {
         domiciliarioService.getAll().catch(() => []),
         facturaService.getAll().catch(() => []),
       ])
-      setDespachos(Array.isArray(d) ? d : [])
-      setDomiciliarios(Array.isArray(dom) ? dom : [])
-      setFacturas(Array.isArray(fac) ? fac : [])
+      const dlist = Array.isArray(d) ? d : []
+      const domList = Array.isArray(dom) ? dom : []
+      const facList = Array.isArray(fac) ? fac : []
+
+      // Auto-fix: despachos "En camino"/"Entregado" sin domiciliario asignado
+      const sinDomi = dlist.filter(x =>
+        (x.estado === 'En camino' || x.estado === 'Entregado') && !x.cc_domiciliario
+      )
+      if (sinDomi.length > 0) {
+        const primerDomi = domList.find(x => x.disponibilidad === 'Disponible' && x.estado !== 'Inactivo')
+        if (primerDomi) {
+          await Promise.all(
+            sinDomi.map(x =>
+              despachoService.update(x.numero_despacho, {
+                ...x,
+                cc_domiciliario: primerDomi.cedula_domi,
+              }).catch(() => {})
+            )
+          )
+          const fixed = await despachoService.getAll().catch(() => dlist)
+          setDespachos(Array.isArray(fixed) ? fixed : dlist)
+          setDomiciliarios(domList)
+          setFacturas(facList)
+          return
+        }
+      }
+
+      setDespachos(dlist)
+      setDomiciliarios(domList)
+      setFacturas(facList)
     } finally { setLoading(false) }
   }
 
@@ -57,12 +88,24 @@ const ResponsableDashboard = () => {
   const getNombreDomi = (cc) => domiciliarios.find(d => d.cedula_domi === cc)?.nombres || cc || '—'
   const getFactura = (num) => facturas.find(f => f.numero_factura === num)
 
-  const changeEstado = async (despacho, nuevoEstado) => {
+  const domiDisponibles = domiciliarios.filter(d => d.disponibilidad === 'Disponible' && d.estado !== 'Inactivo')
+
+  const changeEstado = async (despacho, nuevoEstado, domiOverride = null) => {
+    const domiCC = domiOverride || despacho.cc_domiciliario
+
+    // Domiciliario obligatorio para En camino y Entregado
+    if ((nuevoEstado === 'En camino' || nuevoEstado === 'Entregado') && !domiCC) {
+      setAssignModal({ despacho, nuevoEstado })
+      setSelectedDomi(domiDisponibles[0]?.cedula_domi || '')
+      return
+    }
+
     setActionLoading(despacho.numero_despacho)
     try {
       const now = new Date().toISOString()
       const payload = {
         ...despacho,
+        cc_domiciliario: domiCC,
         estado: nuevoEstado,
         fecha_aprobacion: nuevoEstado === 'En camino'
           ? (despacho.fecha_aprobacion || now)
@@ -74,6 +117,13 @@ const ResponsableDashboard = () => {
     } catch (e) {
       alert(e?.response?.data?.Message || 'Error al actualizar el estado')
     } finally { setActionLoading(null) }
+  }
+
+  const confirmAssignAndApprove = async () => {
+    if (!selectedDomi || !assignModal) return
+    const { despacho, nuevoEstado } = assignModal
+    setAssignModal(null)
+    await changeEstado(despacho, nuevoEstado, selectedDomi)
   }
 
   const fmtDate = (val) => val ? new Date(val).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -88,8 +138,8 @@ const ResponsableDashboard = () => {
   }
 
   const filteredDespachos = despachos.filter(d => {
-    const matchFilter = !filter || d.numero_factura?.includes(filter) || String(d.numero_despacho).includes(filter)
-    const matchEstado = !filterEstado || d.estado === filterEstado
+    const matchFilter = !filter || (d.numero_factura || '').includes(filter) || String(d.numero_despacho).includes(filter)
+    const matchEstado = !filterEstado || (d.estado || 'Pendiente') === filterEstado
     return matchFilter && matchEstado
   })
 
@@ -153,7 +203,6 @@ const ResponsableDashboard = () => {
         <main className="resp-main">
           {section === 'dashboard' && (
             <div className="resp-dashboard-home">
-              {/* Stats */}
               <div className="resp-stats-grid">
                 {Object.entries(counts).map(([estado, count]) => {
                   const m = estadoMeta[estado]
@@ -176,7 +225,6 @@ const ResponsableDashboard = () => {
                 })}
               </div>
 
-              {/* Mis despachos recientes */}
               <div className="resp-section-card">
                 <div className="resp-section-card-header">
                   <h4><i className="fas fa-user-check me-2"></i>Mis despachos asignados</h4>
@@ -217,7 +265,6 @@ const ResponsableDashboard = () => {
 
           {section === 'despachos' && (
             <div className="resp-despachos-section">
-              {/* Filtros */}
               <div className="resp-filters">
                 <div className="resp-search-wrap">
                   <i className="fas fa-search"></i>
@@ -254,6 +301,7 @@ const ResponsableDashboard = () => {
                       const factura = getFactura(d.numero_factura)
                       const isMe = d.cc_responsable === responsable?.cedula_resp
                       const busy = actionLoading === d.numero_despacho
+                      const sinDomiciliario = !d.cc_domiciliario
                       return (
                         <div key={d.numero_despacho} className={`resp-despacho-card ${isMe ? 'resp-despacho-mine' : ''}`}>
                           <div className="resp-desp-header" style={{ borderColor: m.color }}>
@@ -284,7 +332,13 @@ const ResponsableDashboard = () => {
                             )}
                             <div className="resp-desp-row">
                               <i className="fas fa-motorcycle me-2 text-muted"></i>
-                              <span>Domiciliario: <strong>{getNombreDomi(d.cc_domiciliario)}</strong></span>
+                              {sinDomiciliario ? (
+                                <span style={{ color: '#f59e0b', fontWeight: 600 }}>
+                                  <i className="fas fa-exclamation-triangle me-1"></i>Sin domiciliario asignado
+                                </span>
+                              ) : (
+                                <span>Domiciliario: <strong>{getNombreDomi(d.cc_domiciliario)}</strong></span>
+                              )}
                             </div>
                             <div className="resp-desp-dates">
                               <div className="resp-desp-date-item">
@@ -304,7 +358,6 @@ const ResponsableDashboard = () => {
                             </div>
                           </div>
 
-                          {/* Acciones de estado */}
                           {d.estado !== 'Entregado' && d.estado !== 'Cancelado' && (
                             <div className="resp-desp-actions">
                               {(!d.estado || d.estado === 'Pendiente') && (
@@ -313,8 +366,10 @@ const ResponsableDashboard = () => {
                                   onClick={() => changeEstado(d, 'En camino')}
                                   disabled={busy}
                                 >
-                                  {busy ? <span className="spinner-border spinner-border-sm"></span>
-                                    : <><i className="fas fa-truck me-1"></i>Aprobar y despachar</>}
+                                  {busy
+                                    ? <span className="spinner-border spinner-border-sm"></span>
+                                    : <><i className="fas fa-truck me-1"></i>Aprobar y despachar</>
+                                  }
                                 </button>
                               )}
                               {d.estado === 'En camino' && (
@@ -323,8 +378,10 @@ const ResponsableDashboard = () => {
                                   onClick={() => changeEstado(d, 'Entregado')}
                                   disabled={busy}
                                 >
-                                  {busy ? <span className="spinner-border spinner-border-sm"></span>
-                                    : <><i className="fas fa-check me-1"></i>Marcar entregado</>}
+                                  {busy
+                                    ? <span className="spinner-border spinner-border-sm"></span>
+                                    : <><i className="fas fa-check me-1"></i>Marcar entregado</>
+                                  }
                                 </button>
                               )}
                               <button
@@ -353,6 +410,68 @@ const ResponsableDashboard = () => {
           )}
         </main>
       </div>
+
+      {/* Modal: asignar domiciliario obligatorio */}
+      {assignModal && (
+        <div className="resp-assign-overlay" onClick={() => setAssignModal(null)}>
+          <div className="resp-assign-modal" onClick={e => e.stopPropagation()}>
+            <div className="resp-assign-header">
+              <div className="resp-assign-icon">
+                <i className="fas fa-motorcycle"></i>
+              </div>
+              <div>
+                <h3>Asignar domiciliario</h3>
+                <p>Despacho <strong>#{assignModal.despacho.numero_despacho}</strong></p>
+              </div>
+              <button className="resp-assign-close" onClick={() => setAssignModal(null)}>
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div className="resp-assign-body">
+              <div className="resp-assign-alert">
+                <i className="fas fa-exclamation-triangle me-2"></i>
+                Para aprobar y despachar es obligatorio asignar un domiciliario.
+              </div>
+
+              <label className="resp-assign-label">Seleccionar domiciliario disponible</label>
+              {domiDisponibles.length === 0 ? (
+                <p className="resp-assign-empty">
+                  <i className="fas fa-times-circle me-2"></i>
+                  No hay domiciliarios disponibles en este momento.
+                </p>
+              ) : (
+                <select
+                  className="resp-assign-select"
+                  value={selectedDomi}
+                  onChange={e => setSelectedDomi(e.target.value)}
+                >
+                  <option value="">Seleccionar...</option>
+                  {domiDisponibles.map(d => (
+                    <option key={d.cedula_domi} value={d.cedula_domi}>
+                      {d.nombres} — Cédula: {d.cedula_domi}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+
+            <div className="resp-assign-footer">
+              <button className="resp-assign-btn-cancel" onClick={() => setAssignModal(null)}>
+                Cancelar
+              </button>
+              <button
+                className="resp-assign-btn-confirm"
+                onClick={confirmAssignAndApprove}
+                disabled={!selectedDomi}
+              >
+                <i className="fas fa-truck me-1"></i>
+                {assignModal.nuevoEstado === 'En camino' ? 'Aprobar y despachar' : 'Marcar entregado'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -87,11 +87,10 @@ const ResponsableCrud = () => {
   }
 
   const handleToggleStatus = async (item) => {
+    const isActive = item.estado === 'Activo'
+    if (!window.confirm(`¿Deseas ${isActive ? 'desactivar' : 'reactivar'} a "${item.nombres}"?`)) return
     try {
-      await responsableService.update(getId(item), {
-        ...item,
-        estado: item.estado === 'Activo' ? 'Inactivo' : 'Activo'
-      })
+      await responsableService.update(getId(item), { ...item, estado: isActive ? 'Inactivo' : 'Activo' })
       await load()
     } catch { alert('Error al cambiar estado') }
   }
@@ -109,42 +108,41 @@ const ResponsableCrud = () => {
   }
 
   return (
-    <div className="crud-container">
+    <div className="crud-section">
       <CrudTable
         title="Responsables"
         data={filtered}
         columns={columns}
         isLoading={isLoading}
-        filter={filter}
+        filterValue={filter}
         onFilterChange={setFilter}
-        onAdd={openCreate}
+        onCreate={openCreate}
         onEdit={openEdit}
         onDelete={(item) => setDeleteTarget(item)}
         onToggleStatus={handleToggleStatus}
-        getId={getId}
         statusField="estado"
         activeValue="Activo"
-        filterPlaceholder="Buscar por nombre, cédula o correo..."
       />
 
       {/* Modal crear / editar */}
       {showModal && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-box" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{editingItem ? 'Editar Responsable' : 'Nuevo Responsable'}</h3>
-              <button className="modal-close" onClick={closeModal}><i className="fas fa-times"></i></button>
+        <div className="crud-modal-overlay" onClick={closeModal}>
+          <div className="crud-modal" onClick={e => e.stopPropagation()}>
+            <div className="crud-modal-header">
+              <h4>{editingItem ? 'Editar Responsable' : 'Nuevo Responsable'}</h4>
+              <button className="crud-modal-close" onClick={closeModal}><i className="fas fa-times"></i></button>
             </div>
-            <form onSubmit={handleSave} className="modal-form">
+            <form onSubmit={handleSave} className="crud-modal-body">
               {formError && (
-                <div className="form-error-msg">
+                <div className="alert alert-danger py-2 mb-3">
                   <i className="fas fa-exclamation-circle me-2"></i>{formError}
                 </div>
               )}
 
-              <div className="form-group">
-                <label>Cédula *</label>
+              <div className="form-group mb-3">
+                <label className="form-label">Cédula *</label>
                 <input
+                  className="form-control"
                   type="text"
                   value={form.cedula_resp}
                   onChange={e => setForm(p => ({ ...p, cedula_resp: e.target.value }))}
@@ -154,9 +152,10 @@ const ResponsableCrud = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Nombres *</label>
+              <div className="form-group mb-3">
+                <label className="form-label">Nombres *</label>
                 <input
+                  className="form-control"
                   type="text"
                   value={form.nombres}
                   onChange={e => setForm(p => ({ ...p, nombres: e.target.value }))}
@@ -165,9 +164,10 @@ const ResponsableCrud = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Teléfono</label>
+              <div className="form-group mb-3">
+                <label className="form-label">Teléfono</label>
                 <input
+                  className="form-control"
                   type="text"
                   value={form.telefono}
                   onChange={e => setForm(p => ({ ...p, telefono: e.target.value }))}
@@ -175,9 +175,10 @@ const ResponsableCrud = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Correo *</label>
+              <div className="form-group mb-3">
+                <label className="form-label">Correo *</label>
                 <input
+                  className="form-control"
                   type="email"
                   value={form.correo}
                   onChange={e => setForm(p => ({ ...p, correo: e.target.value }))}
@@ -186,17 +187,24 @@ const ResponsableCrud = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Estado</label>
-                <select value={form.estado} onChange={e => setForm(p => ({ ...p, estado: e.target.value }))}>
+              <div className="form-group mb-4">
+                <label className="form-label">Estado</label>
+                <select
+                  className="form-select"
+                  value={form.estado}
+                  onChange={e => setForm(p => ({ ...p, estado: e.target.value }))}
+                >
                   {ESTADOS.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
 
-              <div className="modal-footer">
-                <button type="button" className="btn-secondary" onClick={closeModal}>Cancelar</button>
-                <button type="submit" className="btn-primary" disabled={isSaving}>
-                  {isSaving ? <><span className="spinner-border spinner-border-sm me-2"></span>Guardando...</> : 'Guardar'}
+              <div className="crud-modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancelar</button>
+                <button type="submit" className="btn btn-success" disabled={isSaving}>
+                  {isSaving
+                    ? <><span className="spinner-border spinner-border-sm me-2"></span>Guardando...</>
+                    : <><i className="fas fa-save me-2"></i>Guardar</>
+                  }
                 </button>
               </div>
             </form>
@@ -206,30 +214,24 @@ const ResponsableCrud = () => {
 
       {/* Modal confirmar eliminación */}
       {deleteTarget && (
-        <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
-          <div className="modal-box modal-sm" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Eliminar Responsable</h3>
-              <button className="modal-close" onClick={() => setDeleteTarget(null)}><i className="fas fa-times"></i></button>
+        <div className="crud-modal-overlay" onClick={() => setDeleteTarget(null)}>
+          <div className="crud-modal" style={{ maxWidth: 440 }} onClick={e => e.stopPropagation()}>
+            <div className="crud-modal-header">
+              <h4><i className="fas fa-trash-alt me-2 text-danger"></i>Eliminar Responsable</h4>
+              <button className="crud-modal-close" onClick={() => setDeleteTarget(null)}><i className="fas fa-times"></i></button>
             </div>
-            <div style={{ padding: '1.25rem' }}>
-              <p style={{ color: '#475569', marginBottom: '0.5rem' }}>
-                ¿Estás seguro de que deseas eliminar al responsable
-              </p>
-              <p style={{ fontWeight: 700, color: '#0f172a', marginBottom: '1.5rem' }}>
+            <div className="crud-modal-body">
+              <p className="mb-1" style={{ color: '#475569' }}>¿Estás seguro de eliminar al responsable</p>
+              <p className="mb-3" style={{ fontWeight: 700, color: '#0f172a' }}>
                 {deleteTarget.nombres} ({deleteTarget.cedula_resp})?
               </p>
-              <p style={{ fontSize: '0.85rem', color: '#ef4444', marginBottom: '1.5rem' }}>
-                <i className="fas fa-exclamation-triangle me-1"></i>
+              <div className="alert alert-warning py-2 mb-4" style={{ fontSize: '0.85rem' }}>
+                <i className="fas fa-exclamation-triangle me-2"></i>
                 Esta acción no se puede deshacer.
-              </p>
-              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-                <button className="btn-secondary" onClick={() => setDeleteTarget(null)}>Cancelar</button>
-                <button
-                  className="btn-danger"
-                  onClick={handleDelete}
-                  disabled={isDeleting}
-                >
+              </div>
+              <div className="crud-modal-footer">
+                <button className="btn btn-secondary" onClick={() => setDeleteTarget(null)}>Cancelar</button>
+                <button className="btn btn-danger" onClick={handleDelete} disabled={isDeleting}>
                   {isDeleting
                     ? <><span className="spinner-border spinner-border-sm me-2"></span>Eliminando...</>
                     : <><i className="fas fa-trash me-1"></i>Eliminar</>
