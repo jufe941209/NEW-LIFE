@@ -2,18 +2,17 @@ import React, { useState } from 'react'
 import { Input, Button } from '../../atoms'
 import './ProductFilters.css'
 
-/**
- * ProductFilters - Organismo
- * Panel de filtros para productos
- */
-const ProductFilters = ({ 
+const ProductFilters = ({
   onFilterChange,
   onSearch,
   searchTerm = '',
+  categorias = [],
+  tipos = [],
   className = ''
 }) => {
   const [filters, setFilters] = useState({
     category: '',
+    tipoProducto: '',
     minPrice: '',
     maxPrice: '',
     sortBy: 'relevance'
@@ -21,35 +20,23 @@ const ProductFilters = ({
   const [showFilters, setShowFilters] = useState(false)
 
   const handleFilterChange = (name, value) => {
-    const newFilters = {
-      ...filters,
-      [name]: value
-    }
+    const newFilters = { ...filters, [name]: value }
     setFilters(newFilters)
-    if (onFilterChange) {
-      onFilterChange(newFilters)
-    }
+    if (onFilterChange) onFilterChange(newFilters)
   }
 
   const handleSearch = (e) => {
     e.preventDefault()
-    if (onSearch) {
-      onSearch(searchTerm)
-    }
+    if (onSearch) onSearch(searchTerm)
   }
 
   const clearFilters = () => {
-    const clearedFilters = {
-      category: '',
-      minPrice: '',
-      maxPrice: '',
-      sortBy: 'relevance'
-    }
-    setFilters(clearedFilters)
-    if (onFilterChange) {
-      onFilterChange(clearedFilters)
-    }
+    const cleared = { category: '', tipoProducto: '', minPrice: '', maxPrice: '', sortBy: 'relevance' }
+    setFilters(cleared)
+    if (onFilterChange) onFilterChange(cleared)
   }
+
+  const hasActiveFilters = filters.category || filters.tipoProducto || filters.minPrice || filters.maxPrice || filters.sortBy !== 'relevance'
 
   return (
     <div className={`product-filters ${className}`}>
@@ -60,11 +47,7 @@ const ProductFilters = ({
             type="text"
             placeholder="Buscar productos..."
             value={searchTerm}
-            onChange={(e) => {
-              if (onSearch) {
-                onSearch(e.target.value)
-              }
-            }}
+            onChange={(e) => { if (onSearch) onSearch(e.target.value) }}
             icon="fas fa-search"
             iconPosition="left"
             className="search-input"
@@ -90,6 +73,7 @@ const ProductFilters = ({
 
       {/* Filters Panel */}
       <div className={`filters-panel ${showFilters ? 'show' : ''}`}>
+
         {/* Sort By */}
         <div className="filter-group">
           <label className="filter-label">
@@ -109,7 +93,7 @@ const ProductFilters = ({
           </select>
         </div>
 
-        {/* Category Filter */}
+        {/* Category Filter — dinámico desde API */}
         <div className="filter-group">
           <label className="filter-label">
             <i className="fas fa-tags me-2"></i>
@@ -121,11 +105,32 @@ const ProductFilters = ({
             onChange={(e) => handleFilterChange('category', e.target.value)}
           >
             <option value="">Todas las categorías</option>
-            <option value="platos">Platos</option>
-            <option value="vasos">Vasos</option>
-            <option value="cubiertos">Cubiertos</option>
-            <option value="recipientes">Recipientes</option>
-            <option value="germinables">Germinables</option>
+            {categorias.map(cat => (
+              <option key={cat.numero_categoria} value={cat.nombre.toLowerCase()}>
+                {cat.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Tipo de Producto — dinámico desde API */}
+        <div className="filter-group">
+          <label className="filter-label">
+            <i className="fas fa-cubes me-2"></i>
+            Tipo de producto
+          </label>
+          <select
+            className="form-select filter-select"
+            value={filters.tipoProducto}
+            onChange={(e) => handleFilterChange('tipoProducto', e.target.value)}
+            disabled={tipos.length === 0}
+          >
+            <option value="">{tipos.length === 0 ? 'Cargando tipos...' : 'Todos los tipos'}</option>
+            {tipos.map(tp => (
+              <option key={tp.id_tipo_producto} value={tp.id_tipo_producto}>
+                {tp.nombre}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -155,7 +160,7 @@ const ProductFilters = ({
         </div>
 
         {/* Clear Filters */}
-        {(filters.category || filters.minPrice || filters.maxPrice || filters.sortBy !== 'relevance') && (
+        {hasActiveFilters && (
           <div className="filter-group">
             <Button
               variant="outline-danger"
@@ -173,4 +178,3 @@ const ProductFilters = ({
 }
 
 export default ProductFilters
-

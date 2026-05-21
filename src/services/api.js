@@ -4,7 +4,8 @@ const BASE_URL = 'https://newlife-api-agfzb6a7bdb5b7bq.eastus-01.azurewebsites.n
 
 const api = axios.create({
   baseURL: BASE_URL,
-  headers: { 'Content-Type': 'application/json' }
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 20000
 })
 
 // Interceptor para manejar errores globalmente

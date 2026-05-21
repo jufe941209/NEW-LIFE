@@ -3,6 +3,7 @@ import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { ProductGrid, ProductFilters, PageHeader } from '../../components/organisms'
 import productoService from '../../services/productoService'
 import categoriaService from '../../services/categoriaService'
+import tipoProductoService from '../../services/tipoProductoService'
 import { useCart } from '../../context/CartContext'
 import './Shop.css'
 
@@ -12,13 +13,14 @@ const Shop = () => {
   const { addItem, itemCount } = useCart()
 
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
-  const [filters, setFilters] = useState({ category: '', minPrice: '', maxPrice: '', sortBy: 'relevance' })
+  const [filters, setFilters] = useState({ category: '', tipoProducto: '', minPrice: '', maxPrice: '', sortBy: 'relevance' })
   const [viewMode, setViewMode] = useState('grid')
   const [currentPage, setCurrentPage] = useState(1)
   const productsPerPage = 12
 
   const [allProducts, setAllProducts] = useState([])
   const [categorias, setCategorias] = useState([])
+  const [tipos, setTipos] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [addedId, setAddedId] = useState(null)
 
@@ -26,13 +28,17 @@ const Shop = () => {
     const loadData = async () => {
       setIsLoading(true)
       try {
-        const [prods, cats] = await Promise.all([
+        const [prods, cats, tps] = await Promise.all([
           productoService.getAll().catch(() => []),
           categoriaService.getAll().catch(() => []),
+          tipoProductoService.getAll().catch(() => []),
         ])
-        setCategorias(Array.isArray(cats) ? cats : [])
+        const catsArr = Array.isArray(cats) ? cats : []
+        const tpsArr = Array.isArray(tps) ? tps : []
+        setCategorias(catsArr)
+        setTipos(tpsArr)
         const activos = (Array.isArray(prods) ? prods : [])
-          .filter(p => p.estado?.toLowerCase() === 'activo')
+          .filter(p => !p.estado || p.estado.toLowerCase() === 'activo')
           .map(p => ({
             id: p.codigo_prod,
             codigo_prod: p.codigo_prod,
@@ -42,7 +48,8 @@ const Shop = () => {
             originalPrice: Number(p.precio),
             discount: 0,
             image: p.img_url || '/img/Imagen1.png',
-            category: (cats || []).find(c => c.numero_categoria === p.numero_categoria)?.nombre?.toLowerCase() || '',
+            category: catsArr.find(c => c.numero_categoria === p.numero_categoria)?.nombre?.toLowerCase() || '',
+            id_tipo_producto: p.id_tipo_producto,
             stock: p.stock_real,
             badge: p.stock_real === 0 ? 'Agotado' : (p.stock_real > 0 && p.stock_min > 0 && p.stock_real <= p.stock_min) ? 'Stock bajo' : undefined,
           }))
@@ -61,6 +68,7 @@ const Shop = () => {
       filtered = filtered.filter(p => p.name.toLowerCase().includes(term) || p.description.toLowerCase().includes(term))
     }
     if (filters.category) filtered = filtered.filter(p => p.category === filters.category)
+    if (filters.tipoProducto) filtered = filtered.filter(p => p.id_tipo_producto === Number(filters.tipoProducto))
     if (filters.minPrice) filtered = filtered.filter(p => p.price >= Number(filters.minPrice))
     if (filters.maxPrice) filtered = filtered.filter(p => p.price <= Number(filters.maxPrice))
     switch (filters.sortBy) {
@@ -135,7 +143,13 @@ const Shop = () => {
 
           <div className="row">
             <div className="col-lg-3 mb-4 mb-lg-0">
-              <ProductFilters onFilterChange={setFilters} onSearch={setSearchTerm} searchTerm={searchTerm} />
+              <ProductFilters
+                onFilterChange={setFilters}
+                onSearch={setSearchTerm}
+                searchTerm={searchTerm}
+                categorias={categorias}
+                tipos={tipos}
+              />
             </div>
 
             <div className="col-lg-9">

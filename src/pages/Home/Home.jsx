@@ -22,7 +22,7 @@ const Home = () => {
     productoService.getAll()
       .then(data => {
         const list = (Array.isArray(data) ? data : [])
-          .filter(p => p.estado?.toLowerCase() === 'activo')
+          .filter(p => !p.estado || p.estado.toLowerCase() === 'activo')
           .map(p => ({
             id: p.codigo_prod,
             name: p.nombres,

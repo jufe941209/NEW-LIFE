@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe\" \"C:\\\\Users\\\\Julian Fuentes Clavi\\\\Desktop\\\\NewLife\\\\NewLife.csproj\" /p:Configuration=Release /p:DeployOnBuild=true \"/p:PublishProfile=newlife-api - FTP\" /p:VisualStudioVersion=18.0 /verbosity:minimal 2>&1)"
+    ]
+  }
+}
