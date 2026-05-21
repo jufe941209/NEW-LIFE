@@ -57,7 +57,9 @@ const ResponsableDashboard = () => {
         (x.estado === 'En camino' || x.estado === 'Entregado') && !x.cc_domiciliario
       )
       if (sinDomi.length > 0) {
+        // Primero intenta Disponible, si no hay usa cualquier Activo
         const primerDomi = domList.find(x => x.disponibilidad === 'Disponible' && x.estado !== 'Inactivo')
+          || domList.find(x => x.estado !== 'Inactivo')
         if (primerDomi) {
           await Promise.all(
             sinDomi.map(x =>
@@ -123,7 +125,18 @@ const ResponsableDashboard = () => {
     if (!selectedDomi || !assignModal) return
     const { despacho, nuevoEstado } = assignModal
     setAssignModal(null)
-    await changeEstado(despacho, nuevoEstado, selectedDomi)
+    // Si el despacho ya tiene ese estado (solo asignando domiciliario), actualizar directo
+    if (despacho.estado === nuevoEstado) {
+      setActionLoading(despacho.numero_despacho)
+      try {
+        await despachoService.update(despacho.numero_despacho, { ...despacho, cc_domiciliario: selectedDomi })
+        await load()
+      } catch (e) {
+        alert(e?.response?.data?.Message || 'Error al asignar el domiciliario')
+      } finally { setActionLoading(null) }
+    } else {
+      await changeEstado(despacho, nuevoEstado, selectedDomi)
+    }
   }
 
   const fmtDate = (val) => val ? new Date(val).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -360,6 +373,17 @@ const ResponsableDashboard = () => {
 
                           {d.estado !== 'Entregado' && d.estado !== 'Cancelado' && (
                             <div className="resp-desp-actions">
+                              {/* Advertencia si ya está En camino pero sin domiciliario */}
+                              {d.estado === 'En camino' && sinDomiciliario && (
+                                <button
+                                  className="resp-action-btn"
+                                  style={{ background: '#f59e0b', color: '#fff' }}
+                                  onClick={() => { setAssignModal({ despacho: d, nuevoEstado: 'En camino' }); setSelectedDomi(domiDisponibles[0]?.cedula_domi || '') }}
+                                  disabled={busy}
+                                >
+                                  <i className="fas fa-exclamation-triangle me-1"></i>Asignar domiciliario
+                                </button>
+                              )}
                               {(!d.estado || d.estado === 'Pendiente') && (
                                 <button
                                   className="resp-action-btn resp-btn-aprobar"
