@@ -5,6 +5,7 @@ import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 import { CartProvider } from './context/CartContext'
 import ProtectedResponsableRoute from './components/ProtectedResponsableRoute'
 import { ResponsableLogin, ResponsableDashboard } from './pages/Responsable'
+import ScrollToTop from './components/ScrollToTop'
 
 // Pages - from new subfolder structure
 import Home from './pages/Home'
@@ -38,6 +39,7 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
+      <ScrollToTop />
       <Routes>
         {/* Admin route - SIN el Layout público (no Navbar/Footer) */}
         <Route
