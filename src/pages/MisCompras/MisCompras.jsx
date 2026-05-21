@@ -1,20 +1,30 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import facturaService from '../../services/facturaService'
+import detalleFacturaService from '../../services/detalleFacturaService'
+import productoService from '../../services/productoService'
 import { PageHeader } from '../../components/organisms'
 import './MisCompras.css'
 
 const estadoConfig = {
-  Pagado:    { class: 'pagado',    icon: 'fa-check-circle',     label: 'Pagado' },
-  Pendiente: { class: 'pendiente', icon: 'fa-clock',            label: 'Pendiente' },
-  Cancelado: { class: 'cancelado', icon: 'fa-times-circle',     label: 'Cancelado' }
+  Pagado:    { class: 'pagado',    icon: 'fa-check-circle',  label: 'Pagado',    color: '#16a34a' },
+  Pendiente: { class: 'pendiente', icon: 'fa-clock',         label: 'Pendiente', color: '#f59e0b' },
+  Cancelado: { class: 'cancelado', icon: 'fa-times-circle',  label: 'Cancelado', color: '#ef4444' }
 }
+
+const fmtCOP = (n) => Number(n || 0).toLocaleString('es-CO')
 
 const MisCompras = () => {
   const { cliente } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const nuevaFactura = location.state?.nuevaFactura
+
   const [facturas, setFacturas] = useState([])
+  const [detallesMap, setDetallesMap] = useState({}) // { numero_factura: [detalle] }
+  const [productosMap, setProductosMap] = useState({}) // { codigo_prod: producto }
+  const [expandedFactura, setExpandedFactura] = useState(nuevaFactura || null)
   const [isLoading, setIsLoading] = useState(false)
   const [filter, setFilter] = useState('todos')
 
@@ -23,10 +33,27 @@ const MisCompras = () => {
     const load = async () => {
       setIsLoading(true)
       try {
-        const result = await facturaService.getByCliente(cliente.numero_identificacion)
-        setFacturas(result)
-      } catch {
-        setFacturas([])
+        const [facts, prods] = await Promise.all([
+          facturaService.getByCliente(cliente.numero_identificacion).catch(() => []),
+          productoService.getAll().catch(() => []),
+        ])
+        const facList = Array.isArray(facts) ? facts : []
+        const prodList = Array.isArray(prods) ? prods : []
+        setFacturas(facList)
+
+        const prodMap = {}
+        prodList.forEach(p => { prodMap[p.codigo_prod] = p })
+        setProductosMap(prodMap)
+
+        // Cargar detalles de todas las facturas
+        const detMap = {}
+        await Promise.all(
+          facList.map(async f => {
+            const dets = await detalleFacturaService.getByFactura(f.numero_factura).catch(() => [])
+            detMap[f.numero_factura] = Array.isArray(dets) ? dets : []
+          })
+        )
+        setDetallesMap(detMap)
       } finally { setIsLoading(false) }
     }
     load()
@@ -36,13 +63,22 @@ const MisCompras = () => {
 
   const filtered = filter === 'todos'
     ? facturas
-    : facturas.filter(f => f.estado_pago?.toLowerCase() === filter)
+    : facturas.filter(f => (f.estado_pago || 'Pendiente').toLowerCase() === filter)
 
   const stats = {
     total: facturas.length,
     pagadas: facturas.filter(f => f.estado_pago === 'Pagado').length,
     pendientes: facturas.filter(f => f.estado_pago === 'Pendiente').length,
     canceladas: facturas.filter(f => f.estado_pago === 'Cancelado').length
+  }
+
+  const getFacturaTotal = (numero_factura) => {
+    const dets = detallesMap[numero_factura] || []
+    return dets.reduce((sum, d) => {
+      const precio = Number(d.precio_unitario || 0)
+      const desc = Number(d.descuento_porcentaje || 0)
+      return sum + (precio * (1 - desc / 100) * d.cantidad)
+    }, 0)
   }
 
   return (
@@ -54,12 +90,22 @@ const MisCompras = () => {
       />
 
       <div className="container py-5">
+        {/* Alerta nueva factura */}
+        {nuevaFactura && (
+          <div className="alert alert-success mb-4 d-flex align-items-center gap-3" style={{ borderRadius: 12 }}>
+            <i className="fas fa-check-circle fa-2x text-success"></i>
+            <div>
+              <strong>¡Pedido realizado con éxito!</strong>
+              <div style={{ fontSize: '0.88rem' }}>Tu factura <strong>{nuevaFactura}</strong> ha sido creada. Estado inicial: <strong>Pendiente</strong>.</div>
+            </div>
+          </div>
+        )}
 
         {/* Stats */}
         <div className="compras-stats">
           {[
             { label: 'Total Pedidos', value: stats.total, icon: 'fa-shopping-bag', color: '#6366f1' },
-            { label: 'Pagados', value: stats.pagadas, icon: 'fa-check-circle', color: '#28a745' },
+            { label: 'Pagados', value: stats.pagadas, icon: 'fa-check-circle', color: '#16a34a' },
             { label: 'Pendientes', value: stats.pendientes, icon: 'fa-clock', color: '#f59e0b' },
             { label: 'Cancelados', value: stats.canceladas, icon: 'fa-times-circle', color: '#ef4444' }
           ].map(s => (
@@ -88,7 +134,7 @@ const MisCompras = () => {
           ))}
         </div>
 
-        {/* Lista de facturas */}
+        {/* Lista */}
         {isLoading ? (
           <div className="compras-loading">
             <div className="spinner-border text-success"></div>
@@ -107,18 +153,34 @@ const MisCompras = () => {
           <div className="compras-list">
             {filtered.map(factura => {
               const cfg = estadoConfig[factura.estado_pago] || estadoConfig.Pendiente
+              const dets = detallesMap[factura.numero_factura] || []
+              const isExpanded = expandedFactura === factura.numero_factura
+              const totalFactura = getFacturaTotal(factura.numero_factura) + (getFacturaTotal(factura.numero_factura) >= 100000 ? 0 : 15000)
+
               return (
-                <div key={factura.numero_factura} className={`compra-card ${cfg.class}`}>
-                  <div className="compra-card-header">
+                <div key={factura.numero_factura} className={`compra-card ${cfg.class} ${factura.numero_factura === nuevaFactura ? 'compra-card-new' : ''}`}>
+                  <div
+                    className="compra-card-header"
+                    onClick={() => setExpandedFactura(isExpanded ? null : factura.numero_factura)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className="compra-numero">
                       <i className="fas fa-file-invoice me-2"></i>
                       <span>{factura.numero_factura}</span>
                     </div>
-                    <span className={`compra-estado ${cfg.class}`}>
-                      <i className={`fas ${cfg.icon} me-1`}></i>
-                      {cfg.label}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginLeft: 'auto' }}>
+                      {totalFactura > 0 && (
+                        <span style={{ fontWeight: 700, color: '#0f172a', fontSize: '0.95rem' }}>
+                          ${fmtCOP(totalFactura)}
+                        </span>
+                      )}
+                      <span className={`compra-estado ${cfg.class}`}>
+                        <i className={`fas ${cfg.icon} me-1`}></i>{cfg.label}
+                      </span>
+                      <i className={`fas fa-chevron-${isExpanded ? 'up' : 'down'}`} style={{ color: '#94a3b8', fontSize: '0.85rem' }}></i>
+                    </div>
                   </div>
+
                   <div className="compra-card-body">
                     <div className="compra-detail">
                       <i className="fas fa-calendar-alt"></i>
@@ -133,6 +195,73 @@ const MisCompras = () => {
                       <span>{factura.direccion_envio || 'Sin dirección'}</span>
                     </div>
                   </div>
+
+                  {/* Detalles expandibles */}
+                  {isExpanded && (
+                    <div style={{ borderTop: '1px solid #f1f5f9', padding: '1rem 1.25rem' }}>
+                      <h5 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#374151', marginBottom: '0.75rem' }}>
+                        <i className="fas fa-list-ul me-2 text-muted"></i>Productos del pedido
+                      </h5>
+                      {dets.length === 0 ? (
+                        <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>No hay detalles disponibles.</p>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                          {dets.map((det, idx) => {
+                            const prod = productosMap[det.codigo_prod]
+                            const precioUnit = Number(det.precio_unitario || 0)
+                            const desc = Number(det.descuento_porcentaje || 0)
+                            const precioConDesc = precioUnit * (1 - desc / 100)
+                            const subtotalLinea = precioConDesc * det.cantidad
+                            return (
+                              <div key={idx} style={{
+                                display: 'flex', alignItems: 'center', gap: '0.75rem',
+                                background: '#f8fafc', borderRadius: 10, padding: '0.65rem 0.85rem'
+                              }}>
+                                <img
+                                  src={prod?.img_url || '/img/Imagen1.png'}
+                                  alt={prod?.nombres || det.codigo_prod}
+                                  onError={e => { e.target.src = '/img/Imagen1.png' }}
+                                  style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }}
+                                />
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.88rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {prod?.nombres || det.codigo_prod}
+                                  </div>
+                                  <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                                    ${fmtCOP(precioUnit)} c/u
+                                    {desc > 0 && <span style={{ color: '#16a34a', marginLeft: 4 }}>(-{desc}%)</span>}
+                                    {' · '}{det.cantidad} und.
+                                  </div>
+                                </div>
+                                <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '0.92rem', flexShrink: 0 }}>
+                                  ${fmtCOP(subtotalLinea)}
+                                </div>
+                              </div>
+                            )
+                          })}
+
+                          {/* Totales de la factura */}
+                          <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '0.65rem', marginTop: '0.25rem' }}>
+                            {(() => {
+                              const sub = dets.reduce((s, d) => s + Number(d.precio_unitario || 0) * (1 - Number(d.descuento_porcentaje || 0) / 100) * d.cantidad, 0)
+                              const env = sub >= 100000 ? 0 : 15000
+                              return (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', alignItems: 'flex-end' }}>
+                                  <span style={{ fontSize: '0.82rem', color: '#64748b' }}>Subtotal: ${fmtCOP(sub)}</span>
+                                  <span style={{ fontSize: '0.82rem', color: '#64748b' }}>
+                                    Envío: {env === 0 ? <span style={{ color: '#16a34a' }}>Gratis</span> : `$${fmtCOP(env)}`}
+                                  </span>
+                                  <span style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
+                                    Total: ${fmtCOP(sub + env)}
+                                  </span>
+                                </div>
+                              )
+                            })()}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )
             })}

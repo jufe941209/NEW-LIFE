@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { Layout } from './components/organisms'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
+import { CartProvider } from './context/CartContext'
 import ProtectedResponsableRoute from './components/ProtectedResponsableRoute'
 import { ResponsableLogin, ResponsableDashboard } from './pages/Responsable'
 
@@ -36,6 +37,7 @@ const PublicLayout = ({ children }) => {
 function App() {
   return (
     <AuthProvider>
+      <CartProvider>
       <Routes>
         {/* Admin route - SIN el Layout público (no Navbar/Footer) */}
         <Route
@@ -74,6 +76,7 @@ function App() {
         <Route path="/cambiar-password" element={<PublicLayout><CambiarPassword /></PublicLayout>} />
         <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
       </Routes>
+      </CartProvider>
     </AuthProvider>
   )
 }

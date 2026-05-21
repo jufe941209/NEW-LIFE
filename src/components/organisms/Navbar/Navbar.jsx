@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { SearchBar } from '../../molecules'
 import { useAuth } from '../../../context/AuthContext'
+import { useCart } from '../../../context/CartContext'
 import './Navbar.css'
 
 /**
@@ -17,6 +18,7 @@ const Navbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { admin, cliente, logout, isAdmin, isCliente } = useAuth()
+  const { itemCount } = useCart()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -171,7 +173,7 @@ const Navbar = () => {
                   aria-label="Carrito"
                 >
                   <i className="fa fa-shopping-bag"></i>
-                  <span className="cart-badge">0</span>
+                  {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
                 </button>
                 
                 <div className={`dropdown-menu cart-dropdown ${isCartDropdownOpen ? 'show' : ''}`}>

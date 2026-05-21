@@ -114,3 +114,6 @@
   .compras-stats { grid-template-columns: repeat(2, 1fr); }
   .compra-card-body { flex-direction: column; gap: 0.5rem; }
 }
+
+.compra-card-new { outline: 2.5px solid #16a34a; outline-offset: 2px; animation: fadeInDown 0.5s ease; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }

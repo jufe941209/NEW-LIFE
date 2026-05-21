@@ -1,59 +1,68 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { ProductGrid, ProductFilters, PageHeader } from '../../components/organisms'
-import { Button } from '../../components/atoms'
+import productoService from '../../services/productoService'
+import categoriaService from '../../services/categoriaService'
+import { useCart } from '../../context/CartContext'
 import './Shop.css'
 
-/**
- * Shop - Página de Productos
- * Catálogo completo de productos con filtros y búsqueda
- */
 const Shop = () => {
   const [searchParams] = useSearchParams()
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
-  const [filters, setFilters] = useState({
-    category: '',
-    minPrice: '',
-    maxPrice: '',
-    sortBy: 'relevance'
-  })
-  const [viewMode, setViewMode] = useState('grid')
-  const [productsPerPage] = useState(12)
-  const [currentPage, setCurrentPage] = useState(1)
+  const navigate = useNavigate()
+  const { addItem, itemCount } = useCart()
 
-  const [allProducts] = useState([
-    { id: 1, name: 'Cuchara Eco – Cartón', description: 'Cuchara ecológica fabricada con cartón biodegradable', price: 8200, image: '/img/Imagen1.png', category: 'cubiertos' },
-    { id: 2, name: 'Tenedor Madera', description: 'Tenedor de madera 100% natural y compostable', price: 7150, image: '/img/Imagen2.png', category: 'cubiertos' },
-    { id: 3, name: 'Cuchara Madera', description: 'Cuchara de madera sostenible y reutilizable', price: 7150, image: '/img/Imagen3.png', category: 'cubiertos' },
-    { id: 4, name: 'Eco Cuchara Degustación', description: 'Cuchara pequeña para degustaciones ecológicas', price: 3500, image: '/img/Imagen4.png', category: 'cubiertos' },
-    { id: 5, name: 'Plato Germinable Grande', description: 'Plato grande con semillas germinables incluidas', price: 19000, originalPrice: 24000, discount: 20, image: '/img/Imagen5.png', category: 'platos', badge: 'Nuevo' },
-    { id: 6, name: 'Plato carton grande', description: 'Plato de cartón grande biodegradable', price: 11900, image: '/img/Imagen6.png', category: 'platos' },
-    { id: 7, name: 'Plato carton pequeño', description: 'Plato de cartón pequeño para porciones individuales', price: 4900, image: '/img/Imagen7.png', category: 'platos' },
-    { id: 8, name: 'Vaso Biodegradable Grande', description: 'Vaso 100% biodegradable y compostable, tamaño grande', price: 3500, image: '/img/Imagen8.png', category: 'vasos' },
-    { id: 9, name: 'Vaso Biodegradable Mediano', description: 'Vaso 100% biodegradable y compostable, tamaño mediano', price: 2800, image: '/img/Imagen9.png', category: 'vasos' },
-    { id: 10, name: 'Recipiente Ecológico Grande', description: 'Recipiente para comidas rápidas, tamaño grande', price: 8500, image: '/img/Imagen10.png', category: 'recipientes' },
-    { id: 11, name: 'Plato Germinable Mediano', description: 'Plato mediano con semillas germinables incluidas', price: 15000, originalPrice: 18000, discount: 16, image: '/img/Imagen11.png', category: 'germinables', badge: 'Popular' },
-    { id: 12, name: 'Set Cubiertos Ecológicos', description: 'Set completo de cubiertos biodegradables', price: 12500, image: '/img/Imagen12.png', category: 'cubiertos', badge: 'Más Vendido' }
-  ])
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
+  const [filters, setFilters] = useState({ category: '', minPrice: '', maxPrice: '', sortBy: 'relevance' })
+  const [viewMode, setViewMode] = useState('grid')
+  const [currentPage, setCurrentPage] = useState(1)
+  const productsPerPage = 12
+
+  const [allProducts, setAllProducts] = useState([])
+  const [categorias, setCategorias] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [addedId, setAddedId] = useState(null)
+
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true)
+      try {
+        const [prods, cats] = await Promise.all([
+          productoService.getAll().catch(() => []),
+          categoriaService.getAll().catch(() => []),
+        ])
+        setCategorias(Array.isArray(cats) ? cats : [])
+        const activos = (Array.isArray(prods) ? prods : [])
+          .filter(p => p.estado === 'Activo' && p.stock_real > 0)
+          .map(p => ({
+            id: p.codigo_prod,
+            codigo_prod: p.codigo_prod,
+            name: p.nombres,
+            description: p.descripcion || '',
+            price: Number(p.precio),
+            originalPrice: Number(p.precio),
+            discount: 0,
+            image: p.img_url || '/img/Imagen1.png',
+            category: (cats || []).find(c => c.numero_categoria === p.numero_categoria)?.nombre?.toLowerCase() || '',
+            stock: p.stock_real,
+            badge: p.stock_real <= p.stock_min ? 'Stock bajo' : undefined,
+          }))
+        setAllProducts(activos)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadData()
+  }, [])
 
   const filteredProducts = useMemo(() => {
     let filtered = [...allProducts]
     if (searchTerm) {
       const term = searchTerm.toLowerCase()
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(term) ||
-        product.description.toLowerCase().includes(term)
-      )
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(term) || p.description.toLowerCase().includes(term))
     }
-    if (filters.category) {
-      filtered = filtered.filter(product => product.category === filters.category)
-    }
-    if (filters.minPrice) {
-      filtered = filtered.filter(product => product.price >= Number(filters.minPrice))
-    }
-    if (filters.maxPrice) {
-      filtered = filtered.filter(product => product.price <= Number(filters.maxPrice))
-    }
+    if (filters.category) filtered = filtered.filter(p => p.category === filters.category)
+    if (filters.minPrice) filtered = filtered.filter(p => p.price >= Number(filters.minPrice))
+    if (filters.maxPrice) filtered = filtered.filter(p => p.price <= Number(filters.maxPrice))
     switch (filters.sortBy) {
       case 'price-low': filtered.sort((a, b) => a.price - b.price); break
       case 'price-high': filtered.sort((a, b) => b.price - a.price); break
@@ -66,15 +75,17 @@ const Shop = () => {
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage)
   const paginatedProducts = useMemo(() => {
-    const startIndex = (currentPage - 1) * productsPerPage
-    return filteredProducts.slice(startIndex, startIndex + productsPerPage)
+    const start = (currentPage - 1) * productsPerPage
+    return filteredProducts.slice(start, start + productsPerPage)
   }, [filteredProducts, currentPage, productsPerPage])
 
   useEffect(() => { setCurrentPage(1) }, [searchTerm, filters])
 
-  const handleAddToCart = (product) => { console.log('Agregar al carrito:', product) }
-  const handleFilterChange = (newFilters) => { setFilters(newFilters) }
-  const handleSearch = (term) => { setSearchTerm(term) }
+  const handleAddToCart = (product) => {
+    addItem(product, 1)
+    setAddedId(product.id)
+    setTimeout(() => setAddedId(null), 1800)
+  }
 
   return (
     <div className="shop-page">
@@ -86,42 +97,79 @@ const Shop = () => {
 
       <div className="container-fluid py-5">
         <div className="container">
+          {/* Toast de producto añadido */}
+          {addedId && (
+            <div style={{
+              position: 'fixed', bottom: 24, right: 24, zIndex: 9999,
+              background: '#22c55e', color: '#fff', borderRadius: 12,
+              padding: '0.75rem 1.25rem', fontWeight: 600, fontSize: '0.9rem',
+              boxShadow: '0 6px 20px rgba(0,0,0,0.18)', display: 'flex', alignItems: 'center', gap: 8
+            }}>
+              <i className="fas fa-check-circle"></i> Producto añadido al carrito
+              {itemCount > 0 && (
+                <button
+                  onClick={() => navigate('/cart')}
+                  style={{ background: 'rgba(255,255,255,0.25)', border: 'none', color: '#fff', borderRadius: 8, padding: '0.25rem 0.65rem', cursor: 'pointer', marginLeft: 6, fontWeight: 700, fontSize: '0.82rem' }}
+                >
+                  Ver carrito ({itemCount})
+                </button>
+              )}
+            </div>
+          )}
+
           <div className="row mb-3">
             <div className="col-12">
               <div className="results-count">
                 <span className="text-muted">
                   <i className="fas fa-box me-2"></i>
-                  {filteredProducts.length} producto{filteredProducts.length !== 1 ? 's' : ''} encontrado{filteredProducts.length !== 1 ? 's' : ''}
+                  {isLoading ? 'Cargando...' : `${filteredProducts.length} producto${filteredProducts.length !== 1 ? 's' : ''} encontrado${filteredProducts.length !== 1 ? 's' : ''}`}
                 </span>
+                {itemCount > 0 && (
+                  <Link to="/cart" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.88rem', fontWeight: 600, color: '#16a34a', textDecoration: 'none' }}>
+                    <i className="fas fa-shopping-cart"></i> Carrito ({itemCount})
+                  </Link>
+                )}
               </div>
             </div>
           </div>
 
           <div className="row">
             <div className="col-lg-3 mb-4 mb-lg-0">
-              <ProductFilters onFilterChange={handleFilterChange} onSearch={handleSearch} searchTerm={searchTerm} />
+              <ProductFilters onFilterChange={setFilters} onSearch={setSearchTerm} searchTerm={searchTerm} />
             </div>
 
             <div className="col-lg-9">
               <div className="shop-toolbar mb-4">
                 <div className="view-mode-toggle">
-                  <button className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')} aria-label="Vista de cuadrícula">
+                  <button className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')}>
                     <i className="fas fa-th"></i>
                   </button>
-                  <button className={`view-btn ${viewMode === 'list' ? 'active' : ''}`} onClick={() => setViewMode('list')} aria-label="Vista de lista">
+                  <button className={`view-btn ${viewMode === 'list' ? 'active' : ''}`} onClick={() => setViewMode('list')}>
                     <i className="fas fa-list"></i>
                   </button>
                 </div>
               </div>
 
-              <ProductGrid products={paginatedProducts} columns={viewMode === 'grid' ? 3 : 1} onAddToCart={handleAddToCart} emptyMessage="No se encontraron productos" />
+              {isLoading ? (
+                <div style={{ textAlign: 'center', padding: '4rem 0', color: '#64748b' }}>
+                  <div className="spinner-border text-success me-3"></div>
+                  Cargando productos...
+                </div>
+              ) : (
+                <ProductGrid
+                  products={paginatedProducts}
+                  columns={viewMode === 'grid' ? 3 : 1}
+                  onAddToCart={handleAddToCart}
+                  emptyMessage="No se encontraron productos"
+                />
+              )}
 
               {totalPages > 1 && (
                 <div className="pagination-wrapper mt-5">
-                  <nav aria-label="Paginación de productos">
+                  <nav>
                     <ul className="pagination justify-content-center">
                       <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                        <button className="page-link" onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} disabled={currentPage === 1}>
+                        <button className="page-link" onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>
                           <i className="fas fa-chevron-left"></i>
                         </button>
                       </li>
@@ -133,12 +181,12 @@ const Shop = () => {
                             </li>
                           )
                         } else if (page === currentPage - 2 || page === currentPage + 2) {
-                          return (<li key={page} className="page-item disabled"><span className="page-link">...</span></li>)
+                          return <li key={page} className="page-item disabled"><span className="page-link">...</span></li>
                         }
                         return null
                       })}
                       <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                        <button className="page-link" onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))} disabled={currentPage === totalPages}>
+                        <button className="page-link" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>
                           <i className="fas fa-chevron-right"></i>
                         </button>
                       </li>

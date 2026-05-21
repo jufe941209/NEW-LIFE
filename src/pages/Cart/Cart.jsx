@@ -1,52 +1,29 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { PageHeader } from '../../components/organisms'
 import { Button } from '../../components/atoms'
+import { useCart } from '../../context/CartContext'
 import './Cart.css'
 
-/**
- * Cart - Página del Carrito de Compras
- */
 const Cart = () => {
   const navigate = useNavigate()
-  const [cartItems, setCartItems] = useState([])
+  const { items, removeItem, updateQuantity } = useCart()
 
-  useEffect(() => {
-    const savedCart = localStorage.getItem('cart')
-    if (savedCart) {
-      try { setCartItems(JSON.parse(savedCart)) }
-      catch (error) { setCartItems([]) }
-    }
-  }, [])
+  const getItemPrice = (item) =>
+    item.discount && item.originalPrice
+      ? item.originalPrice * (1 - item.discount / 100)
+      : item.price
 
-  useEffect(() => {
-    if (cartItems.length > 0) localStorage.setItem('cart', JSON.stringify(cartItems))
-    else localStorage.removeItem('cart')
-  }, [cartItems])
-
-  const subtotal = cartItems.reduce((sum, item) => {
-    const itemPrice = item.discount && item.originalPrice ? item.originalPrice - (item.originalPrice * item.discount / 100) : item.price
-    return sum + (itemPrice * item.quantity)
-  }, 0)
-
-  const discount = cartItems.reduce((sum, item) => {
-    if (item.discount && item.originalPrice) {
-      return sum + ((item.originalPrice * item.discount / 100) * item.quantity)
-    }
+  const subtotal = items.reduce((sum, item) => sum + getItemPrice(item) * item.quantity, 0)
+  const discountTotal = items.reduce((sum, item) => {
+    if (item.discount && item.originalPrice) return sum + (item.originalPrice * item.discount / 100) * item.quantity
     return sum
   }, 0)
+  const shipping = subtotal >= 100000 ? 0 : 15000
+  const total = subtotal + shipping
 
-  const shipping = subtotal > 100000 ? 0 : 15000
-  const total = subtotal - discount + shipping
-
-  const updateQuantity = (productId, newQuantity) => {
-    if (newQuantity < 1) { removeFromCart(productId); return }
-    setCartItems(items => items.map(item => item.id === productId ? { ...item, quantity: newQuantity } : item))
-  }
-
-  const removeFromCart = (productId) => setCartItems(items => items.filter(item => item.id !== productId))
-  const incrementQuantity = (productId) => { const item = cartItems.find(item => item.id === productId); if (item) updateQuantity(productId, item.quantity + 1) }
-  const decrementQuantity = (productId) => { const item = cartItems.find(item => item.id === productId); if (item && item.quantity > 1) updateQuantity(productId, item.quantity - 1) }
+  const incrementQty = (item) => updateQuantity(item.id, Math.min(item.quantity + 1, item.stock || 999))
+  const decrementQty = (item) => updateQuantity(item.id, item.quantity - 1)
 
   return (
     <div className="cart-page">
@@ -58,48 +35,73 @@ const Cart = () => {
 
       <div className="container-fluid py-5">
         <div className="container">
-          {cartItems.length === 0 ? (
+          {items.length === 0 ? (
             <div className="cart-empty">
               <div className="cart-empty-icon"><i className="fas fa-shopping-cart"></i></div>
               <h2 className="cart-empty-title">Tu carrito está vacío</h2>
-              <p className="cart-empty-text">Parece que aún no has agregado productos a tu carrito. ¡Explora nuestro catálogo!</p>
+              <p className="cart-empty-text">Parece que aún no has agregado productos. ¡Explora nuestro catálogo!</p>
               <Link to="/shop"><Button variant="success" size="lg"><i className="fas fa-shopping-bag me-2"></i>Explorar Productos</Button></Link>
             </div>
           ) : (
             <div className="row">
               <div className="col-lg-8 mb-4">
                 <div className="cart-header d-flex justify-content-between align-items-center mb-4">
-                  <h3 className="cart-section-title mb-0"><i className="fas fa-shopping-cart me-2"></i>Productos ({cartItems.length})</h3>
-                  <Button variant="outline-secondary" size="sm" onClick={() => navigate('/shop')}><i className="fas fa-arrow-left me-2"></i>Seguir Comprando</Button>
+                  <h3 className="cart-section-title mb-0"><i className="fas fa-shopping-cart me-2"></i>Productos ({items.length})</h3>
+                  <Button variant="outline-secondary" size="sm" onClick={() => navigate('/shop')}>
+                    <i className="fas fa-arrow-left me-2"></i>Seguir Comprando
+                  </Button>
                 </div>
+
                 <div className="cart-items">
-                  {cartItems.map((item) => {
-                    const finalPrice = item.discount && item.originalPrice ? item.originalPrice - (item.originalPrice * item.discount / 100) : item.price
+                  {items.map(item => {
+                    const finalPrice = getItemPrice(item)
                     return (
                       <div key={item.id} className="cart-item">
                         <div className="cart-item-image">
-                          <Link to={`/shop/${item.id}`}><img src={item.image || '/img/Imagen1.png'} alt={item.name} onError={(e) => { e.target.src = '/img/Imagen1.png' }} /></Link>
+                          <img src={item.image || '/img/Imagen1.png'} alt={item.name} onError={e => { e.target.src = '/img/Imagen1.png' }} />
                         </div>
                         <div className="cart-item-info">
-                          <Link to={`/shop/${item.id}`} className="cart-item-name">{item.name}</Link>
+                          <span className="cart-item-name">{item.name}</span>
                           {item.description && <p className="cart-item-description">{item.description}</p>}
                           <div className="cart-item-price">
-                            {item.discount && item.originalPrice && <span className="cart-item-price-original">${item.originalPrice.toLocaleString()}</span>}
-                            <span className="cart-item-price-current">${finalPrice.toLocaleString()}</span>
-                            {item.discount && <span className="cart-item-discount">-{item.discount}%</span>}
+                            {item.discount > 0 && item.originalPrice && (
+                              <span className="cart-item-price-original">${item.originalPrice.toLocaleString('es-CO')}</span>
+                            )}
+                            <span className="cart-item-price-current">${finalPrice.toLocaleString('es-CO')}</span>
+                            {item.discount > 0 && <span className="cart-item-discount">-{item.discount}%</span>}
                           </div>
+                          {item.stock <= 5 && (
+                            <small style={{ color: '#f59e0b', fontSize: '0.78rem' }}>
+                              <i className="fas fa-exclamation-triangle me-1"></i>Solo {item.stock} disponibles
+                            </small>
+                          )}
                         </div>
                         <div className="cart-item-quantity">
                           <label className="quantity-label">Cantidad</label>
                           <div className="quantity-controls">
-                            <button type="button" className="quantity-btn" onClick={() => decrementQuantity(item.id)}><i className="fas fa-minus"></i></button>
-                            <input type="number" className="quantity-input" value={item.quantity} min="1" onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)} />
-                            <button type="button" className="quantity-btn" onClick={() => incrementQuantity(item.id)}><i className="fas fa-plus"></i></button>
+                            <button type="button" className="quantity-btn" onClick={() => decrementQty(item)}>
+                              <i className="fas fa-minus"></i>
+                            </button>
+                            <input
+                              type="number"
+                              className="quantity-input"
+                              value={item.quantity}
+                              min="1"
+                              max={item.stock || 999}
+                              onChange={e => updateQuantity(item.id, Math.max(1, Math.min(parseInt(e.target.value) || 1, item.stock || 999)))}
+                            />
+                            <button type="button" className="quantity-btn" onClick={() => incrementQty(item)}>
+                              <i className="fas fa-plus"></i>
+                            </button>
                           </div>
-                          <div className="cart-item-subtotal">Subtotal: <strong>${(finalPrice * item.quantity).toLocaleString()}</strong></div>
+                          <div className="cart-item-subtotal">
+                            Subtotal: <strong>${(finalPrice * item.quantity).toLocaleString('es-CO')}</strong>
+                          </div>
                         </div>
                         <div className="cart-item-actions">
-                          <button type="button" className="remove-btn" onClick={() => removeFromCart(item.id)}><i className="fas fa-trash-alt"></i></button>
+                          <button type="button" className="remove-btn" onClick={() => removeItem(item.id)}>
+                            <i className="fas fa-trash-alt"></i>
+                          </button>
                         </div>
                       </div>
                     )
@@ -111,15 +113,35 @@ const Cart = () => {
                 <div className="cart-summary">
                   <h3 className="cart-summary-title"><i className="fas fa-receipt me-2"></i>Resumen del Pedido</h3>
                   <div className="cart-summary-content">
-                    <div className="summary-row"><span>Subtotal</span><span>${subtotal.toLocaleString()}</span></div>
-                    {discount > 0 && <div className="summary-row summary-discount"><span><i className="fas fa-tag me-2"></i>Descuento</span><span>-${discount.toLocaleString()}</span></div>}
-                    <div className="summary-row"><span><i className="fas fa-truck me-2"></i>Envío</span><span>{shipping === 0 ? <span className="text-success">Gratis</span> : `$${shipping.toLocaleString()}`}</span></div>
-                    {subtotal < 100000 && <div className="summary-shipping-info"><i className="fas fa-info-circle me-2"></i>Compra ${(100000 - subtotal).toLocaleString()} más para envío gratis</div>}
-                    <div className="summary-row summary-total"><span>Total</span><span className="summary-total-amount">${total.toLocaleString()}</span></div>
+                    <div className="summary-row"><span>Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} items)</span><span>${subtotal.toLocaleString('es-CO')}</span></div>
+                    {discountTotal > 0 && (
+                      <div className="summary-row summary-discount">
+                        <span><i className="fas fa-tag me-2"></i>Descuento</span>
+                        <span>-${discountTotal.toLocaleString('es-CO')}</span>
+                      </div>
+                    )}
+                    <div className="summary-row">
+                      <span><i className="fas fa-truck me-2"></i>Envío</span>
+                      <span>{shipping === 0 ? <span className="text-success">Gratis</span> : `$${shipping.toLocaleString('es-CO')}`}</span>
+                    </div>
+                    {subtotal < 100000 && (
+                      <div className="summary-shipping-info">
+                        <i className="fas fa-info-circle me-2"></i>
+                        Compra ${(100000 - subtotal).toLocaleString('es-CO')} más para envío gratis
+                      </div>
+                    )}
+                    <div className="summary-row summary-total">
+                      <span>Total</span>
+                      <span className="summary-total-amount">${total.toLocaleString('es-CO')}</span>
+                    </div>
                   </div>
                   <div className="cart-summary-actions">
-                    <Button variant="success" size="lg" className="w-100 mb-3" onClick={() => navigate('/checkout')}><i className="fas fa-credit-card me-2"></i>Proceder al Checkout</Button>
-                    <Link to="/shop" className="continue-shopping-link"><i className="fas fa-arrow-left me-2"></i>Seguir Comprando</Link>
+                    <Button variant="success" size="lg" className="w-100 mb-3" onClick={() => navigate('/checkout')}>
+                      <i className="fas fa-credit-card me-2"></i>Proceder al Checkout
+                    </Button>
+                    <Link to="/shop" className="continue-shopping-link">
+                      <i className="fas fa-arrow-left me-2"></i>Seguir Comprando
+                    </Link>
                   </div>
                   <div className="cart-summary-info">
                     <div className="info-item"><i className="fas fa-shield-alt"></i><span>Compra 100% segura</span></div>
