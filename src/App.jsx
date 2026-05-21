@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { Layout } from './components/organisms'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
+import ProtectedResponsableRoute from './components/ProtectedResponsableRoute'
+import { ResponsableLogin, ResponsableDashboard } from './pages/Responsable'
 
 // Pages - from new subfolder structure
 import Home from './pages/Home'
@@ -42,6 +44,17 @@ function App() {
             <ProtectedAdminRoute>
               <Admin />
             </ProtectedAdminRoute>
+          }
+        />
+
+        {/* Responsable routes - SIN Layout público */}
+        <Route path="/login-responsable" element={<ResponsableLogin />} />
+        <Route
+          path="/responsable"
+          element={
+            <ProtectedResponsableRoute>
+              <ResponsableDashboard />
+            </ProtectedResponsableRoute>
           }
         />
 

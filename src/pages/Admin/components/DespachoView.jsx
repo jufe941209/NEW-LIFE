@@ -1,0 +1,235 @@
+import React, { useState, useEffect } from 'react'
+import despachoService from '../../../services/despachoService'
+import domiciliarioService from '../../../services/domiciliarioService'
+import responsableService from '../../../services/responsableService'
+import facturaService from '../../../services/facturaService'
+
+const ESTADOS = ['Pendiente', 'En camino', 'Entregado', 'Cancelado']
+
+const estadoMeta = {
+  Pendiente:   { color: '#6b7280', bg: '#f3f4f6', icon: 'fa-clock' },
+  'En camino': { color: '#3b82f6', bg: '#eff6ff', icon: 'fa-truck' },
+  Entregado:   { color: '#22c55e', bg: '#f0fdf4', icon: 'fa-check-circle' },
+  Cancelado:   { color: '#ef4444', bg: '#fff5f5', icon: 'fa-times-circle' },
+}
+
+const EstadoBadge = ({ estado }) => {
+  const m = estadoMeta[estado] || estadoMeta['Pendiente']
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 4,
+      padding: '3px 10px', borderRadius: 20, fontWeight: 600,
+      fontSize: '0.78rem', color: m.color, background: m.bg
+    }}>
+      <i className={`fas ${m.icon}`}></i> {estado}
+    </span>
+  )
+}
+
+const fmtDate = (v) => v ? new Date(v).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
+const fmtDT = (v) => v ? new Date(v).toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—'
+
+const DespachoView = () => {
+  const [despachos, setDespachos] = useState([])
+  const [domiciliarios, setDomiciliarios] = useState([])
+  const [responsables, setResponsables] = useState([])
+  const [facturas, setFacturas] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState('')
+  const [filterEstado, setFilterEstado] = useState('')
+
+  const load = async () => {
+    setLoading(true)
+    try {
+      const [d, dom, resp, fac] = await Promise.all([
+        despachoService.getAll().catch(() => []),
+        domiciliarioService.getAll().catch(() => []),
+        responsableService.getAll().catch(() => []),
+        facturaService.getAll().catch(() => []),
+      ])
+      setDespachos(Array.isArray(d) ? d : [])
+      setDomiciliarios(Array.isArray(dom) ? dom : [])
+      setResponsables(Array.isArray(resp) ? resp : [])
+      setFacturas(Array.isArray(fac) ? fac : [])
+    } finally { setLoading(false) }
+  }
+
+  useEffect(() => { load() }, [])
+
+  const getNombre = (arr, key, val) => arr.find(x => x[key] === val)?.nombres || val || '—'
+
+  const counts = {
+    Pendiente: despachos.filter(d => !d.estado || d.estado === 'Pendiente').length,
+    'En camino': despachos.filter(d => d.estado === 'En camino').length,
+    Entregado: despachos.filter(d => d.estado === 'Entregado').length,
+    Cancelado: despachos.filter(d => d.estado === 'Cancelado').length,
+  }
+
+  const filtered = despachos.filter(d => {
+    const mf = !filter ||
+      String(d.numero_despacho).includes(filter) ||
+      (d.numero_factura || '').toLowerCase().includes(filter.toLowerCase()) ||
+      (d.cc_responsable || '').includes(filter) ||
+      (d.cc_domiciliario || '').includes(filter)
+    const me = !filterEstado || (d.estado || 'Pendiente') === filterEstado
+    return mf && me
+  })
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+      {/* Summary cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem' }}>
+        {Object.entries(counts).map(([estado, count]) => {
+          const m = estadoMeta[estado]
+          return (
+            <div
+              key={estado}
+              onClick={() => setFilterEstado(prev => prev === estado ? '' : estado)}
+              style={{
+                background: '#fff', borderRadius: 12, padding: '1rem',
+                display: 'flex', alignItems: 'center', gap: '0.85rem',
+                borderLeft: `4px solid ${m.color}`, cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                outline: filterEstado === estado ? `2px solid ${m.color}` : 'none',
+                outlineOffset: 2,
+              }}
+            >
+              <div style={{
+                width: 42, height: 42, borderRadius: 10,
+                background: m.bg, color: m.color,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '1.1rem', flexShrink: 0
+              }}>
+                <i className={`fas ${m.icon}`}></i>
+              </div>
+              <div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: m.color, lineHeight: 1 }}>{count}</div>
+                <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: 2 }}>{estado}</div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Filters */}
+      <div style={{
+        background: '#fff', borderRadius: 12, padding: '1rem 1.25rem',
+        display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+      }}>
+        <div style={{ position: 'relative', flex: 1, minWidth: 220 }}>
+          <i className="fas fa-search" style={{
+            position: 'absolute', left: '0.8rem', top: '50%',
+            transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '0.85rem'
+          }}></i>
+          <input
+            type="text"
+            placeholder="Buscar por # despacho, factura, responsable..."
+            value={filter}
+            onChange={e => setFilter(e.target.value)}
+            style={{
+              width: '100%', padding: '0.6rem 0.9rem 0.6rem 2.2rem',
+              border: '1.5px solid #e2e8f0', borderRadius: 8,
+              fontSize: '0.88rem', color: '#0f172a', outline: 'none'
+            }}
+          />
+        </div>
+        <select
+          value={filterEstado}
+          onChange={e => setFilterEstado(e.target.value)}
+          style={{
+            padding: '0.6rem 0.9rem', border: '1.5px solid #e2e8f0',
+            borderRadius: 8, fontSize: '0.88rem', color: '#0f172a',
+            outline: 'none', background: '#fff', cursor: 'pointer'
+          }}
+        >
+          <option value="">Todos los estados</option>
+          {ESTADOS.map(e => <option key={e} value={e}>{e}</option>)}
+        </select>
+        <button
+          onClick={load}
+          style={{
+            padding: '0.6rem 1rem', background: '#f1f5f9',
+            border: '1.5px solid #e2e8f0', borderRadius: 8,
+            fontSize: '0.85rem', fontWeight: 600, color: '#475569',
+            cursor: 'pointer', whiteSpace: 'nowrap'
+          }}
+        >
+          <i className="fas fa-sync-alt me-1"></i>Actualizar
+        </button>
+        <span style={{ fontSize: '0.82rem', color: '#64748b', whiteSpace: 'nowrap' }}>
+          {filtered.length} despacho{filtered.length !== 1 ? 's' : ''}
+        </span>
+      </div>
+
+      {/* Table */}
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+          <div className="spinner-border text-primary me-2"></div>Cargando despachos...
+        </div>
+      ) : (
+        <div style={{ background: '#fff', borderRadius: 14, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
+          <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>
+              <i className="fas fa-shipping-fast me-2 text-primary"></i>Todos los despachos
+            </h4>
+            <span style={{
+              background: '#1e40af', color: '#fff', fontSize: '0.78rem',
+              fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: 20
+            }}>{despachos.length}</span>
+          </div>
+
+          {filtered.length === 0 ? (
+            <p style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8', margin: 0 }}>
+              <i className="fas fa-box-open me-2"></i>No hay despachos que coincidan.
+            </p>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
+                <thead>
+                  <tr style={{ background: '#f8fafc' }}>
+                    {['#', 'Factura', 'Estado', 'Responsable', 'Domiciliario', 'F. Despacho', 'F. Aprobación', 'F. Entrega'].map(h => (
+                      <th key={h} style={{
+                        padding: '0.75rem 1rem', textAlign: 'left',
+                        fontSize: '0.75rem', fontWeight: 700,
+                        textTransform: 'uppercase', letterSpacing: '0.5px',
+                        color: '#64748b', borderBottom: '1px solid #e2e8f0',
+                        whiteSpace: 'nowrap'
+                      }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map(d => (
+                    <tr key={d.numero_despacho} style={{ borderBottom: '1px solid #f1f5f9' }}
+                      onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                      onMouseLeave={e => e.currentTarget.style.background = ''}
+                    >
+                      <td style={{ padding: '0.75rem 1rem' }}><strong>#{d.numero_despacho}</strong></td>
+                      <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>{d.numero_factura || '—'}</td>
+                      <td style={{ padding: '0.75rem 1rem' }}><EstadoBadge estado={d.estado || 'Pendiente'} /></td>
+                      <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>
+                        {getNombre(responsables, 'cedula_resp', d.cc_responsable)}
+                      </td>
+                      <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>
+                        {getNombre(domiciliarios, 'cedula_domi', d.cc_domiciliario)}
+                      </td>
+                      <td style={{ padding: '0.75rem 1rem', color: '#64748b' }}>{fmtDate(d.fecha_despacho)}</td>
+                      <td style={{ padding: '0.75rem 1rem', color: '#64748b' }}>{fmtDT(d.fecha_aprobacion)}</td>
+                      <td style={{ padding: '0.75rem 1rem', color: d.fecha_entrega ? '#22c55e' : '#64748b', fontWeight: d.fecha_entrega ? 600 : 400 }}>
+                        {fmtDT(d.fecha_entrega)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default DespachoView

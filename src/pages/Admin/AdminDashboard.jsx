@@ -8,6 +8,8 @@ import ClienteCrud from './components/ClienteCrud'
 import FacturaCrud from './components/FacturaCrud'
 import DomiciliarioCrud from './components/DomiciliarioCrud'
 import ProductoCrud from './components/ProductoCrud'
+import DespachoView from './components/DespachoView'
+import ResponsableCrud from './components/ResponsableCrud'
 import productoService from '../../services/productoService'
 import './AdminDashboard.css'
 
@@ -264,6 +266,8 @@ const AdminDashboard = () => {
       case 'facturas': return <FacturaCrud />
       case 'domiciliarios': return <DomiciliarioCrud />
       case 'productos': return <ProductoCrud />
+      case 'despachos': return <DespachoView />
+      case 'responsables': return <ResponsableCrud />
       default: return <DashboardHome admin={admin} setActiveSection={setActiveSection} />
     }
   }
@@ -276,7 +280,9 @@ const AdminDashboard = () => {
       clientes: 'Clientes',
       facturas: 'Facturas de Venta',
       domiciliarios: 'Domiciliarios',
-      productos: 'Productos'
+      productos: 'Productos',
+      despachos: 'Despachos',
+      responsables: 'Responsables',
     }
     return titles[activeSection] || 'Dashboard'
   }

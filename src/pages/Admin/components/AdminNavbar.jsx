@@ -13,6 +13,8 @@ const AdminNavbar = ({ admin, activeSection, setActiveSection, onLogout }) => {
     { key: 'facturas', label: 'Facturas', icon: 'fas fa-file-invoice-dollar' },
     { key: 'domiciliarios', label: 'Domiciliarios', icon: 'fas fa-motorcycle' },
     { key: 'productos', label: 'Productos', icon: 'fas fa-box' },
+    { key: 'despachos', label: 'Despachos', icon: 'fas fa-shipping-fast' },
+    { key: 'responsables', label: 'Responsables', icon: 'fas fa-user-tie' },
   ]
 
   return (

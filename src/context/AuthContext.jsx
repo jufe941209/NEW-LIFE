@@ -15,6 +15,11 @@ export const AuthProvider = ({ children }) => {
     return stored ? JSON.parse(stored) : null
   })
 
+  const [responsable, setResponsable] = useState(() => {
+    const stored = localStorage.getItem('responsable')
+    return stored ? JSON.parse(stored) : null
+  })
+
   const [needsPasswordChange, setNeedsPasswordChange] = useState(
     () => localStorage.getItem('needsPasswordChange') === 'true'
   )
@@ -24,28 +29,34 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('admin', JSON.stringify(adminData))
     setAdmin(adminData)
   }
-
   const logoutAdmin = () => {
     localStorage.removeItem('admin')
     setAdmin(null)
   }
 
   // --- Cliente ---
-  // passwordUsed: la contraseña que el cliente ingresó en el login
   const loginCliente = (clienteData, passwordUsed = '') => {
     localStorage.setItem('cliente', JSON.stringify(clienteData))
     setCliente(clienteData)
-
     const mustChange = passwordUsed === DEFAULT_PASSWORD
     localStorage.setItem('needsPasswordChange', mustChange)
     setNeedsPasswordChange(mustChange)
   }
-
   const logoutCliente = () => {
     localStorage.removeItem('cliente')
     localStorage.removeItem('needsPasswordChange')
     setCliente(null)
     setNeedsPasswordChange(false)
+  }
+
+  // --- Responsable ---
+  const loginResponsable = (responsableData) => {
+    localStorage.setItem('responsable', JSON.stringify(responsableData))
+    setResponsable(responsableData)
+  }
+  const logoutResponsable = () => {
+    localStorage.removeItem('responsable')
+    setResponsable(null)
   }
 
   const clearPasswordChange = () => {
@@ -56,21 +67,24 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     logoutAdmin()
     logoutCliente()
+    logoutResponsable()
   }
 
   const isAdmin = () => !!admin
   const isCliente = () => !!cliente
-  const isLoggedIn = () => !!admin || !!cliente
+  const isResponsable = () => !!responsable
+  const isLoggedIn = () => !!admin || !!cliente || !!responsable
 
   return (
     <AuthContext.Provider value={{
-      admin, cliente,
+      admin, cliente, responsable,
       needsPasswordChange,
       loginAdmin, logoutAdmin,
       loginCliente, logoutCliente,
+      loginResponsable, logoutResponsable,
       clearPasswordChange,
       logout,
-      isAdmin, isCliente, isLoggedIn
+      isAdmin, isCliente, isResponsable, isLoggedIn
     }}>
       {children}
     </AuthContext.Provider>
