@@ -1,91 +1,63 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { FeaturesSection, StatsSection, PageHeader } from '../../components/organisms'
 import { ProductCard, SearchBar } from '../../components/molecules'
 import { Button } from '../../components/atoms'
+import productoService from '../../services/productoService'
+import { useCart } from '../../context/CartContext'
 import './Home.css'
 
-/**
- * Home - Página Principal
- * Página de inicio completa con todas las secciones informativas
- */
+const CARDS_PER_PAGE = 3
+
 const Home = () => {
   const navigate = useNavigate()
-  const [products] = useState([
-    {
-      id: 1,
-      image: '/img/Imagen1.png',
-      name: 'Cuchara Eco – Cartón',
-      description: 'Cuchara ecológica fabricada con cartón biodegradable. Ideal para eventos y restaurantes.',
-      price: 8200,
-      badge: 'Más Vendido',
-      category: 'cubiertos'
-    },
-    {
-      id: 2,
-      image: '/img/Imagen2.png',
-      name: 'Tenedor Madera',
-      description: 'Tenedor de madera 100% natural y compostable. Fabricado con materiales sostenibles.',
-      price: 7150,
-      badge: 'Nuevo',
-      category: 'cubiertos'
-    },
-    {
-      id: 3,
-      image: '/img/Imagen3.png',
-      name: 'Cuchara Madera',
-      description: 'Cuchara de madera sostenible y reutilizable. Perfecta para cualquier ocasión.',
-      price: 7150,
-      category: 'cubiertos'
-    },
-    {
-      id: 4,
-      image: '/img/Imagen4.png',
-      name: 'Eco Cuchara Degustación',
-      description: 'Cuchara pequeña para degustaciones ecológicas. Tamaño perfecto para eventos.',
-      price: 3500,
-      category: 'cubiertos'
-    },
-    {
-      id: 5,
-      image: '/img/Imagen5.png',
-      name: 'Plato Germinable Grande',
-      description: 'Plato grande con semillas germinables incluidas. Conviértelo en vida después de usarlo.',
-      price: 19000,
-      originalPrice: 24000,
-      discount: 20,
-      badge: 'Popular',
-      category: 'germinables'
-    },
-    {
-      id: 6,
-      image: '/img/Imagen6.png',
-      name: 'Plato carton grande',
-      description: 'Plato de cartón grande biodegradable. Resistente y perfecto para comidas abundantes.',
-      price: 11900,
-      category: 'platos'
-    },
-    {
-      id: 7,
-      image: '/img/Imagen7.png',
-      name: 'Plato carton pequeño',
-      description: 'Plato de cartón pequeño para porciones individuales. Ideal para snacks y aperitivos.',
-      price: 4900,
-      category: 'platos'
-    },
-    {
-      id: 8,
-      image: '/img/Imagen8.png',
-      name: 'Vaso Biodegradable Grande',
-      description: 'Vaso 100% biodegradable y compostable, tamaño grande. Perfecto para bebidas.',
-      price: 3500,
-      category: 'vasos'
-    }
-  ])
+  const { addItem } = useCart()
+  const [products, setProducts] = useState([])
+  const [loadingProducts, setLoadingProducts] = useState(true)
+  const [carouselPage, setCarouselPage] = useState(0)
+  const [slideDir, setSlideDir] = useState('right')
+  const autoRef = useRef(null)
 
-  const handleSearch = (term) => {
-    navigate(`/shop?search=${encodeURIComponent(term)}`)
+  useEffect(() => {
+    productoService.getAll()
+      .then(data => {
+        const list = (Array.isArray(data) ? data : [])
+          .filter(p => p.estado?.toLowerCase() === 'activo')
+          .map(p => ({
+            id: p.codigo_prod,
+            name: p.nombres,
+            description: p.descripcion || '',
+            price: Number(p.precio),
+            image: p.img_url || '/img/Imagen1.png',
+            stock: p.stock_real,
+            badge: p.stock_real === 0 ? 'Agotado' : (p.stock_real > 0 && p.stock_min > 0 && p.stock_real <= p.stock_min) ? 'Stock bajo' : undefined,
+          }))
+        setProducts(list)
+      })
+      .catch(() => setProducts([]))
+      .finally(() => setLoadingProducts(false))
+  }, [])
+
+  const totalPages = Math.ceil(products.length / CARDS_PER_PAGE)
+
+  const goPage = (newPage, dir) => {
+    setSlideDir(dir || (newPage >= carouselPage ? 'right' : 'left'))
+    setCarouselPage(newPage)
   }
+
+  useEffect(() => {
+    if (totalPages <= 1) return
+    autoRef.current = setInterval(() => {
+      setSlideDir('right')
+      setCarouselPage(p => (p + 1) % totalPages)
+    }, 5000)
+    return () => clearInterval(autoRef.current)
+  }, [totalPages])
+
+  const handleSearch = (term) => navigate(`/shop?search=${encodeURIComponent(term)}`)
+  const handleAddToCart = (product) => addItem(product, 1)
+
+  const visibleProducts = products.slice(carouselPage * CARDS_PER_PAGE, (carouselPage + 1) * CARDS_PER_PAGE)
 
   return (
     <div className="home-page">
@@ -165,23 +137,71 @@ const Home = () => {
             </p>
           </div>
 
-          {/* Products Grid */}
-          <div className="row g-4 mb-5">
-            {products.map((product) => (
-              <div key={product.id} className="col-lg-4 col-md-6">
-                <ProductCard
-                  id={product.id}
-                  image={product.image}
-                  name={product.name}
-                  description={product.description}
-                  price={product.price}
-                  discount={product.discount}
-                  originalPrice={product.originalPrice}
-                  badge={product.badge}
-                />
+          {loadingProducts ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-success" style={{ width: '3rem', height: '3rem' }}></div>
+              <p className="mt-3 text-muted fw-semibold">Cargando productos...</p>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-4 text-muted">
+              <i className="fas fa-box-open fa-3x mb-3 d-block" style={{ color: '#cbd5e1' }}></i>
+              No hay productos disponibles en este momento.
+            </div>
+          ) : (
+            <div className="home-carousel-container">
+              <div
+                key={carouselPage}
+                className={`row g-4 mb-4 carousel-page-${slideDir}`}
+              >
+                {visibleProducts.map(p => (
+                  <div key={p.id} className="col-lg-4 col-md-6">
+                    <ProductCard
+                      id={p.id}
+                      image={p.image}
+                      name={p.name}
+                      description={p.description}
+                      price={p.price}
+                      badge={p.badge}
+                      onAddToCart={() => handleAddToCart(p)}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+
+              {totalPages > 1 && (
+                <div className="carousel-nav">
+                  <button
+                    className="carousel-nav-btn"
+                    onClick={() => goPage(Math.max(0, carouselPage - 1), 'left')}
+                    disabled={carouselPage === 0}
+                    aria-label="Anterior"
+                  >
+                    <i className="fas fa-chevron-left"></i>
+                  </button>
+
+                  <div className="carousel-dots">
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <button
+                        key={i}
+                        className={`carousel-dot ${i === carouselPage ? 'active' : ''}`}
+                        onClick={() => goPage(i)}
+                        aria-label={`Página ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+
+                  <button
+                    className="carousel-nav-btn"
+                    onClick={() => goPage(Math.min(totalPages - 1, carouselPage + 1), 'right')}
+                    disabled={carouselPage === totalPages - 1}
+                    aria-label="Siguiente"
+                  >
+                    <i className="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="text-center mt-5">
             <Link to="/shop">

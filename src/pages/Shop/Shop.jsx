@@ -32,7 +32,7 @@ const Shop = () => {
         ])
         setCategorias(Array.isArray(cats) ? cats : [])
         const activos = (Array.isArray(prods) ? prods : [])
-          .filter(p => p.estado === 'Activo' && p.stock_real > 0)
+          .filter(p => p.estado?.toLowerCase() === 'activo')
           .map(p => ({
             id: p.codigo_prod,
             codigo_prod: p.codigo_prod,
@@ -44,7 +44,7 @@ const Shop = () => {
             image: p.img_url || '/img/Imagen1.png',
             category: (cats || []).find(c => c.numero_categoria === p.numero_categoria)?.nombre?.toLowerCase() || '',
             stock: p.stock_real,
-            badge: p.stock_real <= p.stock_min ? 'Stock bajo' : undefined,
+            badge: p.stock_real === 0 ? 'Agotado' : (p.stock_real > 0 && p.stock_min > 0 && p.stock_real <= p.stock_min) ? 'Stock bajo' : undefined,
           }))
         setAllProducts(activos)
       } finally {
