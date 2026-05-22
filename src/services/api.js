@@ -4,36 +4,55 @@ const BASE_URL = 'https://newlife-api-agfzb6a7bdb5b7bq.eastus-01.azurewebsites.n
 
 const api = axios.create({
   baseURL: BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
-  timeout: 45000,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Connection': 'keep-alive',
+  },
+  timeout: 60000, // 60s — covers Azure cold-start wake-up
 })
 
-// Retry on network errors or 5xx (Azure cold start / transient failures)
+const TRANSIENT_CODES = new Set([0, 408, 429, 500, 502, 503, 504])
+const MAX_RETRIES = 4
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const config = error.config
-    if (!config || config.__retryCount >= 2) {
-      console.error('API Error:', error.response?.data || error.message)
+    if (!config) return Promise.reject(error)
+
+    config.__retryCount = (config.__retryCount || 0)
+
+    const status = error.response?.status
+    const isTransient = !error.response || TRANSIENT_CODES.has(status)
+
+    if (!isTransient || config.__retryCount >= MAX_RETRIES) {
       return Promise.reject(error)
     }
 
-    const isTransient =
-      !error.response ||                          // network / timeout
-      error.response.status === 503 ||            // service unavailable
-      error.response.status === 502 ||            // bad gateway
-      error.response.status === 504               // gateway timeout
-
-    if (!isTransient) {
-      console.error('API Error:', error.response?.data || error.message)
-      return Promise.reject(error)
-    }
-
-    config.__retryCount = (config.__retryCount || 0) + 1
-    const delay = config.__retryCount * 1500
+    config.__retryCount += 1
+    // Exponential back-off: 2s, 4s, 8s, 16s — covers Azure cold-start (15-30s)
+    const delay = Math.min(2000 * Math.pow(2, config.__retryCount - 1), 20000)
     await new Promise(res => setTimeout(res, delay))
     return api(config)
   }
 )
+
+// Ping the health endpoint to keep the backend alive (every 4 min)
+let keepAliveTimer = null
+
+export function startKeepAlive() {
+  if (keepAliveTimer) return
+  keepAliveTimer = setInterval(() => {
+    axios.get(`${BASE_URL}/health`, { timeout: 10000 }).catch(() => {})
+  }, 4 * 60 * 1000) // 4 minutes — below Azure LB 4-min idle timeout
+}
+
+export function stopKeepAlive() {
+  if (keepAliveTimer) {
+    clearInterval(keepAliveTimer)
+    keepAliveTimer = null
+  }
+}
 
 export default api

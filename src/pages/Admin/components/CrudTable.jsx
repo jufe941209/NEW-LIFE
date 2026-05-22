@@ -70,9 +70,11 @@ const CrudTable = ({
               ) : (
                 data.map((row, index) => {
                   const isActive = onToggleStatus ? row[statusField] === activeValue : true
+                  const rowKey = row.numero_identificacion ?? row.cedula_cli ?? row.cedula_resp ??
+                    row.cedula_dom ?? row.numero_factura ?? row.id_detalle ?? row.id ?? index
                   return (
                     <tr
-                      key={row.id || row.cedula_adm || row.cedula_cli || row.cedula_dom || index}
+                      key={rowKey}
                       className={!isActive ? 'row-inactive' : ''}
                     >
                       {columns.map(col => (

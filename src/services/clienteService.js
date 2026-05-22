@@ -28,13 +28,12 @@ const clienteService = {
     return response.data
   },
 
-  // Login: busca por correo activo. Retorna { cliente, inactivo } para distinguir casos
-  login: async (correo) => {
-    const clientes = await clienteService.getAll()
-    const activo = clientes.find((c) => c.correo === correo && c.estado === 'Activo')
-    if (activo) return { cliente: activo, inactivo: false }
-    const inactivo = clientes.find((c) => c.correo === correo && c.estado === 'Inactivo')
-    if (inactivo) return { cliente: null, inactivo: true }
+  // Login: valida correo + contraseña en el backend
+  login: async (correo, contrasena) => {
+    const response = await api.post('/cliente/login', { correo, contrasena })
+    const data = response.data
+    if (data.success) return { cliente: data.cliente, inactivo: false }
+    if (data.message && data.message.includes('desactivada')) return { cliente: null, inactivo: true }
     return null
   },
 

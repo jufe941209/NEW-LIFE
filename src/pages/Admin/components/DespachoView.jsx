@@ -44,6 +44,8 @@ const DespachoView = () => {
   const [filter, setFilter] = useState('')
   const [filterEstado, setFilterEstado] = useState('')
   const [printingFac, setPrintingFac] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(null)
 
   const load = async () => {
     setLoading(true)
@@ -76,6 +78,19 @@ const DespachoView = () => {
       const clienteData = clientesMap[factura.cedula_cli] || null
       imprimirFactura(factura, Array.isArray(detalles) ? detalles : [], productosMap, clienteData)
     } finally { setPrintingFac(null) }
+  }
+
+  const handleDelete = async (id) => {
+    setDeletingId(id)
+    try {
+      await despachoService.remove(id)
+      setDespachos(prev => prev.filter(d => d.numero_despacho !== id))
+    } catch {
+      alert('No se pudo eliminar el despacho.')
+    } finally {
+      setDeletingId(null)
+      setConfirmDelete(null)
+    }
   }
 
   useEffect(() => { load() }, [])
@@ -213,7 +228,7 @@ const DespachoView = () => {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
                 <thead>
                   <tr style={{ background: '#f8fafc' }}>
-                    {['#', 'Factura / Cliente', 'Estado', 'Responsable', 'Domiciliario', 'F. Despacho', 'F. Aprobación', 'F. Entrega', 'PDF'].map(h => (
+                    {['#', 'Factura / Cliente', 'Estado', 'Responsable', 'Domiciliario', 'F. Despacho', 'F. Aprobación', 'F. Entrega', 'PDF', ''].map(h => (
                       <th key={h} style={{
                         padding: '0.75rem 1rem', textAlign: 'left',
                         fontSize: '0.75rem', fontWeight: 700,
@@ -268,6 +283,45 @@ const DespachoView = () => {
                                 ? <span className="spinner-border spinner-border-sm"></span>
                                 : <><i className="fas fa-print"></i> PDF</>
                               }
+                            </button>
+                          )}
+                        </td>
+                        <td style={{ padding: '0.75rem 1rem' }}>
+                          {confirmDelete === d.numero_despacho ? (
+                            <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                              <button
+                                onClick={() => handleDelete(d.numero_despacho)}
+                                disabled={deletingId === d.numero_despacho}
+                                style={{
+                                  background: '#dc2626', color: '#fff', border: 'none',
+                                  padding: '3px 8px', borderRadius: 6, fontSize: '0.73rem',
+                                  fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap'
+                                }}
+                              >
+                                {deletingId === d.numero_despacho
+                                  ? <span className="spinner-border spinner-border-sm"></span>
+                                  : '✓ Sí'}
+                              </button>
+                              <button
+                                onClick={() => setConfirmDelete(null)}
+                                style={{
+                                  background: '#e2e8f0', color: '#475569', border: 'none',
+                                  padding: '3px 8px', borderRadius: 6, fontSize: '0.73rem',
+                                  fontWeight: 700, cursor: 'pointer'
+                                }}
+                              >No</button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => setConfirmDelete(d.numero_despacho)}
+                              title="Eliminar despacho"
+                              style={{
+                                background: '#fff5f5', color: '#dc2626', border: '1px solid #fecaca',
+                                padding: '4px 8px', borderRadius: 6, fontSize: '0.78rem',
+                                fontWeight: 600, cursor: 'pointer'
+                              }}
+                            >
+                              <i className="fas fa-trash"></i>
                             </button>
                           )}
                         </td>

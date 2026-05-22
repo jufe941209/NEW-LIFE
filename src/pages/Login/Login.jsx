@@ -53,7 +53,7 @@ const Login = () => {
       }
 
       // 3) Intentar como cliente
-      const result = await clienteService.login(formData.correo)
+      const result = await clienteService.login(formData.correo, formData.contrasena)
       if (result?.cliente) {
         loginCliente(result.cliente, formData.contrasena)
         navigate(formData.contrasena === '111111' ? '/cambiar-password' : '/')
@@ -155,6 +155,12 @@ const Login = () => {
                       : <><i className="fas fa-sign-in-alt me-2"></i>Iniciar Sesión</>
                     }
                   </Button>
+
+                  <div className="text-center mb-3">
+                    <Link to="/forgot-password" className="register-link" style={{ fontSize: '0.9rem' }}>
+                      <i className="fas fa-key me-1"></i>¿Olvidaste tu contraseña?
+                    </Link>
+                  </div>
 
                   <div className="text-center">
                     <p className="mb-0 text-muted">

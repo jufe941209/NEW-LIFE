@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react'
 import { AuthProvider } from './context/AuthContext'
 import { Layout } from './components/organisms'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
@@ -6,6 +7,8 @@ import { CartProvider } from './context/CartContext'
 import ProtectedResponsableRoute from './components/ProtectedResponsableRoute'
 import { ResponsableLogin, ResponsableDashboard } from './pages/Responsable'
 import ScrollToTop from './components/ScrollToTop'
+import ConnectionStatus from './components/ConnectionStatus'
+import { startKeepAlive, stopKeepAlive } from './services/api'
 
 // Pages - from new subfolder structure
 import Home from './pages/Home'
@@ -23,6 +26,8 @@ import Admin from './pages/Admin'
 import MiPerfil from './pages/MiPerfil'
 import MisCompras from './pages/MisCompras'
 import CambiarPassword from './pages/CambiarPassword'
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
+import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions'
 
 /**
  * PublicLayout - Envuelve rutas públicas con Navbar y Footer
@@ -36,9 +41,15 @@ const PublicLayout = ({ children }) => {
 }
 
 function App() {
+  useEffect(() => {
+    startKeepAlive()
+    return () => stopKeepAlive()
+  }, [])
+
   return (
     <AuthProvider>
       <CartProvider>
+      <ConnectionStatus />
       <ScrollToTop />
       <Routes>
         {/* Admin route - SIN el Layout público (no Navbar/Footer) */}
@@ -76,6 +87,8 @@ function App() {
         <Route path="/mi-perfil" element={<PublicLayout><MiPerfil /></PublicLayout>} />
         <Route path="/mis-compras" element={<PublicLayout><MisCompras /></PublicLayout>} />
         <Route path="/cambiar-password" element={<PublicLayout><CambiarPassword /></PublicLayout>} />
+        <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
+        <Route path="/terminos" element={<PublicLayout><TermsAndConditions /></PublicLayout>} />
         <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
       </Routes>
       </CartProvider>
