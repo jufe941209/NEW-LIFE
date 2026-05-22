@@ -6,9 +6,13 @@ import domiciliarioService from '../../services/domiciliarioService'
 import facturaService from '../../services/facturaService'
 import detalleFacturaService from '../../services/detalleFacturaService'
 import productoService from '../../services/productoService'
+import transporteService from '../../services/transporteService'
+import responsableService from '../../services/responsableService'
+import clienteService from '../../services/clienteService'
 import ProductoCrud from '../Admin/components/ProductoCrud'
 import { imprimirFactura } from '../../utils/imprimirFactura'
 import './ResponsableDashboard.css'
+import '../MiPerfil/MiPerfil.css'
 
 const ESTADOS = ['Pendiente', 'En camino', 'Entregado', 'Cancelado']
 
@@ -34,8 +38,219 @@ const estadoPagoBadge = (val) => {
   return <span style={{ background: color + '18', color, fontWeight: 700, fontSize: '0.78rem', padding: '3px 10px', borderRadius: 20 }}>{val || '—'}</span>
 }
 
+const EyeBtnR = ({ show, onToggle }) => (
+  <button type="button" className="btn btn-outline-secondary" onClick={onToggle} tabIndex={-1}>
+    <i className={`fas ${show ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+  </button>
+)
+
+const RespPerfilSection = ({ responsable, loginResponsable }) => {
+  const [editMode, setEditMode] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
+  const [errorMsg, setErrorMsg] = useState('')
+  const [showPass, setShowPass] = useState({ actual: false, nueva: false, confirm: false })
+
+  const [form, setForm] = useState({
+    nombres: responsable?.nombres || '',
+    correo: responsable?.correo || '',
+    telefono: responsable?.telefono || '',
+    contrasenaActual: '',
+    contrasenaNew: '',
+    contrasenaNew2: ''
+  })
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  const togglePass = (field) => setShowPass(prev => ({ ...prev, [field]: !prev[field] }))
+
+  const handleSave = async (e) => {
+    e.preventDefault()
+    if (!form.nombres || !form.correo) { setErrorMsg('Nombres y correo son requeridos'); return }
+
+    const wantsPassword = form.contrasenaActual || form.contrasenaNew || form.contrasenaNew2
+    let newPassword = undefined
+    if (wantsPassword) {
+      if (!form.contrasenaActual) { setErrorMsg('Debes ingresar tu contraseña actual'); return }
+      if (!form.contrasenaNew)    { setErrorMsg('Debes ingresar la nueva contraseña'); return }
+      if (!form.contrasenaNew2)   { setErrorMsg('Debes confirmar la nueva contraseña'); return }
+      if (form.contrasenaActual !== (responsable.contrasena || '')) {
+        setErrorMsg('La contraseña actual no es correcta'); return
+      }
+      if (form.contrasenaNew.length < 6) { setErrorMsg('La nueva contraseña debe tener al menos 6 caracteres'); return }
+      if (form.contrasenaNew !== form.contrasenaNew2) { setErrorMsg('Las contraseñas nuevas no coinciden'); return }
+      newPassword = form.contrasenaNew
+    }
+
+    setIsSaving(true)
+    setErrorMsg('')
+    setSuccessMsg('')
+    try {
+      const payload = { ...responsable, nombres: form.nombres, correo: form.correo, telefono: form.telefono }
+      if (newPassword) payload.contrasena = newPassword
+      await responsableService.update(responsable.cedula_resp, payload)
+      loginResponsable({ ...responsable, ...payload })
+      setSuccessMsg('¡Perfil actualizado correctamente!')
+      setEditMode(false)
+      setForm(prev => ({ ...prev, contrasenaActual: '', contrasenaNew: '', contrasenaNew2: '' }))
+    } catch (err) {
+      setErrorMsg(err?.response?.data?.Message || 'Error al actualizar el perfil.')
+    } finally { setIsSaving(false) }
+  }
+
+  const cancelEdit = () => {
+    setEditMode(false)
+    setErrorMsg('')
+    setSuccessMsg('')
+    setForm({
+      nombres: responsable?.nombres || '',
+      correo: responsable?.correo || '',
+      telefono: responsable?.telefono || '',
+      contrasenaActual: '',
+      contrasenaNew: '',
+      contrasenaNew2: ''
+    })
+  }
+
+  return (
+    <div style={{ maxWidth: 700, margin: '0 auto' }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap',
+        background: 'linear-gradient(135deg, #1e3a5f, #7c3aed)', borderRadius: 20,
+        padding: '2rem', color: 'white', marginBottom: '1.5rem'
+      }}>
+        <div style={{ fontSize: '4rem', lineHeight: 1 }}><i className="fas fa-user-tie"></i></div>
+        <div style={{ flex: 1 }}>
+          <h2 style={{ fontSize: '1.6rem', fontWeight: 800, margin: '0 0 0.25rem' }}>{responsable?.nombres}</h2>
+          <p style={{ margin: '0 0 0.5rem', opacity: 0.9, fontSize: '0.95rem' }}>{responsable?.correo}</p>
+          <span style={{ background: 'rgba(255,255,255,0.2)', padding: '0.2rem 0.75rem', borderRadius: 20, fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase' }}>
+            Responsable
+          </span>
+        </div>
+        <div>
+          {!editMode && (
+            <button className="btn btn-light" onClick={() => setEditMode(true)}>
+              <i className="fas fa-edit me-2"></i>Editar Perfil
+            </button>
+          )}
+        </div>
+      </div>
+
+      {successMsg && <div className="alert alert-success"><i className="fas fa-check-circle me-2"></i>{successMsg}</div>}
+      {errorMsg && <div className="alert alert-danger"><i className="fas fa-exclamation-circle me-2"></i>{errorMsg}</div>}
+
+      {!editMode && (
+        <div className="perfil-info-card">
+          <h4 className="perfil-section-title"><i className="fas fa-info-circle me-2"></i>Información Personal</h4>
+          <div className="perfil-info-grid">
+            {[
+              { icon: 'fas fa-id-card', label: 'Cédula', value: responsable?.cedula_resp },
+              { icon: 'fas fa-envelope', label: 'Correo', value: responsable?.correo },
+              { icon: 'fas fa-phone', label: 'Teléfono', value: responsable?.telefono || 'No registrado' },
+              { icon: 'fas fa-calendar', label: 'Fecha de Registro', value: responsable?.fecha_registro ? new Date(responsable.fecha_registro).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }) : '—' },
+              { icon: 'fas fa-circle', label: 'Estado', value: responsable?.estado, badge: true },
+            ].map(item => (
+              <div key={item.label} className="perfil-info-item">
+                <div className="perfil-info-icon" style={{ background: 'rgba(124,58,237,0.1)', color: '#7c3aed' }}>
+                  <i className={item.icon}></i>
+                </div>
+                <div className="perfil-info-content">
+                  <span className="perfil-info-label">{item.label}</span>
+                  {item.badge
+                    ? <span className={`perfil-badge ${item.value === 'Activo' ? 'active' : 'inactive'}`} style={{ background: 'rgba(124,58,237,0.15)', color: '#7c3aed' }}>{item.value}</span>
+                    : <span className="perfil-info-value">{item.value}</span>
+                  }
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {editMode && (
+        <div className="perfil-edit-card">
+          <h4 className="perfil-section-title"><i className="fas fa-edit me-2"></i>Editar Información</h4>
+          <form onSubmit={handleSave}>
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Cédula (no editable)</label>
+                <input className="form-control" value={responsable?.cedula_resp || ''} disabled />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Rol</label>
+                <input className="form-control" value="Responsable" disabled />
+              </div>
+              <div className="col-12 mb-3">
+                <label className="form-label">Nombres Completos *</label>
+                <input name="nombres" className="form-control" value={form.nombres} onChange={handleChange} required />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Correo Electrónico *</label>
+                <input type="email" name="correo" className="form-control" value={form.correo} onChange={handleChange} required />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Teléfono</label>
+                <input name="telefono" className="form-control" value={form.telefono} onChange={handleChange} placeholder="3001234567" />
+              </div>
+            </div>
+
+            <div className="perfil-pass-section">
+              <h5 className="perfil-pass-title">
+                <i className="fas fa-lock me-2"></i>Cambiar Contraseña
+                <span className="perfil-pass-hint">opcional — deja los campos vacíos si no quieres cambiarla</span>
+              </h5>
+              <div className="row">
+                <div className="col-12 mb-3">
+                  <label className="form-label">Contraseña Actual</label>
+                  <div className="input-group">
+                    <input type={showPass.actual ? 'text' : 'password'} name="contrasenaActual" className="form-control"
+                      value={form.contrasenaActual} onChange={handleChange} placeholder="Ingresa tu contraseña actual" autoComplete="current-password" />
+                    <EyeBtnR show={showPass.actual} onToggle={() => togglePass('actual')} />
+                  </div>
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label className="form-label">Nueva Contraseña</label>
+                  <div className="input-group">
+                    <input type={showPass.nueva ? 'text' : 'password'} name="contrasenaNew" className="form-control"
+                      value={form.contrasenaNew} onChange={handleChange} placeholder="Mínimo 6 caracteres" autoComplete="new-password" />
+                    <EyeBtnR show={showPass.nueva} onToggle={() => togglePass('nueva')} />
+                  </div>
+                </div>
+                <div className="col-md-6 mb-4">
+                  <label className="form-label">Confirmar Nueva Contraseña</label>
+                  <div className="input-group">
+                    <input type={showPass.confirm ? 'text' : 'password'} name="contrasenaNew2" className="form-control"
+                      value={form.contrasenaNew2} onChange={handleChange} placeholder="Repite la nueva contraseña" autoComplete="new-password" />
+                    <EyeBtnR show={showPass.confirm} onToggle={() => togglePass('confirm')} />
+                  </div>
+                  {form.contrasenaNew && form.contrasenaNew2 && (
+                    <div className={`form-text mt-1 ${form.contrasenaNew === form.contrasenaNew2 ? 'text-success' : 'text-danger'}`}>
+                      <i className={`fas ${form.contrasenaNew === form.contrasenaNew2 ? 'fa-check-circle' : 'fa-times-circle'} me-1`}></i>
+                      {form.contrasenaNew === form.contrasenaNew2 ? 'Las contraseñas coinciden' : 'Las contraseñas no coinciden'}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="d-flex gap-2">
+              <button type="submit" className="btn btn-success flex-grow-1" disabled={isSaving}>
+                {isSaving ? <><span className="spinner-border spinner-border-sm me-2"></span>Guardando...</> : <><i className="fas fa-save me-2"></i>Guardar Cambios</>}
+              </button>
+              <button type="button" className="btn btn-outline-secondary" onClick={cancelEdit}>Cancelar</button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const ResponsableDashboard = () => {
-  const { responsable, logoutResponsable } = useAuth()
+  const { responsable, loginResponsable, logoutResponsable } = useAuth()
   const navigate = useNavigate()
   const [section, setSection] = useState('dashboard')
 
@@ -44,6 +259,7 @@ const ResponsableDashboard = () => {
   const [domiciliarios, setDomiciliarios] = useState([])
   const [facturas, setFacturas] = useState([])
   const [productosMap, setProductosMap] = useState({})
+  const [transporteMap, setTransporteMap] = useState({})
   const [loading, setLoading] = useState(true)
 
   // Despacho actions
@@ -60,20 +276,26 @@ const ResponsableDashboard = () => {
   const load = async () => {
     setLoading(true)
     try {
-      const [d, dom, fac, prods] = await Promise.all([
+      const [d, dom, fac, prods, transportes] = await Promise.all([
         despachoService.getAll().catch(() => []),
         domiciliarioService.getAll().catch(() => []),
         facturaService.getAll().catch(() => []),
         productoService.getAll().catch(() => []),
+        transporteService.getAll().catch(() => []),
       ])
       const dlist = Array.isArray(d) ? d : []
       const domList = Array.isArray(dom) ? dom : []
       const facList = Array.isArray(fac) ? fac : []
       const prodList = Array.isArray(prods) ? prods : []
+      const transList = Array.isArray(transportes) ? transportes : []
 
       const pm = {}
       prodList.forEach(p => { pm[p.codigo_prod] = p })
       setProductosMap(pm)
+
+      const tm = {}
+      transList.forEach(t => { tm[t.cedula_domi] = t })
+      setTransporteMap(tm)
 
       // Auto-fix: despachos "En camino"/"Entregado" sin domiciliario
       const sinDomi = dlist.filter(x =>
@@ -104,7 +326,7 @@ const ResponsableDashboard = () => {
 
   useEffect(() => { load() }, [])
 
-  const handleLogout = () => { logoutResponsable(); navigate('/login-responsable') }
+  const handleLogout = () => { logoutResponsable(); navigate('/login') }
   const getNombreDomi = (cc) => domiciliarios.find(d => d.cedula_domi === cc)?.nombres || cc || '—'
   const getFactura = (num) => facturas.find(f => f.numero_factura === num)
   const domiDisponibles = domiciliarios.filter(d => d.disponibilidad === 'Disponible' && d.estado !== 'Inactivo')
@@ -152,8 +374,11 @@ const ResponsableDashboard = () => {
   const handleImprimirFactura = async (factura) => {
     setPrintingFac(factura.numero_factura)
     try {
-      const detalles = await detalleFacturaService.getByFactura(factura.numero_factura).catch(() => [])
-      imprimirFactura(factura, Array.isArray(detalles) ? detalles : [], productosMap)
+      const [detalles, clienteData] = await Promise.all([
+        detalleFacturaService.getByFactura(factura.numero_factura).catch(() => []),
+        clienteService.getById(factura.cedula_cli).catch(() => null),
+      ])
+      imprimirFactura(factura, Array.isArray(detalles) ? detalles : [], productosMap, clienteData)
     } finally { setPrintingFac(null) }
   }
 
@@ -186,6 +411,7 @@ const ResponsableDashboard = () => {
     { key: 'despachos',  label: 'Despachos',   icon: 'fas fa-shipping-fast' },
     { key: 'facturas',   label: 'Facturas',    icon: 'fas fa-file-invoice-dollar' },
     { key: 'inventario', label: 'Inventario',  icon: 'fas fa-boxes' },
+    { key: 'perfil',     label: 'Mi Perfil',   icon: 'fas fa-user-circle' },
   ]
 
   const getSectionTitle = () => ({
@@ -193,6 +419,7 @@ const ResponsableDashboard = () => {
     despachos: 'Gestión de Despachos',
     facturas: 'Facturas de Venta',
     inventario: 'Inventario de Productos',
+    perfil: 'Mi Perfil',
   }[section] || 'Dashboard')
 
   return (
@@ -584,6 +811,11 @@ const ResponsableDashboard = () => {
             </div>
           )}
 
+          {/* ══════════════ MI PERFIL ══════════════ */}
+          {section === 'perfil' && (
+            <RespPerfilSection responsable={responsable} loginResponsable={loginResponsable} />
+          )}
+
         </main>
       </div>
 
@@ -608,12 +840,39 @@ const ResponsableDashboard = () => {
               {domiDisponibles.length === 0 ? (
                 <p className="resp-assign-empty"><i className="fas fa-times-circle me-2"></i>No hay domiciliarios disponibles.</p>
               ) : (
-                <select className="resp-assign-select" value={selectedDomi} onChange={e => setSelectedDomi(e.target.value)}>
-                  <option value="">Seleccionar...</option>
-                  {domiDisponibles.map(d => (
-                    <option key={d.cedula_domi} value={d.cedula_domi}>{d.nombres} — {d.cedula_domi}</option>
-                  ))}
-                </select>
+                <>
+                  <select className="resp-assign-select" value={selectedDomi} onChange={e => setSelectedDomi(e.target.value)}>
+                    <option value="">Seleccionar...</option>
+                    {domiDisponibles.map(d => {
+                      const t = transporteMap[d.cedula_domi]
+                      return (
+                        <option key={d.cedula_domi} value={d.cedula_domi}>
+                          {d.nombres}{t ? ` — ${t.tipo} ${t.placa}` : ' — Sin vehículo'}
+                        </option>
+                      )
+                    })}
+                  </select>
+                  {selectedDomi && (() => {
+                    const domi = domiDisponibles.find(d => d.cedula_domi === selectedDomi)
+                    const t = transporteMap[selectedDomi]
+                    if (!domi) return null
+                    return (
+                      <div style={{ marginTop: '0.85rem', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10, padding: '0.7rem 1rem', fontSize: '0.85rem' }}>
+                        <div style={{ fontWeight: 700, color: '#15803d', marginBottom: 4 }}>
+                          <i className="fas fa-user me-2"></i>{domi.nombres}
+                        </div>
+                        {t ? (
+                          <div style={{ color: '#374151', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                            <span><i className="fas fa-truck me-1 text-success"></i><strong>{t.tipo}</strong> — Placa: <strong>{t.placa}</strong></span>
+                            {t.descripcion && <span style={{ color: '#6b7280' }}>{t.descripcion}</span>}
+                          </div>
+                        ) : (
+                          <div style={{ color: '#f59e0b' }}><i className="fas fa-exclamation-triangle me-1"></i>Sin vehículo registrado</div>
+                        )}
+                      </div>
+                    )
+                  })()}
+                </>
               )}
             </div>
             <div className="resp-assign-footer">

@@ -1,8 +1,8 @@
 import api from './api'
 
-const ENDPOINT = '/tipoProducto'
+const ENDPOINT = '/transporte'
 
-const tipoProductoService = {
+const transporteService = {
   getAll: async () => {
     const response = await api.get(ENDPOINT)
     return response.data
@@ -15,14 +15,15 @@ const tipoProductoService = {
     const response = await api.post(ENDPOINT, data)
     return response.data
   },
-  update: async (id, data) => {
+  update: async (placa, data) => {
+    // PUT /transporte — ID va en el body como placa
     const response = await api.put(ENDPOINT, data)
     return response.data
   },
-  remove: async (id) => {
-    const response = await api.delete(`${ENDPOINT}/${id}`)
+  remove: async (placa) => {
+    const response = await api.delete(`${ENDPOINT}/${placa}`)
     return response.data
   }
 }
 
-export default tipoProductoService
+export default transporteService

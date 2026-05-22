@@ -28,6 +28,12 @@ const responsableService = {
     return todos.find(
       r => r.cedula_resp === cedula && r.correo === correo && r.estado === 'Activo'
     ) || null
+  },
+  loginWithPassword: async (correo, contrasena) => {
+    const todos = await responsableService.getAll()
+    return todos.find(
+      r => r.correo === correo && r.contrasena === contrasena && r.estado === 'Activo'
+    ) || null
   }
 }
 

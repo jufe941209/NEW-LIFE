@@ -3,6 +3,10 @@ import despachoService from '../../../services/despachoService'
 import domiciliarioService from '../../../services/domiciliarioService'
 import responsableService from '../../../services/responsableService'
 import facturaService from '../../../services/facturaService'
+import clienteService from '../../../services/clienteService'
+import detalleFacturaService from '../../../services/detalleFacturaService'
+import productoService from '../../../services/productoService'
+import { imprimirFactura } from '../../../utils/imprimirFactura'
 
 const ESTADOS = ['Pendiente', 'En camino', 'Entregado', 'Cancelado']
 
@@ -34,24 +38,44 @@ const DespachoView = () => {
   const [domiciliarios, setDomiciliarios] = useState([])
   const [responsables, setResponsables] = useState([])
   const [facturas, setFacturas] = useState([])
+  const [clientesMap, setClientesMap] = useState({})
+  const [productosMap, setProductosMap] = useState({})
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('')
   const [filterEstado, setFilterEstado] = useState('')
+  const [printingFac, setPrintingFac] = useState(null)
 
   const load = async () => {
     setLoading(true)
     try {
-      const [d, dom, resp, fac] = await Promise.all([
+      const [d, dom, resp, fac, clis, prods] = await Promise.all([
         despachoService.getAll().catch(() => []),
         domiciliarioService.getAll().catch(() => []),
         responsableService.getAll().catch(() => []),
         facturaService.getAll().catch(() => []),
+        clienteService.getAll().catch(() => []),
+        productoService.getAll().catch(() => []),
       ])
       setDespachos(Array.isArray(d) ? d : [])
       setDomiciliarios(Array.isArray(dom) ? dom : [])
       setResponsables(Array.isArray(resp) ? resp : [])
       setFacturas(Array.isArray(fac) ? fac : [])
+      const cm = {}
+      if (Array.isArray(clis)) clis.forEach(c => { cm[c.numero_identificacion] = c })
+      setClientesMap(cm)
+      const pm = {}
+      if (Array.isArray(prods)) prods.forEach(p => { pm[p.codigo_prod] = p })
+      setProductosMap(pm)
     } finally { setLoading(false) }
+  }
+
+  const handleImprimirFactura = async (factura) => {
+    setPrintingFac(factura.numero_factura)
+    try {
+      const detalles = await detalleFacturaService.getByFactura(factura.numero_factura).catch(() => [])
+      const clienteData = clientesMap[factura.cedula_cli] || null
+      imprimirFactura(factura, Array.isArray(detalles) ? detalles : [], productosMap, clienteData)
+    } finally { setPrintingFac(null) }
   }
 
   useEffect(() => { load() }, [])
@@ -189,7 +213,7 @@ const DespachoView = () => {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
                 <thead>
                   <tr style={{ background: '#f8fafc' }}>
-                    {['#', 'Factura', 'Estado', 'Responsable', 'Domiciliario', 'F. Despacho', 'F. Aprobación', 'F. Entrega'].map(h => (
+                    {['#', 'Factura / Cliente', 'Estado', 'Responsable', 'Domiciliario', 'F. Despacho', 'F. Aprobación', 'F. Entrega', 'PDF'].map(h => (
                       <th key={h} style={{
                         padding: '0.75rem 1rem', textAlign: 'left',
                         fontSize: '0.75rem', fontWeight: 700,
@@ -201,27 +225,55 @@ const DespachoView = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map(d => (
-                    <tr key={d.numero_despacho} style={{ borderBottom: '1px solid #f1f5f9' }}
-                      onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
-                      onMouseLeave={e => e.currentTarget.style.background = ''}
-                    >
-                      <td style={{ padding: '0.75rem 1rem' }}><strong>#{d.numero_despacho}</strong></td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>{d.numero_factura || '—'}</td>
-                      <td style={{ padding: '0.75rem 1rem' }}><EstadoBadge estado={d.estado || 'Pendiente'} /></td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>
-                        {getNombre(responsables, 'cedula_resp', d.cc_responsable)}
-                      </td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>
-                        {getNombre(domiciliarios, 'cedula_domi', d.cc_domiciliario)}
-                      </td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#64748b' }}>{fmtDate(d.fecha_despacho)}</td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#64748b' }}>{fmtDT(d.fecha_aprobacion)}</td>
-                      <td style={{ padding: '0.75rem 1rem', color: d.fecha_entrega ? '#22c55e' : '#64748b', fontWeight: d.fecha_entrega ? 600 : 400 }}>
-                        {fmtDT(d.fecha_entrega)}
-                      </td>
-                    </tr>
-                  ))}
+                  {filtered.map(d => {
+                    const factura = facturas.find(f => f.numero_factura === d.numero_factura)
+                    const cliente = factura ? clientesMap[factura.cedula_cli] : null
+                    return (
+                      <tr key={d.numero_despacho} style={{ borderBottom: '1px solid #f1f5f9' }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                        onMouseLeave={e => e.currentTarget.style.background = ''}
+                      >
+                        <td style={{ padding: '0.75rem 1rem' }}><strong>#{d.numero_despacho}</strong></td>
+                        <td style={{ padding: '0.75rem 1rem' }}>
+                          <div style={{ fontWeight: 700, color: '#0f172a' }}>{d.numero_factura || '—'}</div>
+                          {cliente && <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: 2 }}>{cliente.nombres}</div>}
+                          {factura && !cliente && <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: 2 }}>{factura.cedula_cli}</div>}
+                          {factura?.metodo_pago && <div style={{ fontSize: '0.73rem', color: '#94a3b8' }}>{factura.metodo_pago}</div>}
+                        </td>
+                        <td style={{ padding: '0.75rem 1rem' }}><EstadoBadge estado={d.estado || 'Pendiente'} /></td>
+                        <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>
+                          {getNombre(responsables, 'cedula_resp', d.cc_responsable)}
+                        </td>
+                        <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>
+                          {getNombre(domiciliarios, 'cedula_domi', d.cc_domiciliario)}
+                        </td>
+                        <td style={{ padding: '0.75rem 1rem', color: '#64748b' }}>{fmtDate(d.fecha_despacho)}</td>
+                        <td style={{ padding: '0.75rem 1rem', color: '#64748b' }}>{fmtDT(d.fecha_aprobacion)}</td>
+                        <td style={{ padding: '0.75rem 1rem', color: d.fecha_entrega ? '#22c55e' : '#64748b', fontWeight: d.fecha_entrega ? 600 : 400 }}>
+                          {fmtDT(d.fecha_entrega)}
+                        </td>
+                        <td style={{ padding: '0.75rem 1rem' }}>
+                          {factura && (
+                            <button
+                              onClick={() => handleImprimirFactura(factura)}
+                              disabled={printingFac === factura.numero_factura}
+                              style={{
+                                background: 'linear-gradient(135deg,#28a745,#20c997)', color: '#fff',
+                                border: 'none', padding: '4px 10px', borderRadius: 6,
+                                fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
+                                display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap'
+                              }}
+                            >
+                              {printingFac === factura.numero_factura
+                                ? <span className="spinner-border spinner-border-sm"></span>
+                                : <><i className="fas fa-print"></i> PDF</>
+                              }
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </div>

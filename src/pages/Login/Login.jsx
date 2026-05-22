@@ -5,11 +5,12 @@ import { PageHeader } from '../../components/organisms'
 import { useAuth } from '../../context/AuthContext'
 import administradorService from '../../services/administradorService'
 import clienteService from '../../services/clienteService'
+import responsableService from '../../services/responsableService'
 import './Login.css'
 
 const Login = () => {
   const navigate = useNavigate()
-  const { loginAdmin, loginCliente } = useAuth()
+  const { loginAdmin, loginCliente, loginResponsable } = useAuth()
   const [formData, setFormData] = useState({ correo: '', contrasena: '' })
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
@@ -35,7 +36,7 @@ const Login = () => {
     if (!validate()) return
     setIsLoading(true)
     try {
-      // 1) Intentar como administrador (verifica correo + contrasena)
+      // 1) Intentar como administrador
       const adminData = await administradorService.login(formData.correo, formData.contrasena)
       if (adminData) {
         loginAdmin(adminData)
@@ -43,7 +44,15 @@ const Login = () => {
         return
       }
 
-      // 2) Intentar como cliente (verifica correo + estado Activo)
+      // 2) Intentar como responsable (correo + contraseña)
+      const respData = await responsableService.loginWithPassword(formData.correo, formData.contrasena)
+      if (respData) {
+        loginResponsable(respData)
+        navigate('/responsable')
+        return
+      }
+
+      // 3) Intentar como cliente
       const result = await clienteService.login(formData.correo)
       if (result?.cliente) {
         loginCliente(result.cliente, formData.contrasena)
@@ -79,7 +88,7 @@ const Login = () => {
                 <div className="login-header text-center mb-4">
                   <img src="/img/logoNewLife.png" alt="NEW LIFE Logo" className="login-logo mb-3" />
                   <h2 className="login-title">Bienvenido de Nuevo</h2>
-                  <p className="login-subtitle text-muted">Administradores entran al panel · Clientes a la tienda</p>
+                  <p className="login-subtitle text-muted">Administradores · Responsables · Clientes</p>
                 </div>
 
                 {errors.general && (

@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
 import facturaService from '../../../services/facturaService'
+import detalleFacturaService from '../../../services/detalleFacturaService'
+import productoService from '../../../services/productoService'
+import clienteService from '../../../services/clienteService'
+import { imprimirFactura } from '../../../utils/imprimirFactura'
 import CrudTable from './CrudTable'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 
@@ -8,6 +12,7 @@ const EMPTY_FORM = { numero_factura: '', fecha: '', metodo_pago: 'Efectivo', est
 
 const FacturaCrud = () => {
   const [data, setData] = useState([])
+  const [productosMap, setProductosMap] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const [filter, setFilter] = useState('')
   const [showModal, setShowModal] = useState(false)
@@ -17,12 +22,19 @@ const FacturaCrud = () => {
   const [isSaving, setIsSaving] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [printingFac, setPrintingFac] = useState(null)
 
   const load = async () => {
     setIsLoading(true)
     try {
-      const result = await facturaService.getAll()
+      const [result, prods] = await Promise.all([
+        facturaService.getAll(),
+        productoService.getAll().catch(() => []),
+      ])
       setData(Array.isArray(result) ? result : [])
+      const pm = {}
+      if (Array.isArray(prods)) prods.forEach(p => { pm[p.codigo_prod] = p })
+      setProductosMap(pm)
     } catch (e) { setData([]) } finally { setIsLoading(false) }
   }
 
@@ -43,6 +55,17 @@ const FacturaCrud = () => {
     return 'inactive'
   }
 
+  const handleImprimirFactura = async (factura) => {
+    setPrintingFac(factura.numero_factura)
+    try {
+      const [detalles, clienteData] = await Promise.all([
+        detalleFacturaService.getByFactura(factura.numero_factura).catch(() => []),
+        clienteService.getById(factura.cedula_cli).catch(() => null),
+      ])
+      imprimirFactura(factura, Array.isArray(detalles) ? detalles : [], productosMap, clienteData)
+    } finally { setPrintingFac(null) }
+  }
+
   const columns = [
     { key: 'numero_factura', label: 'N° Factura' },
     { key: 'cedula_cli', label: 'Cédula Cliente' },
@@ -51,7 +74,27 @@ const FacturaCrud = () => {
     { key: 'direccion_envio', label: 'Dirección Envío' },
     { key: 'estado_pago', label: 'Estado', render: (val) => (
       <span className={`status-badge ${estadoClass(val)}`}>{val}</span>
-    )}
+    )},
+    {
+      key: '_pdf', label: 'PDF',
+      render: (_, row) => (
+        <button
+          onClick={(e) => { e.stopPropagation(); handleImprimirFactura(row) }}
+          disabled={printingFac === row.numero_factura}
+          style={{
+            background: 'linear-gradient(135deg,#28a745,#20c997)', color: '#fff', border: 'none',
+            padding: '4px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
+            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap'
+          }}
+          title="Imprimir / PDF"
+        >
+          {printingFac === row.numero_factura
+            ? <span className="spinner-border spinner-border-sm"></span>
+            : <><i className="fas fa-print"></i> PDF</>
+          }
+        </button>
+      )
+    }
   ]
 
   const openCreate = () => { setEditingItem(null); setForm(EMPTY_FORM); setFormError(''); setShowModal(true) }

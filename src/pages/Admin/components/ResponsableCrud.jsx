@@ -3,7 +3,7 @@ import responsableService from '../../../services/responsableService'
 import CrudTable from './CrudTable'
 
 const ESTADOS = ['Activo', 'Inactivo']
-const EMPTY_FORM = { cedula_resp: '', nombres: '', telefono: '', correo: '', estado: 'Activo' }
+const EMPTY_FORM = { cedula_resp: '', nombres: '', telefono: '', correo: '', contrasena: '', estado: 'Activo' }
 
 const ResponsableCrud = () => {
   const [data, setData] = useState([])
@@ -16,6 +16,7 @@ const ResponsableCrud = () => {
   const [isSaving, setIsSaving] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [showPass, setShowPass] = useState(false)
 
   const load = async () => {
     setIsLoading(true)
@@ -52,7 +53,7 @@ const ResponsableCrud = () => {
     }
   ]
 
-  const openCreate = () => { setEditingItem(null); setForm(EMPTY_FORM); setFormError(''); setShowModal(true) }
+  const openCreate = () => { setEditingItem(null); setForm(EMPTY_FORM); setFormError(''); setShowPass(false); setShowModal(true) }
   const openEdit = (row) => {
     setEditingItem(row)
     setForm({
@@ -60,9 +61,11 @@ const ResponsableCrud = () => {
       nombres: row.nombres || '',
       telefono: row.telefono || '',
       correo: row.correo || '',
+      contrasena: '',
       estado: row.estado || 'Activo'
     })
     setFormError('')
+    setShowPass(false)
     setShowModal(true)
   }
   const closeModal = () => setShowModal(false)
@@ -72,9 +75,11 @@ const ResponsableCrud = () => {
     if (!form.cedula_resp) { setFormError('La cédula es requerida'); return }
     if (!form.nombres) { setFormError('El nombre es requerido'); return }
     if (!form.correo) { setFormError('El correo es requerido'); return }
+    if (!editingItem && !form.contrasena) { setFormError('La contraseña es requerida para nuevos responsables'); return }
     setIsSaving(true)
     try {
       if (editingItem) {
+        // Si no se escribe nueva contraseña, enviar vacío (backend no la actualiza)
         await responsableService.update(getId(editingItem), form)
       } else {
         await responsableService.create(form)
@@ -90,7 +95,7 @@ const ResponsableCrud = () => {
     const isActive = item.estado === 'Activo'
     if (!window.confirm(`¿Deseas ${isActive ? 'desactivar' : 'reactivar'} a "${item.nombres}"?`)) return
     try {
-      await responsableService.update(getId(item), { ...item, estado: isActive ? 'Inactivo' : 'Activo' })
+      await responsableService.update(getId(item), { ...item, estado: isActive ? 'Inactivo' : 'Activo', contrasena: '' })
       await load()
     } catch { alert('Error al cambiar estado') }
   }
@@ -124,7 +129,6 @@ const ResponsableCrud = () => {
         activeValue="Activo"
       />
 
-      {/* Modal crear / editar */}
       {showModal && (
         <div className="crud-modal-overlay" onClick={closeModal}>
           <div className="crud-modal" onClick={e => e.stopPropagation()}>
@@ -187,6 +191,34 @@ const ResponsableCrud = () => {
                 />
               </div>
 
+              <div className="form-group mb-3">
+                <label className="form-label">
+                  Contraseña {editingItem ? <span className="text-muted" style={{ fontSize: '0.8rem' }}>(dejar vacío para no cambiar)</span> : '*'}
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    className="form-control"
+                    type={showPass ? 'text' : 'password'}
+                    value={form.contrasena}
+                    onChange={e => setForm(p => ({ ...p, contrasena: e.target.value }))}
+                    placeholder={editingItem ? 'Nueva contraseña (opcional)' : 'Contraseña de acceso'}
+                    style={{ paddingRight: '2.5rem' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass(p => !p)}
+                    style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer' }}
+                  >
+                    <i className={`fas ${showPass ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                  </button>
+                </div>
+                {!editingItem && (
+                  <div className="form-text text-muted" style={{ fontSize: '0.8rem' }}>
+                    <i className="fas fa-info-circle me-1"></i>El responsable usará este correo + contraseña para iniciar sesión
+                  </div>
+                )}
+              </div>
+
               <div className="form-group mb-4">
                 <label className="form-label">Estado</label>
                 <select
@@ -212,7 +244,6 @@ const ResponsableCrud = () => {
         </div>
       )}
 
-      {/* Modal confirmar eliminación */}
       {deleteTarget && (
         <div className="crud-modal-overlay" onClick={() => setDeleteTarget(null)}>
           <div className="crud-modal" style={{ maxWidth: 440 }} onClick={e => e.stopPropagation()}>

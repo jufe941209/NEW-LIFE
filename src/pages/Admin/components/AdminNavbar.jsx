@@ -1,20 +1,39 @@
 import React from 'react'
 import './AdminNavbar.css'
 
-/**
- * AdminNavbar - Barra de navegación del panel de administración
- */
 const AdminNavbar = ({ admin, activeSection, setActiveSection, onLogout }) => {
-  const navItems = [
-    { key: 'dashboard', label: 'Dashboard', icon: 'fas fa-tachometer-alt' },
-    { key: 'administradores', label: 'Administradores', icon: 'fas fa-user-shield' },
-    { key: 'categorias', label: 'Categorías', icon: 'fas fa-tags' },
-    { key: 'clientes', label: 'Clientes', icon: 'fas fa-users' },
-    { key: 'facturas', label: 'Facturas', icon: 'fas fa-file-invoice-dollar' },
-    { key: 'domiciliarios', label: 'Domiciliarios', icon: 'fas fa-motorcycle' },
-    { key: 'productos', label: 'Productos', icon: 'fas fa-box' },
-    { key: 'despachos', label: 'Despachos', icon: 'fas fa-shipping-fast' },
-    { key: 'responsables', label: 'Responsables', icon: 'fas fa-user-tie' },
+  const navGroups = [
+    {
+      label: 'Principal',
+      items: [
+        { key: 'dashboard', label: 'Dashboard', icon: 'fas fa-tachometer-alt' },
+      ]
+    },
+    {
+      label: 'Catálogo',
+      items: [
+        { key: 'productos', label: 'Productos', icon: 'fas fa-box' },
+        { key: 'categorias', label: 'Categorías', icon: 'fas fa-tags' },
+        { key: 'tipoProducto', label: 'Tipos de Producto', icon: 'fas fa-cubes' },
+      ]
+    },
+    {
+      label: 'Operaciones',
+      items: [
+        { key: 'facturas', label: 'Facturas', icon: 'fas fa-file-invoice-dollar' },
+        { key: 'despachos', label: 'Despachos', icon: 'fas fa-shipping-fast' },
+        { key: 'domiciliarios', label: 'Domiciliarios', icon: 'fas fa-motorcycle' },
+        { key: 'transporte', label: 'Transportes', icon: 'fas fa-truck' },
+      ]
+    },
+    {
+      label: 'Personas',
+      items: [
+        { key: 'clientes', label: 'Clientes', icon: 'fas fa-users' },
+        { key: 'responsables', label: 'Responsables', icon: 'fas fa-user-tie' },
+        { key: 'administradores', label: 'Administradores', icon: 'fas fa-user-shield' },
+      ]
+    },
   ]
 
   return (
@@ -26,15 +45,20 @@ const AdminNavbar = ({ admin, activeSection, setActiveSection, onLogout }) => {
       </div>
 
       <nav className="admin-nav">
-        {navItems.map(item => (
-          <button
-            key={item.key}
-            className={`admin-nav-item ${activeSection === item.key ? 'active' : ''}`}
-            onClick={() => setActiveSection(item.key)}
-          >
-            <i className={`${item.icon} admin-nav-icon`}></i>
-            <span>{item.label}</span>
-          </button>
+        {navGroups.map(group => (
+          <div key={group.label} className="admin-nav-group">
+            <span className="admin-nav-group-label">{group.label}</span>
+            {group.items.map(item => (
+              <button
+                key={item.key}
+                className={`admin-nav-item ${activeSection === item.key ? 'active' : ''}`}
+                onClick={() => setActiveSection(item.key)}
+              >
+                <i className={`${item.icon} admin-nav-icon`}></i>
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </div>
         ))}
       </nav>
 

@@ -8,7 +8,7 @@
 
 .admin-content {
   flex: 1;
-  margin-left: 260px;
+  margin-left: 240px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -149,8 +149,15 @@
   margin: 0 0 0.25rem;
 }
 
+.stat-card-count {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0 0 0.1rem;
+  line-height: 1;
+}
+
 .stat-card-action {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: #6b7280;
   margin: 0;
   transition: color 0.2s;

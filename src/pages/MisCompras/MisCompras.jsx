@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import facturaService from '../../services/facturaService'
 import detalleFacturaService from '../../services/detalleFacturaService'
 import productoService from '../../services/productoService'
+import { imprimirFactura } from '../../utils/imprimirFactura'
 import { PageHeader } from '../../components/organisms'
 import './MisCompras.css'
 
@@ -22,11 +23,12 @@ const MisCompras = () => {
   const nuevaFactura = location.state?.nuevaFactura
 
   const [facturas, setFacturas] = useState([])
-  const [detallesMap, setDetallesMap] = useState({}) // { numero_factura: [detalle] }
-  const [productosMap, setProductosMap] = useState({}) // { codigo_prod: producto }
+  const [detallesMap, setDetallesMap] = useState({})
+  const [productosMap, setProductosMap] = useState({})
   const [expandedFactura, setExpandedFactura] = useState(nuevaFactura || null)
   const [isLoading, setIsLoading] = useState(false)
   const [filter, setFilter] = useState('todos')
+  const [printingFac, setPrintingFac] = useState(null)
 
   useEffect(() => {
     if (!cliente) { navigate('/login'); return }
@@ -58,6 +60,14 @@ const MisCompras = () => {
     }
     load()
   }, [cliente, navigate])
+
+  const handleImprimirFactura = async (factura) => {
+    setPrintingFac(factura.numero_factura)
+    try {
+      const dets = detallesMap[factura.numero_factura] || []
+      imprimirFactura(factura, dets, productosMap, cliente)
+    } finally { setPrintingFac(null) }
+  }
 
   if (!cliente) return null
 
@@ -177,6 +187,21 @@ const MisCompras = () => {
                       <span className={`compra-estado ${cfg.class}`}>
                         <i className={`fas ${cfg.icon} me-1`}></i>{cfg.label}
                       </span>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleImprimirFactura(factura) }}
+                        disabled={printingFac === factura.numero_factura}
+                        title="Descargar PDF"
+                        style={{
+                          background: 'linear-gradient(135deg,#28a745,#20c997)', color: '#fff', border: 'none',
+                          padding: '4px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
+                          cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0
+                        }}
+                      >
+                        {printingFac === factura.numero_factura
+                          ? <span className="spinner-border spinner-border-sm"></span>
+                          : <><i className="fas fa-file-pdf"></i> PDF</>
+                        }
+                      </button>
                       <i className={`fas fa-chevron-${isExpanded ? 'up' : 'down'}`} style={{ color: '#94a3b8', fontSize: '0.85rem' }}></i>
                     </div>
                   </div>

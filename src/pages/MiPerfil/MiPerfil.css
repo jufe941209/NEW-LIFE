@@ -116,6 +116,32 @@
   box-shadow: 0 0 0 0.2rem rgba(40,167,69,0.15);
 }
 
+/* Password section */
+.perfil-pass-section {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.perfil-pass-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.perfil-pass-title i { color: #6366f1; }
+.perfil-pass-hint {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #9ca3af;
+  margin-left: 0.25rem;
+}
+
 @media (max-width: 768px) {
   .perfil-hero { flex-direction: column; text-align: center; }
   .perfil-quick-links { grid-template-columns: repeat(2, 1fr); }

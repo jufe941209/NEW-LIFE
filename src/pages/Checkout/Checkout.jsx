@@ -6,6 +6,8 @@ import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import facturaService from '../../services/facturaService'
 import detalleFacturaService from '../../services/detalleFacturaService'
+import despachoService from '../../services/despachoService'
+import responsableService from '../../services/responsableService'
 import api from '../../services/api'
 import './Checkout.css'
 
@@ -99,10 +101,21 @@ const Checkout = () => {
         await api.post(`/producto/reducir-stock/${item.id}/${item.quantity}`).catch(() => {})
       }
 
-      // 4. Limpiar carrito
+      // 4. Auto-crear despacho asignado al primer responsable activo
+      const responsables = await responsableService.getAll().catch(() => [])
+      const responsableAsignado = responsables.find(r => r.estado === 'Activo') || responsables[0]
+      await despachoService.create({
+        fecha_despacho: new Date().toISOString().split('T')[0],
+        estado: 'Pendiente',
+        numero_factura: numeroFactura,
+        cc_responsable: responsableAsignado?.cedula_resp || null,
+        cc_domiciliario: null,
+      }).catch(() => {})
+
+      // 5. Limpiar carrito
       clearCart()
 
-      // 5. Ir a mis compras con mensaje de éxito
+      // 6. Ir a mis compras con mensaje de éxito
       navigate('/mis-compras', { state: { nuevaFactura: numeroFactura } })
     } catch (e) {
       setCheckoutError(e?.response?.data?.Message || 'Error al procesar el pedido. Por favor intenta de nuevo.')
