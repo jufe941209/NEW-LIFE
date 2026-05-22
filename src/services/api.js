@@ -38,14 +38,15 @@ api.interceptors.response.use(
   }
 )
 
-// Ping the health endpoint to keep the backend alive (every 4 min)
+// Ping the health endpoint to keep the backend alive (every 2 min)
 let keepAliveTimer = null
 
 export function startKeepAlive() {
   if (keepAliveTimer) return
-  keepAliveTimer = setInterval(() => {
-    axios.get(`${BASE_URL}/health`, { timeout: 10000 }).catch(() => {})
-  }, 4 * 60 * 1000) // 4 minutes — below Azure LB 4-min idle timeout
+  // Ping immediately on start, then every 2 minutes
+  const ping = () => axios.get(`${BASE_URL}/health`, { timeout: 10000 }).catch(() => {})
+  ping()
+  keepAliveTimer = setInterval(ping, 2 * 60 * 1000)
 }
 
 export function stopKeepAlive() {

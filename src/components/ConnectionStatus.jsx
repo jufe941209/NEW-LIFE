@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 
 const HEALTH_URL = 'https://newlife-api-agfzb6a7bdb5b7bq.eastus-01.azurewebsites.net/api/health'
-const CHECK_INTERVAL = 3 * 60 * 1000  // ping cada 3 min (debajo del LB timeout de 4min)
-const RETRY_INTERVAL = 15 * 1000      // si hay error, reintenta cada 15s
+const CHECK_INTERVAL = 2 * 60 * 1000  // ping cada 2 min
+const RETRY_INTERVAL = 10 * 1000      // si hay error, reintenta cada 10s
 
 export default function ConnectionStatus() {
   const [offline, setOffline] = useState(false)
