@@ -68,6 +68,7 @@ export const AuthProvider = ({ children }) => {
     logoutAdmin()
     logoutCliente()
     logoutResponsable()
+    sessionStorage.removeItem('cart')
   }
 
   const isAdmin = () => !!admin
