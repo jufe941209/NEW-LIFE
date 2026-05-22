@@ -333,9 +333,15 @@ const ResponsableDashboard = () => {
 
   const changeEstado = async (despacho, nuevoEstado, domiOverride = null) => {
     const domiCC = domiOverride || despacho.cc_domiciliario
-    if ((nuevoEstado === 'En camino' || nuevoEstado === 'Entregado') && !domiCC) {
+    if (nuevoEstado === 'En camino' && !domiCC) {
       setAssignModal({ despacho, nuevoEstado })
       setSelectedDomi(domiDisponibles[0]?.cedula_domi || '')
+      return
+    }
+    if (nuevoEstado === 'Entregado' && !domiCC) {
+      const allActive = domiciliarios.filter(d => d.estado !== 'Inactivo')
+      setAssignModal({ despacho, nuevoEstado })
+      setSelectedDomi(allActive[0]?.cedula_domi || '')
       return
     }
     setActionLoading(despacho.numero_despacho)
@@ -832,48 +838,63 @@ const ResponsableDashboard = () => {
               <button className="resp-assign-close" onClick={() => setAssignModal(null)}><i className="fas fa-times"></i></button>
             </div>
             <div className="resp-assign-body">
-              <div className="resp-assign-alert">
-                <i className="fas fa-exclamation-triangle me-2"></i>
-                Para aprobar y despachar es obligatorio asignar un domiciliario.
-              </div>
-              <label className="resp-assign-label">Seleccionar domiciliario disponible</label>
-              {domiDisponibles.length === 0 ? (
-                <p className="resp-assign-empty"><i className="fas fa-times-circle me-2"></i>No hay domiciliarios disponibles.</p>
+              {assignModal?.nuevoEstado === 'Entregado' ? (
+                <div className="resp-assign-alert" style={{ background: '#f0fdf4', borderColor: '#86efac', color: '#15803d' }}>
+                  <i className="fas fa-check-circle me-2"></i>
+                  Selecciona el domiciliario que realizó la entrega para registrar el pedido como completado.
+                </div>
               ) : (
-                <>
-                  <select className="resp-assign-select" value={selectedDomi} onChange={e => setSelectedDomi(e.target.value)}>
-                    <option value="">Seleccionar...</option>
-                    {domiDisponibles.map(d => {
-                      const t = transporteMap[d.cedula_domi]
-                      return (
-                        <option key={d.cedula_domi} value={d.cedula_domi}>
-                          {d.nombres}{t ? ` — ${t.tipo} ${t.placa}` : ' — Sin vehículo'}
-                        </option>
-                      )
-                    })}
-                  </select>
-                  {selectedDomi && (() => {
-                    const domi = domiDisponibles.find(d => d.cedula_domi === selectedDomi)
-                    const t = transporteMap[selectedDomi]
-                    if (!domi) return null
-                    return (
-                      <div style={{ marginTop: '0.85rem', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10, padding: '0.7rem 1rem', fontSize: '0.85rem' }}>
-                        <div style={{ fontWeight: 700, color: '#15803d', marginBottom: 4 }}>
-                          <i className="fas fa-user me-2"></i>{domi.nombres}
-                        </div>
-                        {t ? (
-                          <div style={{ color: '#374151', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                            <span><i className="fas fa-truck me-1 text-success"></i><strong>{t.tipo}</strong> — Placa: <strong>{t.placa}</strong></span>
-                            {t.descripcion && <span style={{ color: '#6b7280' }}>{t.descripcion}</span>}
-                          </div>
-                        ) : (
-                          <div style={{ color: '#f59e0b' }}><i className="fas fa-exclamation-triangle me-1"></i>Sin vehículo registrado</div>
-                        )}
-                      </div>
-                    )
-                  })()}
-                </>
+                <div className="resp-assign-alert">
+                  <i className="fas fa-exclamation-triangle me-2"></i>
+                  Para aprobar y despachar es obligatorio asignar un domiciliario.
+                </div>
               )}
+              <label className="resp-assign-label">
+                {assignModal?.nuevoEstado === 'Entregado' ? 'Confirmar domiciliario de entrega' : 'Seleccionar domiciliario disponible'}
+              </label>
+              {(() => {
+                const domiList = assignModal?.nuevoEstado === 'Entregado'
+                  ? domiciliarios.filter(d => d.estado !== 'Inactivo')
+                  : domiDisponibles
+                if (domiList.length === 0) return (
+                  <p className="resp-assign-empty"><i className="fas fa-times-circle me-2"></i>No hay domiciliarios disponibles.</p>
+                )
+                return (
+                  <>
+                    <select className="resp-assign-select" value={selectedDomi} onChange={e => setSelectedDomi(e.target.value)}>
+                      <option value="">Seleccionar...</option>
+                      {domiList.map(d => {
+                        const t = transporteMap[d.cedula_domi]
+                        return (
+                          <option key={d.cedula_domi} value={d.cedula_domi}>
+                            {d.nombres}{t ? ` — ${t.tipo} ${t.placa}` : ' — Sin vehículo'}{d.disponibilidad !== 'Disponible' ? ' (ocupado)' : ''}
+                          </option>
+                        )
+                      })}
+                    </select>
+                    {selectedDomi && (() => {
+                      const domi = domiList.find(d => d.cedula_domi === selectedDomi)
+                      const t = transporteMap[selectedDomi]
+                      if (!domi) return null
+                      return (
+                        <div style={{ marginTop: '0.85rem', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10, padding: '0.7rem 1rem', fontSize: '0.85rem' }}>
+                          <div style={{ fontWeight: 700, color: '#15803d', marginBottom: 4 }}>
+                            <i className="fas fa-user me-2"></i>{domi.nombres}
+                          </div>
+                          {t ? (
+                            <div style={{ color: '#374151', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                              <span><i className="fas fa-truck me-1 text-success"></i><strong>{t.tipo}</strong> — Placa: <strong>{t.placa}</strong></span>
+                              {t.descripcion && <span style={{ color: '#6b7280' }}>{t.descripcion}</span>}
+                            </div>
+                          ) : (
+                            <div style={{ color: '#f59e0b' }}><i className="fas fa-exclamation-triangle me-1"></i>Sin vehículo registrado</div>
+                          )}
+                        </div>
+                      )
+                    })()}
+                  </>
+                )
+              })()}
             </div>
             <div className="resp-assign-footer">
               <button className="resp-assign-btn-cancel" onClick={() => setAssignModal(null)}>Cancelar</button>

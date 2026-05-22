@@ -31,7 +31,7 @@ const facturaService = {
   // Facturas de un cliente específico
   getByCliente: async (cedula_cli) => {
     const all = await facturaService.getAll()
-    return all.filter(f => f.cedula_cli === String(cedula_cli))
+    return all.filter(f => String(f.cedula_cli) === String(cedula_cli))
   }
 }
 

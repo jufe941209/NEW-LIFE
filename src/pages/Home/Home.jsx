@@ -55,7 +55,7 @@ const Home = () => {
   }, [totalPages])
 
   const handleSearch = (term) => navigate(`/shop?search=${encodeURIComponent(term)}`)
-  const handleAddToCart = (product) => addItem(product, 1)
+  const handleAddToCart = (product, qty = 1) => addItem(product, qty)
 
   const visibleProducts = products.slice(carouselPage * CARDS_PER_PAGE, (carouselPage + 1) * CARDS_PER_PAGE)
 
@@ -163,6 +163,7 @@ const Home = () => {
                       price={p.price}
                       badge={p.badge}
                       onAddToCart={() => handleAddToCart(p)}
+                      onViewDetail={() => navigate(`/shop/${p.id}`)}
                     />
                   </div>
                 ))}
@@ -256,11 +257,9 @@ const Home = () => {
                   </li>
                 </ul>
                 <div className="mt-4">
-                  <Link to="/about">
-                    <Button variant="success" size="lg">
-                      <i className="fas fa-info-circle me-2"></i>
-                      Conocer Más
-                    </Button>
+                  <Link to="/about" className="btn btn-success btn-lg">
+                    <i className="fas fa-info-circle me-2"></i>
+                    Conocer Más
                   </Link>
                 </div>
               </div>
@@ -483,6 +482,7 @@ const Home = () => {
 
       {/* Stats Section */}
       <StatsSection />
+
 
       {/* Testimonials Preview */}
       <section className="testimonials-preview py-5 bg-light">

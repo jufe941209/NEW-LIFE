@@ -7,7 +7,7 @@ import './ProductCard.css'
  * ProductCard - Molécula
  * Tarjeta de producto reutilizable con información completa
  */
-const ProductCard = ({ 
+const ProductCard = ({
   id,
   image,
   name,
@@ -17,15 +17,24 @@ const ProductCard = ({
   originalPrice,
   badge,
   onAddToCart,
-  className = '' 
+  onViewDetail,
+  className = ''
 }) => {
   const handleAddToCart = (e) => {
     e.preventDefault()
     if (onAddToCart) {
       onAddToCart({ id, name, price, image })
     } else {
-      // Lógica por defecto: agregar al carrito
       console.log('Agregar al carrito:', { id, name, price })
+    }
+  }
+
+  const handleViewDetail = (e) => {
+    e.stopPropagation()
+    if (onViewDetail) {
+      onViewDetail()
+    } else {
+      window.location.href = `/shop/${id}`
     }
   }
 
@@ -50,9 +59,9 @@ const ProductCard = ({
       )}
 
       {/* Product Image */}
-      <div 
+      <div
         className="product-image-wrapper"
-        onClick={() => window.location.href = `/shop/${id}`}
+        onClick={() => onViewDetail ? onViewDetail() : (window.location.href = `/shop/${id}`)}
         style={{ cursor: 'pointer' }}
       >
         <img 
@@ -78,14 +87,11 @@ const ProductCard = ({
         />
         <div className="product-overlay">
           <div className="overlay-btn-wrapper">
-            <Button 
-              variant="success" 
-              size="sm" 
+            <Button
+              variant="success"
+              size="sm"
               className="overlay-btn"
-              onClick={(e) => {
-                e.stopPropagation()
-                window.location.href = `/shop/${id}`
-              }}
+              onClick={handleViewDetail}
             >
               <i className="fas fa-eye me-2"></i>
               Ver Detalle
@@ -115,9 +121,15 @@ const ProductCard = ({
 
       {/* Product Info */}
       <div className="product-info">
-        <Link to={`/shop/${id}`} className="product-name-link">
-          <h5 className="product-name">{name}</h5>
-        </Link>
+        {onViewDetail ? (
+          <button className="product-name-link" style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', cursor: 'pointer', width: '100%' }} onClick={onViewDetail}>
+            <h5 className="product-name">{name}</h5>
+          </button>
+        ) : (
+          <Link to={`/shop/${id}`} className="product-name-link">
+            <h5 className="product-name">{name}</h5>
+          </Link>
+        )}
         
         {description && (
           <p className="product-description">{description}</p>

@@ -18,7 +18,7 @@ const Navbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { admin, cliente, logout, isAdmin, isCliente } = useAuth()
-  const { itemCount } = useCart()
+  const { itemCount, items, subtotal } = useCart()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -182,10 +182,41 @@ const Navbar = () => {
                   </div>
                   <div className="dropdown-divider"></div>
                   <div className="dropdown-body">
-                    <p className="text-muted text-center py-3 mb-0">
-                      <i className="fas fa-shopping-cart fa-2x mb-2 d-block"></i>
-                      Tu carrito está vacío
-                    </p>
+                    {items.length === 0 ? (
+                      <p className="text-muted text-center py-3 mb-0">
+                        <i className="fas fa-shopping-cart fa-2x mb-2 d-block"></i>
+                        Tu carrito está vacío
+                      </p>
+                    ) : (
+                      <div>
+                        {items.slice(0, 3).map(item => (
+                          <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.5rem 0.75rem', borderBottom: '1px solid #f1f5f9' }}>
+                            <img
+                              src={item.image || '/img/Imagen1.png'}
+                              alt={item.name}
+                              onError={e => { e.target.src = '/img/Imagen1.png' }}
+                              style={{ width: 38, height: 38, objectFit: 'cover', borderRadius: 6, flexShrink: 0, border: '1px solid #e2e8f0' }}
+                            />
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</div>
+                              <div style={{ fontSize: '0.73rem', color: '#64748b' }}>{item.quantity} × ${Number(item.price).toLocaleString('es-CO')}</div>
+                            </div>
+                            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#15803d', flexShrink: 0 }}>
+                              ${(Number(item.price) * item.quantity).toLocaleString('es-CO')}
+                            </div>
+                          </div>
+                        ))}
+                        {items.length > 3 && (
+                          <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748b', padding: '0.35rem 0', margin: 0 }}>
+                            +{items.length - 3} producto{items.length - 3 !== 1 ? 's' : ''} más
+                          </p>
+                        )}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0.75rem', borderTop: '1px solid #e2e8f0', marginTop: '0.1rem' }}>
+                          <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Subtotal:</span>
+                          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0f172a' }}>${subtotal.toLocaleString('es-CO')}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="dropdown-divider"></div>
                   <div className="dropdown-footer">

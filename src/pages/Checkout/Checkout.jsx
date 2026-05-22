@@ -79,6 +79,7 @@ const Checkout = () => {
       // 1. Crear factura
       await facturaService.create({
         numero_factura: numeroFactura,
+        fecha: new Date().toISOString(),
         metodo_pago: formData.paymentMethod,
         estado_pago: 'Pendiente',
         direccion_envio: direccion,
