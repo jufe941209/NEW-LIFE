@@ -13,6 +13,7 @@ const AdminNavbar = ({ admin, activeSection, setActiveSection, onLogout }) => {
       label: 'Catálogo',
       items: [
         { key: 'productos', label: 'Productos', icon: 'fas fa-box' },
+        { key: 'descuentos', label: 'Descuentos', icon: 'fas fa-percent' },
         { key: 'categorias', label: 'Categorías', icon: 'fas fa-tags' },
         { key: 'tipoProducto', label: 'Tipos de Producto', icon: 'fas fa-cubes' },
       ]

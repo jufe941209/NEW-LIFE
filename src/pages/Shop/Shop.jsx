@@ -13,7 +13,7 @@ const Shop = () => {
   const { addItem, itemCount } = useCart()
 
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
-  const [filters, setFilters] = useState({ category: '', tipoProducto: '', minPrice: '', maxPrice: '', sortBy: 'relevance' })
+  const [filters, setFilters] = useState({ category: '', tipoProducto: '', minPrice: '', maxPrice: '', sortBy: 'relevance', onlyDiscount: false })
   const [viewMode, setViewMode] = useState('grid')
   const [currentPage, setCurrentPage] = useState(1)
   const productsPerPage = 12
@@ -46,7 +46,7 @@ const Shop = () => {
             description: p.descripcion || '',
             price: Number(p.precio),
             originalPrice: Number(p.precio),
-            discount: 0,
+            discount: Number(p.descuento || 0),
             image: p.img_url || '/img/Imagen1.png',
             category: catsArr.find(c => c.numero_categoria === p.numero_categoria)?.nombre?.toLowerCase() || '',
             id_tipo_producto: p.id_tipo_producto,
@@ -71,6 +71,7 @@ const Shop = () => {
     if (filters.tipoProducto) filtered = filtered.filter(p => p.id_tipo_producto === Number(filters.tipoProducto))
     if (filters.minPrice) filtered = filtered.filter(p => p.price >= Number(filters.minPrice))
     if (filters.maxPrice) filtered = filtered.filter(p => p.price <= Number(filters.maxPrice))
+    if (filters.onlyDiscount) filtered = filtered.filter(p => p.discount > 0)
     switch (filters.sortBy) {
       case 'price-low': filtered.sort((a, b) => a.price - b.price); break
       case 'price-high': filtered.sort((a, b) => b.price - a.price); break

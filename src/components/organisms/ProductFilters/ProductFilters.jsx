@@ -15,7 +15,8 @@ const ProductFilters = ({
     tipoProducto: '',
     minPrice: '',
     maxPrice: '',
-    sortBy: 'relevance'
+    sortBy: 'relevance',
+    onlyDiscount: false
   })
   const [showFilters, setShowFilters] = useState(false)
 
@@ -31,12 +32,12 @@ const ProductFilters = ({
   }
 
   const clearFilters = () => {
-    const cleared = { category: '', tipoProducto: '', minPrice: '', maxPrice: '', sortBy: 'relevance' }
+    const cleared = { category: '', tipoProducto: '', minPrice: '', maxPrice: '', sortBy: 'relevance', onlyDiscount: false }
     setFilters(cleared)
     if (onFilterChange) onFilterChange(cleared)
   }
 
-  const hasActiveFilters = filters.category || filters.tipoProducto || filters.minPrice || filters.maxPrice || filters.sortBy !== 'relevance'
+  const hasActiveFilters = filters.category || filters.tipoProducto || filters.minPrice || filters.maxPrice || filters.sortBy !== 'relevance' || filters.onlyDiscount
 
   return (
     <div className={`product-filters ${className}`}>
@@ -156,6 +157,35 @@ const ProductFilters = ({
               onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
               className="price-input"
             />
+          </div>
+        </div>
+
+        {/* En Oferta */}
+        <div className="filter-group">
+          <label className="filter-label">
+            <i className="fas fa-percent me-2"></i>
+            Ofertas
+          </label>
+          <div
+            className={`filter-toggle-btn ${filters.onlyDiscount ? 'active' : ''}`}
+            onClick={() => {
+              const val = !filters.onlyDiscount
+              const newF = { ...filters, onlyDiscount: val }
+              setFilters(newF)
+              if (onFilterChange) onFilterChange(newF)
+            }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.5rem',
+              padding: '0.5rem 1rem', borderRadius: 8, cursor: 'pointer',
+              border: `2px solid ${filters.onlyDiscount ? '#28a745' : '#e2e8f0'}`,
+              background: filters.onlyDiscount ? '#f0fdf4' : '#fff',
+              color: filters.onlyDiscount ? '#16a34a' : '#64748b',
+              fontWeight: 600, fontSize: '0.88rem', transition: 'all 0.2s',
+              userSelect: 'none'
+            }}
+          >
+            <i className={`fas ${filters.onlyDiscount ? 'fa-check-circle' : 'fa-circle'}`}></i>
+            Solo productos en oferta
           </div>
         </div>
 

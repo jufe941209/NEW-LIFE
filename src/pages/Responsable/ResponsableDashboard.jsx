@@ -10,6 +10,7 @@ import transporteService from '../../services/transporteService'
 import responsableService from '../../services/responsableService'
 import clienteService from '../../services/clienteService'
 import ProductoCrud from '../Admin/components/ProductoCrud'
+import DescuentoCrud from '../Admin/components/DescuentoCrud'
 import { imprimirFactura } from '../../utils/imprimirFactura'
 import './ResponsableDashboard.css'
 import '../MiPerfil/MiPerfil.css'
@@ -417,6 +418,7 @@ const ResponsableDashboard = () => {
     { key: 'despachos',  label: 'Despachos',   icon: 'fas fa-shipping-fast' },
     { key: 'facturas',   label: 'Facturas',    icon: 'fas fa-file-invoice-dollar' },
     { key: 'inventario', label: 'Inventario',  icon: 'fas fa-boxes' },
+    { key: 'descuentos', label: 'Descuentos',  icon: 'fas fa-percent' },
     { key: 'perfil',     label: 'Mi Perfil',   icon: 'fas fa-user-circle' },
   ]
 
@@ -425,6 +427,7 @@ const ResponsableDashboard = () => {
     despachos: 'Gestión de Despachos',
     facturas: 'Facturas de Venta',
     inventario: 'Inventario de Productos',
+    descuentos: 'Gestión de Descuentos',
     perfil: 'Mi Perfil',
   }[section] || 'Dashboard')
 
@@ -814,6 +817,13 @@ const ResponsableDashboard = () => {
           {section === 'inventario' && (
             <div className="resp-inventario-section">
               <ProductoCrud />
+            </div>
+          )}
+
+          {/* ══════════════ DESCUENTOS ══════════════ */}
+          {section === 'descuentos' && (
+            <div className="resp-inventario-section">
+              <DescuentoCrud />
             </div>
           )}
 

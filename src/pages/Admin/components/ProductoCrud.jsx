@@ -12,6 +12,7 @@ const EMPTY_FORM = {
   nombres: '',
   descripcion: '',
   precio: '',
+  descuento: '0',
   stock_min: '',
   stock_real: '',
   img_url: '',
@@ -124,6 +125,7 @@ const ProductoCrud = () => {
       nombres: row.nombres || '',
       descripcion: row.descripcion || '',
       precio: row.precio !== undefined ? String(row.precio) : '',
+      descuento: row.descuento !== undefined ? String(row.descuento) : '0',
       stock_min: row.stock_min !== undefined ? String(row.stock_min) : '',
       stock_real: row.stock_real !== undefined ? String(row.stock_real) : '',
       img_url: row.img_url || '',
@@ -148,6 +150,7 @@ const ProductoCrud = () => {
       const payload = {
         ...form,
         precio: parseFloat(form.precio),
+        descuento: parseFloat(form.descuento) || 0,
         stock_min: parseInt(form.stock_min) || 0,
         stock_real: parseInt(form.stock_real) || 0,
         numero_categoria: parseInt(form.numero_categoria) || 0,
@@ -264,9 +267,13 @@ const ProductoCrud = () => {
                   <label className="form-label">Nombre *</label>
                   <input className="form-control" value={form.nombres} onChange={e => setForm(p => ({ ...p, nombres: e.target.value }))} placeholder="Bowl Biodegradable 16oz" required />
                 </div>
-                <div className="col-md-6 mb-3">
+                <div className="col-md-4 mb-3">
                   <label className="form-label">Precio *</label>
                   <input type="number" step="0.01" className="form-control" value={form.precio} onChange={e => setForm(p => ({ ...p, precio: e.target.value }))} placeholder="680" required />
+                </div>
+                <div className="col-md-2 mb-3">
+                  <label className="form-label">Descuento %</label>
+                  <input type="number" min="0" max="100" step="0.1" className="form-control" value={form.descuento} onChange={e => setForm(p => ({ ...p, descuento: e.target.value }))} placeholder="0" />
                 </div>
                 <div className="col-md-3 mb-3">
                   <label className="form-label">Stock Mínimo</label>

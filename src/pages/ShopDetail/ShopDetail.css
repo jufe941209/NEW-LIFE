@@ -107,6 +107,22 @@
   color: #28a745;
   line-height: 1;
 }
+.sd-price-original {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-decoration: line-through;
+  line-height: 1;
+}
+.sd-discount-badge {
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 0.2rem 0.6rem;
+  border-radius: 8px;
+  margin-left: 0.25rem;
+}
 .sd-price-label {
   font-size: 0.82rem;
   color: #94a3b8;

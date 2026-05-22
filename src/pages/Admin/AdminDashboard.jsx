@@ -8,6 +8,7 @@ import ClienteCrud from './components/ClienteCrud'
 import FacturaCrud from './components/FacturaCrud'
 import DomiciliarioCrud from './components/DomiciliarioCrud'
 import ProductoCrud from './components/ProductoCrud'
+import DescuentoCrud from './components/DescuentoCrud'
 import DespachoView from './components/DespachoView'
 import ResponsableCrud from './components/ResponsableCrud'
 import TipoProductoCrud from './components/TipoProductoCrud'
@@ -561,6 +562,7 @@ const AdminDashboard = () => {
       case 'facturas': return <FacturaCrud />
       case 'domiciliarios': return <DomiciliarioCrud />
       case 'productos': return <ProductoCrud />
+      case 'descuentos': return <DescuentoCrud />
       case 'despachos': return <DespachoView />
       case 'responsables': return <ResponsableCrud />
       case 'tipoProducto': return <TipoProductoCrud />
@@ -578,6 +580,7 @@ const AdminDashboard = () => {
     facturas: 'Facturas de Venta',
     domiciliarios: 'Domiciliarios',
     productos: 'Productos',
+    descuentos: 'Descuentos',
     despachos: 'Despachos',
     responsables: 'Responsables',
     tipoProducto: 'Tipos de Producto',

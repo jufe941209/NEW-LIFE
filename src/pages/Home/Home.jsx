@@ -28,6 +28,8 @@ const Home = () => {
             name: p.nombres,
             description: p.descripcion || '',
             price: Number(p.precio),
+            originalPrice: Number(p.precio),
+            discount: Number(p.descuento || 0),
             image: p.img_url || '/img/Imagen1.png',
             stock: p.stock_real,
             badge: p.stock_real === 0 ? 'Agotado' : (p.stock_real > 0 && p.stock_min > 0 && p.stock_real <= p.stock_min) ? 'Stock bajo' : undefined,
@@ -161,6 +163,8 @@ const Home = () => {
                       name={p.name}
                       description={p.description}
                       price={p.price}
+                      originalPrice={p.originalPrice}
+                      discount={p.discount || undefined}
                       badge={p.badge}
                       onAddToCart={() => handleAddToCart(p)}
                       onViewDetail={() => navigate(`/shop/${p.id}`)}
@@ -205,11 +209,9 @@ const Home = () => {
           )}
 
           <div className="text-center mt-5">
-            <Link to="/shop">
-              <Button variant="success" size="lg">
-                <i className="fas fa-shopping-bag me-2"></i>
-                Ver Todos los Productos
-              </Button>
+            <Link to="/shop" className="btn btn-success btn-lg">
+              <i className="fas fa-shopping-bag me-2"></i>
+              Ver Todos los Productos
             </Link>
           </div>
         </div>

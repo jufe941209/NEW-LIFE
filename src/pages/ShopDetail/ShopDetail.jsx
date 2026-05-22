@@ -8,6 +8,7 @@ import tipoProductoService from '../../services/tipoProductoService'
 import './ShopDetail.css'
 
 const fmtCOP = (n) => Number(n || 0).toLocaleString('es-CO')
+const precioConDescuento = (precio, descuento) => Number(precio) * (1 - Number(descuento || 0) / 100)
 
 const ShopDetail = () => {
   const { id } = useParams()
@@ -57,7 +58,7 @@ const ShopDetail = () => {
     addItem({
       id: product.codigo_prod,
       name: product.nombres,
-      price: Number(product.precio),
+      price: precioConDescuento(product.precio, product.descuento),
       image: product.img_url || '/img/Imagen1.png',
     }, qty)
     setAddedMsg(true)
@@ -148,7 +149,15 @@ const ShopDetail = () => {
             <h1 className="sd-product-name">{product.nombres}</h1>
 
             <div className="sd-price-row">
-              <span className="sd-price">${fmtCOP(product.precio)}</span>
+              {product.descuento > 0 ? (
+                <>
+                  <span className="sd-price-original">${fmtCOP(product.precio)}</span>
+                  <span className="sd-price">${fmtCOP(precioConDescuento(product.precio, product.descuento))}</span>
+                  <span className="sd-discount-badge">-{product.descuento}%</span>
+                </>
+              ) : (
+                <span className="sd-price">${fmtCOP(product.precio)}</span>
+              )}
               <span className="sd-price-label">COP / unidad</span>
             </div>
 
@@ -225,7 +234,7 @@ const ShopDetail = () => {
                     </button>
                   </div>
                   <div className="sd-qty-total">
-                    Total: <strong>${fmtCOP(Number(product.precio) * qty)}</strong>
+                    Total: <strong>${fmtCOP(precioConDescuento(product.precio, product.descuento) * qty)}</strong>
                   </div>
                 </div>
                 <button className="sd-add-btn" onClick={handleAddToCart}>
