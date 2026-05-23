@@ -7,9 +7,8 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'Connection': 'keep-alive',
   },
-  timeout: 60000, // 60s — covers Azure cold-start wake-up
+  timeout: 60000,
 })
 
 const TRANSIENT_CODES = new Set([0, 408, 429, 500, 502, 503, 504])
