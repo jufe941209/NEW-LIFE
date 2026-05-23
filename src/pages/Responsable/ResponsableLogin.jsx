@@ -5,7 +5,8 @@ import responsableService from '../../services/responsableService'
 import './ResponsableLogin.css'
 
 const ResponsableLogin = () => {
-  const [form, setForm] = useState({ cedula: '', correo: '' })
+  const [form, setForm] = useState({ correo: '', contrasena: '' })
+  const [showPass, setShowPass] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { loginResponsable } = useAuth()
@@ -13,16 +14,16 @@ const ResponsableLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.cedula || !form.correo) { setError('Todos los campos son requeridos'); return }
+    if (!form.correo || !form.contrasena) { setError('Todos los campos son requeridos'); return }
     setLoading(true)
     setError('')
     try {
-      const resp = await responsableService.login(form.cedula.trim(), form.correo.trim())
+      const resp = await responsableService.loginWithPassword(form.correo.trim(), form.contrasena.trim())
       if (resp) {
         loginResponsable(resp)
         navigate('/responsable')
       } else {
-        setError('Credenciales incorrectas o cuenta inactiva.')
+        setError('Correo o contraseña incorrectos, o cuenta inactiva.')
       }
     } catch {
       setError('Error al conectar con el servidor.')
@@ -53,20 +54,6 @@ const ResponsableLogin = () => {
           )}
 
           <div className="resp-login-field">
-            <label>Cédula</label>
-            <div className="resp-login-input-wrap">
-              <i className="fas fa-id-card"></i>
-              <input
-                type="text"
-                placeholder="Número de cédula"
-                value={form.cedula}
-                onChange={e => setForm(p => ({ ...p, cedula: e.target.value }))}
-                autoFocus
-              />
-            </div>
-          </div>
-
-          <div className="resp-login-field">
             <label>Correo electrónico</label>
             <div className="resp-login-input-wrap">
               <i className="fas fa-envelope"></i>
@@ -75,7 +62,24 @@ const ResponsableLogin = () => {
                 placeholder="correo@empresa.com"
                 value={form.correo}
                 onChange={e => setForm(p => ({ ...p, correo: e.target.value }))}
+                autoFocus
               />
+            </div>
+          </div>
+
+          <div className="resp-login-field">
+            <label>Contraseña</label>
+            <div className="resp-login-input-wrap">
+              <i className="fas fa-lock"></i>
+              <input
+                type={showPass ? 'text' : 'password'}
+                placeholder="Tu contraseña"
+                value={form.contrasena}
+                onChange={e => setForm(p => ({ ...p, contrasena: e.target.value }))}
+              />
+              <button type="button" className="resp-login-eye" onClick={() => setShowPass(p => !p)} tabIndex={-1}>
+                <i className={`fas ${showPass ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+              </button>
             </div>
           </div>
 

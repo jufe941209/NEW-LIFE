@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import productoService from '../../../services/productoService'
 import categoriaService from '../../../services/categoriaService'
 import tipoProductoService from '../../../services/tipoProductoService'
+import imageService from '../../../services/imageService'
 import CrudTable from './CrudTable'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
 
@@ -36,6 +37,9 @@ const ProductoCrud = () => {
   const [isSaving, setIsSaving] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [uploadingImg, setUploadingImg] = useState(false)
+  const [imgPreview, setImgPreview] = useState('')
+  const fileInputRef = useRef(null)
 
   const load = async () => {
     setIsLoading(true)
@@ -114,6 +118,7 @@ const ProductoCrud = () => {
   const openCreate = () => {
     setEditingItem(null)
     setForm({ ...EMPTY_FORM, numero_categoria: categorias[0]?.numero_categoria || '', id_tipo_producto: tipos[0]?.id_tipo_producto || '' })
+    setImgPreview('')
     setFormError('')
     setShowModal(true)
   }
@@ -135,11 +140,51 @@ const ProductoCrud = () => {
       id_tipo_producto: row.id_tipo_producto !== undefined ? String(row.id_tipo_producto) : '',
       estado: row.estado || 'Activo'
     })
+    setImgPreview(row.img_url || '')
     setFormError('')
     setShowModal(true)
   }
 
-  const closeModal = () => setShowModal(false)
+  const closeModal = () => { setShowModal(false); setImgPreview('') }
+
+  const handleImageSelect = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const ext = file.name.split('.').pop().toLowerCase()
+    if (!['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext)) {
+      setFormError('Solo se permiten imágenes JPG, PNG, WebP o GIF.')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setFormError('La imagen no puede superar 5 MB.')
+      return
+    }
+
+    // Preview inmediato con URL local
+    const localUrl = URL.createObjectURL(file)
+    setImgPreview(localUrl)
+    setFormError('')
+    setUploadingImg(true)
+    try {
+      const url = await imageService.upload(file)
+      setForm(p => ({ ...p, img_url: url }))
+      setImgPreview(url)
+    } catch {
+      setFormError('Error al subir la imagen. Inténtalo de nuevo.')
+      setImgPreview(form.img_url || '')
+    } finally {
+      setUploadingImg(false)
+      // Limpiar el input para permitir seleccionar el mismo archivo de nuevo
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setImgPreview('')
+    setForm(p => ({ ...p, img_url: '' }))
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
 
   const handleSave = async (e) => {
     e.preventDefault()
@@ -307,9 +352,80 @@ const ProductoCrud = () => {
                     {TEMP_OPTS.map(t => <option key={t} value={t}>{t || '— Ninguna —'}</option>)}
                   </select>
                 </div>
+                {/* ── Imagen del producto ── */}
                 <div className="col-12 mb-3">
-                  <label className="form-label">URL de Imagen</label>
-                  <input className="form-control" value={form.img_url} onChange={e => setForm(p => ({ ...p, img_url: e.target.value }))} placeholder="/img/bowl-bio-16oz.jpg" />
+                  <label className="form-label fw-semibold">Imagen del producto</label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    style={{ display: 'none' }}
+                    onChange={handleImageSelect}
+                  />
+
+                  {imgPreview ? (
+                    /* Preview con imagen ya cargada */
+                    <div style={{
+                      border: '1.5px solid #e2e8f0', borderRadius: 12, padding: '1rem',
+                      display: 'flex', alignItems: 'center', gap: '1rem', background: '#f8fafc'
+                    }}>
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <img
+                          src={imgPreview}
+                          alt="Preview"
+                          style={{ width: 90, height: 90, objectFit: 'cover', borderRadius: 10, border: '1px solid #e2e8f0' }}
+                        />
+                        {uploadingImg && (
+                          <div style={{
+                            position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.75)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 10
+                          }}>
+                            <span className="spinner-border spinner-border-sm text-primary"></span>
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        {uploadingImg
+                          ? <p style={{ margin: 0, fontSize: '0.85rem', color: '#3b82f6', fontWeight: 600 }}><i className="fas fa-cloud-upload-alt me-1"></i>Subiendo imagen...</p>
+                          : <p style={{ margin: '0 0 0.5rem', fontSize: '0.82rem', color: '#22c55e', fontWeight: 600 }}><i className="fas fa-check-circle me-1"></i>Imagen cargada</p>
+                        }
+                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                          <button
+                            type="button"
+                            className="btn btn-outline-primary btn-sm"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={uploadingImg}
+                          >
+                            <i className="fas fa-sync-alt me-1"></i>Cambiar imagen
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={handleRemoveImage}
+                            disabled={uploadingImg}
+                          >
+                            <i className="fas fa-trash me-1"></i>Quitar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Zona de subida vacía */
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      style={{
+                        border: '2px dashed #cbd5e1', borderRadius: 12, padding: '2rem 1rem',
+                        textAlign: 'center', cursor: 'pointer', background: '#f8fafc',
+                        transition: 'border-color 0.2s, background 0.2s'
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = '#3b82f6'; e.currentTarget.style.background = '#eff6ff' }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.background = '#f8fafc' }}
+                    >
+                      <i className="fas fa-cloud-upload-alt" style={{ fontSize: '2rem', color: '#94a3b8', display: 'block', marginBottom: '0.5rem' }}></i>
+                      <p style={{ margin: '0 0 0.25rem', fontWeight: 600, color: '#475569', fontSize: '0.9rem' }}>Haz clic para subir una imagen</p>
+                      <p style={{ margin: 0, fontSize: '0.78rem', color: '#94a3b8' }}>JPG, PNG, WebP o GIF · Máx 5 MB</p>
+                    </div>
+                  )}
                 </div>
                 <div className="col-md-6 mb-3">
                   <label className="form-label">Estado</label>
