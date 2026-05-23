@@ -84,6 +84,34 @@ const Login = () => {
 
       <div className="container-fluid py-5">
         <div className="container">
+
+          {/* Portal selector */}
+          <div className="row justify-content-center mb-4">
+            <div className="col-lg-8 col-md-10">
+              <p className="portal-selector-label text-center text-muted mb-3">
+                <i className="fas fa-question-circle me-2"></i>¿Cómo deseas ingresar?
+              </p>
+              <div className="portal-selector-cards">
+                <div className="portal-card portal-card--active">
+                  <div className="portal-card__icon"><i className="fas fa-user"></i></div>
+                  <div className="portal-card__title">Cliente</div>
+                  <div className="portal-card__desc">Compras y pedidos</div>
+                  <span className="portal-card__badge">Aquí</span>
+                </div>
+                <div className="portal-card portal-card--domiciliario" onClick={() => navigate('/login-domiciliario')} style={{ cursor: 'pointer' }}>
+                  <div className="portal-card__icon"><i className="fas fa-motorcycle"></i></div>
+                  <div className="portal-card__title">Domiciliario</div>
+                  <div className="portal-card__desc">Gestión de entregas</div>
+                </div>
+                <div className="portal-card portal-card--responsable" onClick={() => navigate('/login-responsable')} style={{ cursor: 'pointer' }}>
+                  <div className="portal-card__icon"><i className="fas fa-user-tie"></i></div>
+                  <div className="portal-card__title">Responsable</div>
+                  <div className="portal-card__desc">Gestión de despachos</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="row justify-content-center">
             <div className="col-lg-5 col-md-7">
               <div className="login-card">
@@ -181,6 +209,7 @@ const Login = () => {
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
