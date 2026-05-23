@@ -20,6 +20,11 @@ export const AuthProvider = ({ children }) => {
     return stored ? JSON.parse(stored) : null
   })
 
+  const [domiciliario, setDomiciliario] = useState(() => {
+    const stored = localStorage.getItem('domiciliario')
+    return stored ? JSON.parse(stored) : null
+  })
+
   const [needsPasswordChange, setNeedsPasswordChange] = useState(
     () => localStorage.getItem('needsPasswordChange') === 'true'
   )
@@ -59,6 +64,16 @@ export const AuthProvider = ({ children }) => {
     setResponsable(null)
   }
 
+  // --- Domiciliario ---
+  const loginDomiciliario = (domiciliarioData) => {
+    localStorage.setItem('domiciliario', JSON.stringify(domiciliarioData))
+    setDomiciliario(domiciliarioData)
+  }
+  const logoutDomiciliario = () => {
+    localStorage.removeItem('domiciliario')
+    setDomiciliario(null)
+  }
+
   const clearPasswordChange = () => {
     localStorage.setItem('needsPasswordChange', 'false')
     setNeedsPasswordChange(false)
@@ -68,24 +83,27 @@ export const AuthProvider = ({ children }) => {
     logoutAdmin()
     logoutCliente()
     logoutResponsable()
+    logoutDomiciliario()
     sessionStorage.removeItem('cart')
   }
 
   const isAdmin = () => !!admin
   const isCliente = () => !!cliente
   const isResponsable = () => !!responsable
-  const isLoggedIn = () => !!admin || !!cliente || !!responsable
+  const isDomiciliario = () => !!domiciliario
+  const isLoggedIn = () => !!admin || !!cliente || !!responsable || !!domiciliario
 
   return (
     <AuthContext.Provider value={{
-      admin, cliente, responsable,
+      admin, cliente, responsable, domiciliario,
       needsPasswordChange,
       loginAdmin, logoutAdmin,
       loginCliente, logoutCliente,
       loginResponsable, logoutResponsable,
+      loginDomiciliario, logoutDomiciliario,
       clearPasswordChange,
       logout,
-      isAdmin, isCliente, isResponsable, isLoggedIn
+      isAdmin, isCliente, isResponsable, isDomiciliario, isLoggedIn
     }}>
       {children}
     </AuthContext.Provider>

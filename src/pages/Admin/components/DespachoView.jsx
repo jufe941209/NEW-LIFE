@@ -8,11 +8,12 @@ import detalleFacturaService from '../../../services/detalleFacturaService'
 import productoService from '../../../services/productoService'
 import { imprimirFactura } from '../../../utils/imprimirFactura'
 
-const ESTADOS = ['Pendiente', 'En camino', 'Entregado', 'Cancelado']
+const ESTADOS = ['Pendiente', 'En camino', 'Enviado', 'Entregado', 'Cancelado']
 
 const estadoMeta = {
   Pendiente:   { color: '#6b7280', bg: '#f3f4f6', icon: 'fa-clock' },
   'En camino': { color: '#3b82f6', bg: '#eff6ff', icon: 'fa-truck' },
+  Enviado:     { color: '#f59e0b', bg: '#fffbeb', icon: 'fa-paper-plane' },
   Entregado:   { color: '#22c55e', bg: '#f0fdf4', icon: 'fa-check-circle' },
   Cancelado:   { color: '#ef4444', bg: '#fff5f5', icon: 'fa-times-circle' },
 }
@@ -136,10 +137,11 @@ const DespachoView = () => {
   const getNombre = (arr, key, val) => arr.find(x => x[key] === val)?.nombres || val || '—'
 
   const counts = {
-    Pendiente: despachos.filter(d => !d.estado || d.estado === 'Pendiente').length,
+    Pendiente:   despachos.filter(d => !d.estado || d.estado === 'Pendiente').length,
     'En camino': despachos.filter(d => d.estado === 'En camino').length,
-    Entregado: despachos.filter(d => d.estado === 'Entregado').length,
-    Cancelado: despachos.filter(d => d.estado === 'Cancelado').length,
+    Enviado:     despachos.filter(d => d.estado === 'Enviado').length,
+    Entregado:   despachos.filter(d => d.estado === 'Entregado').length,
+    Cancelado:   despachos.filter(d => d.estado === 'Cancelado').length,
   }
 
   const filtered = despachos.filter(d => {
@@ -339,29 +341,29 @@ const DespachoView = () => {
                                   onClick={() => changeEstado(d, 'En camino')}
                                   disabled={busy}
                                   title="Aprobar y despachar"
-                                  style={{
-                                    background: '#3b82f6', color: '#fff',
-                                    border: 'none', padding: '4px 8px', borderRadius: 6,
-                                    fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
-                                    whiteSpace: 'nowrap'
-                                  }}
+                                  style={{ background: '#3b82f6', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
                                 >
                                   {busy ? <span className="spinner-border spinner-border-sm"></span> : <><i className="fas fa-truck me-1"></i>Despachar</>}
                                 </button>
                               )}
                               {estado === 'En camino' && (
                                 <button
+                                  onClick={() => changeEstado(d, 'Enviado')}
+                                  disabled={busy}
+                                  title="Marcar como enviado"
+                                  style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                                >
+                                  {busy ? <span className="spinner-border spinner-border-sm"></span> : <><i className="fas fa-paper-plane me-1"></i>Enviado</>}
+                                </button>
+                              )}
+                              {estado === 'Enviado' && (
+                                <button
                                   onClick={() => changeEstado(d, 'Entregado')}
                                   disabled={busy}
-                                  title="Marcar como entregado"
-                                  style={{
-                                    background: '#22c55e', color: '#fff',
-                                    border: 'none', padding: '4px 8px', borderRadius: 6,
-                                    fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
-                                    whiteSpace: 'nowrap'
-                                  }}
+                                  title="Confirmar entrega"
+                                  style={{ background: '#22c55e', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
                                 >
-                                  {busy ? <span className="spinner-border spinner-border-sm"></span> : <><i className="fas fa-check me-1"></i>Entregado</>}
+                                  {busy ? <span className="spinner-border spinner-border-sm"></span> : <><i className="fas fa-check me-1"></i>Confirmar entrega</>}
                                 </button>
                               )}
                               <button

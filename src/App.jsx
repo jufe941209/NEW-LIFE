@@ -5,7 +5,9 @@ import { Layout } from './components/organisms'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 import { CartProvider } from './context/CartContext'
 import ProtectedResponsableRoute from './components/ProtectedResponsableRoute'
+import ProtectedDomiciliarioRoute from './components/ProtectedDomiciliarioRoute'
 import { ResponsableLogin, ResponsableDashboard } from './pages/Responsable'
+import { DomiciliarioLogin, DomiciliarioDashboard } from './pages/Domiciliario'
 import ScrollToTop from './components/ScrollToTop'
 import ConnectionStatus from './components/ConnectionStatus'
 import { startKeepAlive, stopKeepAlive } from './services/api'
@@ -70,6 +72,17 @@ function App() {
             <ProtectedResponsableRoute>
               <ResponsableDashboard />
             </ProtectedResponsableRoute>
+          }
+        />
+
+        {/* Domiciliario routes - SIN Layout público */}
+        <Route path="/login-domiciliario" element={<DomiciliarioLogin />} />
+        <Route
+          path="/domiciliario"
+          element={
+            <ProtectedDomiciliarioRoute>
+              <DomiciliarioDashboard />
+            </ProtectedDomiciliarioRoute>
           }
         />
 

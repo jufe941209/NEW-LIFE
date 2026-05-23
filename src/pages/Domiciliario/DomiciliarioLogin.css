@@ -1,0 +1,132 @@
+.domi-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+  padding: 1rem;
+}
+
+.domi-login-card {
+  background: #fff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+}
+
+.domi-login-brand {
+  background: linear-gradient(135deg, #064e3b, #047857);
+  padding: 2rem;
+  text-align: center;
+  color: #fff;
+}
+
+.domi-login-logo {
+  width: 60px;
+  height: 60px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 1.5rem;
+}
+
+.domi-login-brand h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: 2px; margin: 0; }
+.domi-login-brand p  { font-size: 0.85rem; opacity: 0.8; margin: 0.25rem 0 0; }
+
+.domi-login-form { padding: 2rem; }
+
+.domi-login-title { font-size: 1.3rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem; }
+.domi-login-sub   { font-size: 0.88rem; color: #64748b; margin-bottom: 1.5rem; }
+
+.domi-login-error {
+  background: #fff5f5;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.88rem;
+  margin-bottom: 1rem;
+}
+
+.domi-login-field { margin-bottom: 1.1rem; }
+
+.domi-login-field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.4rem;
+}
+
+.domi-login-input-wrap {
+  position: relative;
+}
+
+.domi-login-input-wrap > i {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.domi-login-input-wrap input {
+  width: 100%;
+  padding: 0.7rem 2.5rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.domi-login-input-wrap input:focus { border-color: #047857; box-shadow: 0 0 0 3px rgba(4,120,87,0.12); }
+
+.domi-login-eye {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+.domi-login-btn {
+  width: 100%;
+  padding: 0.8rem;
+  background: linear-gradient(135deg, #064e3b, #047857);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: opacity 0.2s;
+}
+
+.domi-login-btn:hover:not(:disabled) { opacity: 0.9; }
+.domi-login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.domi-login-back {
+  display: block;
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  text-decoration: none;
+}
+.domi-login-back:hover { color: #047857; }

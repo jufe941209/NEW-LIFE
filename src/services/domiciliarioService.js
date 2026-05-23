@@ -26,6 +26,12 @@ const domiciliarioService = {
   remove: async (id) => {
     const response = await api.delete(`${ENDPOINT}/${id}`)
     return response.data
+  },
+  login: async (cedula, contrasena) => {
+    const todos = await domiciliarioService.getAll()
+    return todos.find(
+      d => d.cedula_domi === cedula && d.contrasena === contrasena && d.estado !== 'Inactivo'
+    ) || null
   }
 }
 

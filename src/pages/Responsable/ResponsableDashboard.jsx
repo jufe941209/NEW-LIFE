@@ -15,11 +15,12 @@ import { imprimirFactura } from '../../utils/imprimirFactura'
 import './ResponsableDashboard.css'
 import '../MiPerfil/MiPerfil.css'
 
-const ESTADOS = ['Pendiente', 'En camino', 'Entregado', 'Cancelado']
+const ESTADOS = ['Pendiente', 'En camino', 'Enviado', 'Entregado', 'Cancelado']
 
 const estadoMeta = {
   Pendiente:   { color: '#6b7280', bg: '#f3f4f6', icon: 'fa-clock' },
   'En camino': { color: '#3b82f6', bg: '#eff6ff', icon: 'fa-truck' },
+  Enviado:     { color: '#f59e0b', bg: '#fffbeb', icon: 'fa-paper-plane' },
   Entregado:   { color: '#22c55e', bg: '#f0fdf4', icon: 'fa-check-circle' },
   Cancelado:   { color: '#ef4444', bg: '#fff5f5', icon: 'fa-times-circle' },
 }
@@ -395,10 +396,11 @@ const ResponsableDashboard = () => {
   const fmtDateTime = (val) => val ? new Date(val).toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—'
 
   const counts = {
-    Pendiente: despachos.filter(d => !d.estado || d.estado === 'Pendiente').length,
+    Pendiente:   despachos.filter(d => !d.estado || d.estado === 'Pendiente').length,
     'En camino': despachos.filter(d => d.estado === 'En camino').length,
-    Entregado: despachos.filter(d => d.estado === 'Entregado').length,
-    Cancelado: despachos.filter(d => d.estado === 'Cancelado').length,
+    Enviado:     despachos.filter(d => d.estado === 'Enviado').length,
+    Entregado:   despachos.filter(d => d.estado === 'Entregado').length,
+    Cancelado:   despachos.filter(d => d.estado === 'Cancelado').length,
   }
   const misDespachos = despachos.filter(d => d.cc_responsable === responsable?.cedula_resp)
 
@@ -702,9 +704,14 @@ const ResponsableDashboard = () => {
                                 </button>
                               )}
                               {d.estado === 'En camino' && (
-                                <button className="resp-action-btn resp-btn-entregar" onClick={() => changeEstado(d, 'Entregado')} disabled={busy}>
-                                  {busy ? <span className="spinner-border spinner-border-sm"></span> : <><i className="fas fa-check me-1"></i>Marcar entregado</>}
+                                <button className="resp-action-btn" style={{ background: '#f59e0b', color: '#fff' }} onClick={() => changeEstado(d, 'Enviado')} disabled={busy}>
+                                  {busy ? <span className="spinner-border spinner-border-sm"></span> : <><i className="fas fa-paper-plane me-1"></i>Enviado</>}
                                 </button>
+                              )}
+                              {d.estado === 'Enviado' && (
+                                <div style={{ fontSize: '0.8rem', color: '#f59e0b', fontWeight: 600, padding: '0.3rem 0.5rem', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                  <i className="fas fa-clock"></i> Esperando confirmación del domiciliario
+                                </div>
                               )}
                               <button className="resp-action-btn resp-btn-cancelar" onClick={() => changeEstado(d, 'Cancelado')} disabled={busy}>
                                 <i className="fas fa-times me-1"></i>Cancelar
