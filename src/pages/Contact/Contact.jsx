@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Input } from '../../components/atoms'
 import { PageHeader } from '../../components/organisms'
+import contactoService from '../../services/contactoService'
 import './Contact.css'
 
 /**
@@ -37,9 +38,15 @@ const Contact = () => {
     setIsSubmitting(true)
     setSubmitStatus(null)
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      const mailtoLink = `mailto:info@newlife.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`Nombre: ${formData.name}\nEmail: ${formData.email}\nTeléfono: ${formData.phone}\n\nMensaje:\n${formData.message}`)}`
-      window.location.href = mailtoLink
+      await contactoService.enviar({
+        nombre: formData.name,
+        correo: formData.email,
+        telefono: formData.phone,
+        asunto: formData.subject,
+        mensaje: formData.message
+      })
+      setSubmitStatus('success')
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
     } catch (error) {
       setSubmitStatus('error')
     } finally {
