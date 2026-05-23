@@ -1,6 +1,6 @@
 import api from './api'
 
-const ENDPOINT = '/contacto'
+const ENDPOINT = '/formulario'
 
 const contactoService = {
   enviar: async ({ nombre, correo, telefono, asunto, mensaje }) => {
