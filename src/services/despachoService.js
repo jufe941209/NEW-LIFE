@@ -16,7 +16,7 @@ const despachoService = {
     return response.data
   },
   update: async (id, data) => {
-    const response = await api.put(`${ENDPOINT}/${id}`, data)
+    const response = await api.put(ENDPOINT, { ...data, numero_despacho: id })
     return response.data
   },
   remove: async (id) => {

@@ -47,6 +47,11 @@ const DespachoView = () => {
   const [deletingId, setDeletingId] = useState(null)
   const [confirmDelete, setConfirmDelete] = useState(null)
 
+  // Action state
+  const [actionLoading, setActionLoading] = useState(null)
+  const [approveModal, setApproveModal] = useState(null) // { despacho, nuevoEstado }
+  const [selectedDomi, setSelectedDomi] = useState('')
+
   const load = async () => {
     setLoading(true)
     try {
@@ -93,6 +98,39 @@ const DespachoView = () => {
     }
   }
 
+  const changeEstado = async (despacho, nuevoEstado, domiOverride = null) => {
+    const domiCC = domiOverride || despacho.cc_domiciliario || ''
+    if ((nuevoEstado === 'En camino' || nuevoEstado === 'Entregado') && !domiCC) {
+      setApproveModal({ despacho, nuevoEstado })
+      const domiList = nuevoEstado === 'Entregado'
+        ? domiciliarios.filter(d => d.estado !== 'Inactivo')
+        : domiciliarios.filter(d => d.disponibilidad === 'Disponible' && d.estado !== 'Inactivo')
+      setSelectedDomi(domiList[0]?.cedula_domi || '')
+      return
+    }
+    setActionLoading(despacho.numero_despacho)
+    try {
+      const now = new Date().toISOString()
+      await despachoService.update(despacho.numero_despacho, {
+        ...despacho,
+        cc_domiciliario: domiCC,
+        estado: nuevoEstado,
+        fecha_aprobacion: nuevoEstado === 'En camino' ? (despacho.fecha_aprobacion || now) : despacho.fecha_aprobacion,
+        fecha_entrega: nuevoEstado === 'Entregado' ? now : despacho.fecha_entrega,
+      })
+      await load()
+    } catch (e) {
+      alert(e?.response?.data?.Message || 'Error al actualizar el despacho')
+    } finally { setActionLoading(null) }
+  }
+
+  const confirmApprove = async () => {
+    if (!selectedDomi || !approveModal) return
+    const { despacho, nuevoEstado } = approveModal
+    setApproveModal(null)
+    await changeEstado(despacho, nuevoEstado, selectedDomi)
+  }
+
   useEffect(() => { load() }, [])
 
   const getNombre = (arr, key, val) => arr.find(x => x[key] === val)?.nombres || val || '—'
@@ -113,6 +151,8 @@ const DespachoView = () => {
     const me = !filterEstado || (d.estado || 'Pendiente') === filterEstado
     return mf && me
   })
+
+  const domiDisponibles = domiciliarios.filter(d => d.disponibilidad === 'Disponible' && d.estado !== 'Inactivo')
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -228,7 +268,7 @@ const DespachoView = () => {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
                 <thead>
                   <tr style={{ background: '#f8fafc' }}>
-                    {['#', 'Factura / Cliente', 'Estado', 'Responsable', 'Domiciliario', 'F. Despacho', 'F. Aprobación', 'F. Entrega', 'PDF', ''].map(h => (
+                    {['#', 'Factura / Cliente', 'Estado', 'Responsable', 'Domiciliario', 'F. Despacho', 'F. Aprobación', 'F. Entrega', 'Acciones', ''].map(h => (
                       <th key={h} style={{
                         padding: '0.75rem 1rem', textAlign: 'left',
                         fontSize: '0.75rem', fontWeight: 700,
@@ -243,6 +283,9 @@ const DespachoView = () => {
                   {filtered.map(d => {
                     const factura = facturas.find(f => f.numero_factura === d.numero_factura)
                     const cliente = factura ? clientesMap[factura.cedula_cli] : null
+                    const estado = d.estado || 'Pendiente'
+                    const busy = actionLoading === d.numero_despacho
+                    const isTerminal = estado === 'Entregado' || estado === 'Cancelado'
                     return (
                       <tr key={d.numero_despacho} style={{ borderBottom: '1px solid #f1f5f9' }}
                         onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
@@ -255,37 +298,105 @@ const DespachoView = () => {
                           {factura && !cliente && <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: 2 }}>{factura.cedula_cli}</div>}
                           {factura?.metodo_pago && <div style={{ fontSize: '0.73rem', color: '#94a3b8' }}>{factura.metodo_pago}</div>}
                         </td>
-                        <td style={{ padding: '0.75rem 1rem' }}><EstadoBadge estado={d.estado || 'Pendiente'} /></td>
+                        <td style={{ padding: '0.75rem 1rem' }}><EstadoBadge estado={estado} /></td>
                         <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>
                           {getNombre(responsables, 'cedula_resp', d.cc_responsable)}
                         </td>
                         <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>
-                          {getNombre(domiciliarios, 'cedula_domi', d.cc_domiciliario)}
+                          {d.cc_domiciliario
+                            ? getNombre(domiciliarios, 'cedula_domi', d.cc_domiciliario)
+                            : <span style={{ color: '#f59e0b', fontSize: '0.78rem', fontWeight: 600 }}><i className="fas fa-exclamation-triangle me-1"></i>Sin asignar</span>
+                          }
                         </td>
                         <td style={{ padding: '0.75rem 1rem', color: '#64748b' }}>{fmtDate(d.fecha_despacho)}</td>
                         <td style={{ padding: '0.75rem 1rem', color: '#64748b' }}>{fmtDT(d.fecha_aprobacion)}</td>
                         <td style={{ padding: '0.75rem 1rem', color: d.fecha_entrega ? '#22c55e' : '#64748b', fontWeight: d.fecha_entrega ? 600 : 400 }}>
                           {fmtDT(d.fecha_entrega)}
                         </td>
+                        {/* Actions column */}
                         <td style={{ padding: '0.75rem 1rem' }}>
-                          {factura && (
+                          {!isTerminal && (
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {factura && (
+                                <button
+                                  onClick={() => handleImprimirFactura(factura)}
+                                  disabled={printingFac === factura.numero_factura}
+                                  title="Imprimir PDF"
+                                  style={{
+                                    background: 'linear-gradient(135deg,#28a745,#20c997)', color: '#fff',
+                                    border: 'none', padding: '4px 8px', borderRadius: 6,
+                                    fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer'
+                                  }}
+                                >
+                                  {printingFac === factura.numero_factura
+                                    ? <span className="spinner-border spinner-border-sm"></span>
+                                    : <i className="fas fa-print"></i>
+                                  }
+                                </button>
+                              )}
+                              {(estado === 'Pendiente') && (
+                                <button
+                                  onClick={() => changeEstado(d, 'En camino')}
+                                  disabled={busy}
+                                  title="Aprobar y despachar"
+                                  style={{
+                                    background: '#3b82f6', color: '#fff',
+                                    border: 'none', padding: '4px 8px', borderRadius: 6,
+                                    fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
+                                    whiteSpace: 'nowrap'
+                                  }}
+                                >
+                                  {busy ? <span className="spinner-border spinner-border-sm"></span> : <><i className="fas fa-truck me-1"></i>Despachar</>}
+                                </button>
+                              )}
+                              {estado === 'En camino' && (
+                                <button
+                                  onClick={() => changeEstado(d, 'Entregado')}
+                                  disabled={busy}
+                                  title="Marcar como entregado"
+                                  style={{
+                                    background: '#22c55e', color: '#fff',
+                                    border: 'none', padding: '4px 8px', borderRadius: 6,
+                                    fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
+                                    whiteSpace: 'nowrap'
+                                  }}
+                                >
+                                  {busy ? <span className="spinner-border spinner-border-sm"></span> : <><i className="fas fa-check me-1"></i>Entregado</>}
+                                </button>
+                              )}
+                              <button
+                                onClick={() => changeEstado(d, 'Cancelado')}
+                                disabled={busy}
+                                title="Cancelar despacho"
+                                style={{
+                                  background: '#fff5f5', color: '#dc2626',
+                                  border: '1px solid #fecaca', padding: '4px 8px', borderRadius: 6,
+                                  fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
+                                  whiteSpace: 'nowrap'
+                                }}
+                              >
+                                <i className="fas fa-times me-1"></i>Cancelar
+                              </button>
+                            </div>
+                          )}
+                          {isTerminal && factura && (
                             <button
                               onClick={() => handleImprimirFactura(factura)}
                               disabled={printingFac === factura.numero_factura}
                               style={{
                                 background: 'linear-gradient(135deg,#28a745,#20c997)', color: '#fff',
-                                border: 'none', padding: '4px 10px', borderRadius: 6,
-                                fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
-                                display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap'
+                                border: 'none', padding: '4px 8px', borderRadius: 6,
+                                fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer'
                               }}
                             >
                               {printingFac === factura.numero_factura
                                 ? <span className="spinner-border spinner-border-sm"></span>
-                                : <><i className="fas fa-print"></i> PDF</>
+                                : <i className="fas fa-print"></i>
                               }
                             </button>
                           )}
                         </td>
+                        {/* Delete column */}
                         <td style={{ padding: '0.75rem 1rem' }}>
                           {confirmDelete === d.numero_despacho ? (
                             <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
@@ -332,6 +443,81 @@ const DespachoView = () => {
               </table>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Modal: seleccionar domiciliario para aprobar/entregar */}
+      {approveModal && (
+        <div
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={() => setApproveModal(null)}
+        >
+          <div
+            style={{ background: '#fff', borderRadius: 16, padding: '1.75rem', maxWidth: 420, width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6', fontSize: '1.2rem' }}>
+                <i className="fas fa-motorcycle"></i>
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>Asignar domiciliario</h4>
+                <p style={{ margin: 0, fontSize: '0.82rem', color: '#64748b' }}>Despacho #{approveModal.despacho.numero_despacho}</p>
+              </div>
+              <button onClick={() => setApproveModal(null)} style={{ marginLeft: 'auto', background: 'none', border: 'none', fontSize: '1.2rem', color: '#94a3b8', cursor: 'pointer' }}>
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '0.6rem 0.85rem', marginBottom: '1rem', fontSize: '0.83rem', color: '#1d4ed8' }}>
+              <i className="fas fa-info-circle me-2"></i>
+              {approveModal.nuevoEstado === 'Entregado'
+                ? 'Selecciona el domiciliario que realizó la entrega.'
+                : 'Para despachar es necesario asignar un domiciliario.'}
+            </div>
+
+            <label style={{ display: 'block', fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.4rem' }}>
+              {approveModal.nuevoEstado === 'Entregado' ? 'Domiciliario de entrega' : 'Domiciliario disponible'}
+            </label>
+            {(() => {
+              const domiList = approveModal.nuevoEstado === 'Entregado'
+                ? domiciliarios.filter(d => d.estado !== 'Inactivo')
+                : domiDisponibles
+              if (domiList.length === 0) return (
+                <p style={{ color: '#dc2626', fontSize: '0.85rem' }}><i className="fas fa-times-circle me-1"></i>No hay domiciliarios disponibles.</p>
+              )
+              return (
+                <select
+                  value={selectedDomi}
+                  onChange={e => setSelectedDomi(e.target.value)}
+                  style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: '0.88rem', marginBottom: '1rem' }}
+                >
+                  <option value="">Seleccionar...</option>
+                  {domiList.map(d => (
+                    <option key={d.cedula_domi} value={d.cedula_domi}>{d.nombres}</option>
+                  ))}
+                </select>
+              )
+            })()}
+
+            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+              <button onClick={() => setApproveModal(null)} style={{ padding: '0.5rem 1.1rem', border: '1.5px solid #e2e8f0', borderRadius: 8, background: '#fff', color: '#475569', fontWeight: 600, cursor: 'pointer', fontSize: '0.88rem' }}>
+                Cancelar
+              </button>
+              <button
+                onClick={confirmApprove}
+                disabled={!selectedDomi}
+                style={{
+                  padding: '0.5rem 1.25rem', border: 'none', borderRadius: 8,
+                  background: selectedDomi ? '#3b82f6' : '#94a3b8', color: '#fff',
+                  fontWeight: 700, cursor: selectedDomi ? 'pointer' : 'not-allowed', fontSize: '0.88rem'
+                }}
+              >
+                <i className={`fas ${approveModal.nuevoEstado === 'Entregado' ? 'fa-check' : 'fa-truck'} me-1`}></i>
+                {approveModal.nuevoEstado === 'Entregado' ? 'Marcar entregado' : 'Despachar'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -348,8 +348,10 @@ const ResponsableDashboard = () => {
     setActionLoading(despacho.numero_despacho)
     try {
       const now = new Date().toISOString()
+      const isApproving = nuevoEstado === 'En camino' && (!despacho.cc_responsable || despacho.cc_responsable === '')
       await despachoService.update(despacho.numero_despacho, {
         ...despacho,
+        cc_responsable: isApproving ? (responsable?.cedula_resp || despacho.cc_responsable) : despacho.cc_responsable,
         cc_domiciliario: domiCC,
         estado: nuevoEstado,
         fecha_aprobacion: nuevoEstado === 'En camino' ? (despacho.fecha_aprobacion || now) : despacho.fecha_aprobacion,
