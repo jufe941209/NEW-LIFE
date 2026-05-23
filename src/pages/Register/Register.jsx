@@ -69,10 +69,9 @@ const Register = () => {
     if (!validate()) return
     setIsLoading(true)
     try {
-      const [porCorreo, porId] = await Promise.all([
-        clienteService.existsByCorreo(formData.correo),
-        clienteService.existsByIdentificacion(formData.numero_identificacion)
-      ])
+      const clientes = await clienteService.getAll()
+      const porCorreo = clientes.find(c => c.correo === formData.correo) || null
+      const porId = clientes.find(c => c.numero_identificacion === formData.numero_identificacion) || null
       if (porCorreo || porId) {
         const estaInactivo = (porCorreo?.estado === 'Inactivo') || (porId?.estado === 'Inactivo')
         setErrors({

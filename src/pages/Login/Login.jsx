@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Button, Input } from '../../components/atoms'
 import { PageHeader } from '../../components/organisms'
 import { useAuth } from '../../context/AuthContext'
@@ -10,11 +10,13 @@ import './Login.css'
 
 const Login = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const { loginAdmin, loginCliente, loginResponsable } = useAuth()
-  const [formData, setFormData] = useState({ correo: '', contrasena: '' })
+  const [formData, setFormData] = useState({ correo: location.state?.registeredEmail || '', contrasena: '' })
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const successMessage = location.state?.message || null
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -90,6 +92,13 @@ const Login = () => {
                   <h2 className="login-title">Bienvenido de Nuevo</h2>
                   <p className="login-subtitle text-muted">Administradores · Responsables · Clientes</p>
                 </div>
+
+                {successMessage && (
+                  <div className="alert alert-success" role="alert">
+                    <i className="fas fa-check-circle me-2"></i>
+                    {successMessage}
+                  </div>
+                )}
 
                 {errors.general && (
                   <div className="alert alert-danger" role="alert">
