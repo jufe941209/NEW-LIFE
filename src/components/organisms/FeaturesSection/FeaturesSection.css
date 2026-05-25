@@ -22,12 +22,16 @@
   box-shadow: 0 8px 25px rgba(40, 167, 69, 0.15);
 }
 
+/* Ícono circular: se usan min/max para que NUNCA se deforme en flex */
 .feature-icon {
   width: 80px;
   height: 80px;
   min-width: 80px;
-  aspect-ratio: 1 / 1;
+  max-width: 80px;
+  min-height: 80px;
+  max-height: 80px;
   flex-shrink: 0;
+  align-self: center;
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   border-radius: 50%;
   display: flex;
@@ -57,46 +61,26 @@
 }
 
 @media (max-width: 768px) {
-  .features-section {
-    padding: 3rem 0;
-  }
-
-  .feature-card {
-    padding: 1.5rem 1rem;
-    margin-bottom: 1rem;
-  }
-
+  .features-section { padding: 3rem 0; }
+  .feature-card { padding: 1.5rem 1rem; margin-bottom: 1rem; }
   .feature-icon {
-    width: 70px;
-    height: 70px;
+    width: 70px; height: 70px;
+    min-width: 70px; max-width: 70px;
+    min-height: 70px; max-height: 70px;
     font-size: 1.75rem;
   }
 }
 
 @media (max-width: 480px) {
-  .features-section {
-    padding: 2rem 0;
-  }
-
-  .feature-card {
-    padding: 1.25rem 0.875rem;
-    margin-bottom: 0.75rem;
-    border-radius: 12px;
-  }
-
+  .features-section { padding: 2rem 0; }
+  .feature-card { padding: 1.25rem 0.875rem; margin-bottom: 0.75rem; border-radius: 12px; }
   .feature-icon {
-    width: 60px;
-    height: 60px;
+    width: 65px; height: 65px;
+    min-width: 65px; max-width: 65px;
+    min-height: 65px; max-height: 65px;
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
-
-  .feature-title {
-    font-size: 1.1rem;
-  }
-
-  .feature-description {
-    font-size: 0.9rem;
-  }
+  .feature-title { font-size: 1.1rem; }
+  .feature-description { font-size: 0.9rem; }
 }
-

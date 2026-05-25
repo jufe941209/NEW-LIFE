@@ -48,8 +48,11 @@
   width: 50px;
   height: 50px;
   min-width: 50px;
-  aspect-ratio: 1 / 1;
+  max-width: 50px;
+  min-height: 50px;
+  max-height: 50px;
   flex-shrink: 0;
+  align-self: flex-start;
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   border-radius: 50%;
   display: flex;
@@ -285,6 +288,10 @@ textarea.form-control {
   .info-icon {
     width: 45px;
     height: 45px;
+    min-width: 45px;
+    max-width: 45px;
+    min-height: 45px;
+    max-height: 45px;
     font-size: 1.1rem;
     margin-right: 1rem;
   }
@@ -307,6 +314,10 @@ textarea.form-control {
   .info-icon {
     width: 40px;
     height: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    min-height: 40px;
+    max-height: 40px;
     font-size: 1rem;
   }
 
@@ -341,6 +352,10 @@ textarea.form-control {
   .info-icon {
     width: 38px;
     height: 38px;
+    min-width: 38px;
+    max-width: 38px;
+    min-height: 38px;
+    max-height: 38px;
     font-size: 0.9rem;
     margin-right: 0.875rem;
   }

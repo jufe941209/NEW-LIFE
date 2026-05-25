@@ -358,8 +358,11 @@
   width: 90px;
   height: 90px;
   min-width: 90px;
-  aspect-ratio: 1 / 1;
+  max-width: 90px;
+  min-height: 90px;
+  max-height: 90px;
   flex-shrink: 0;
+  align-self: center;
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   border-radius: 50%;
   display: flex;
@@ -447,8 +450,11 @@
   width: 90px;
   height: 90px;
   min-width: 90px;
-  aspect-ratio: 1 / 1;
+  max-width: 90px;
+  min-height: 90px;
+  max-height: 90px;
   flex-shrink: 0;
+  align-self: center;
   background: linear-gradient(135deg, rgba(40, 167, 69, 0.15) 0%, rgba(32, 201, 151, 0.15) 100%);
   border-radius: 50%;
   display: flex;
@@ -825,6 +831,10 @@
   .step-icon {
     width: 80px;
     height: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    min-height: 80px;
+    max-height: 80px;
     font-size: 2rem;
   }
 }
@@ -874,6 +884,10 @@
   .benefit-icon {
     width: 80px;
     height: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    min-height: 80px;
+    max-height: 80px;
     font-size: 2rem;
   }
 
@@ -1008,6 +1022,10 @@
   .benefit-icon {
     width: 65px;
     height: 65px;
+    min-width: 65px;
+    max-width: 65px;
+    min-height: 65px;
+    max-height: 65px;
     font-size: 1.75rem;
     margin-bottom: 1rem;
   }
@@ -1037,6 +1055,10 @@
   .step-icon {
     width: 70px;
     height: 70px;
+    min-width: 70px;
+    max-width: 70px;
+    min-height: 70px;
+    max-height: 70px;
     font-size: 1.75rem;
     margin: 1.5rem auto 1.25rem;
   }
