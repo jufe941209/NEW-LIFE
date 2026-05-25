@@ -28,6 +28,9 @@
 .stat-icon {
   width: 80px;
   height: 80px;
+  min-width: 80px;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   border-radius: 50%;
   display: flex;

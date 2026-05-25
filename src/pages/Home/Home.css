@@ -357,6 +357,9 @@
 .benefit-icon {
   width: 90px;
   height: 90px;
+  min-width: 90px;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   border-radius: 50%;
   display: flex;
@@ -443,6 +446,9 @@
 .step-icon {
   width: 90px;
   height: 90px;
+  min-width: 90px;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
   background: linear-gradient(135deg, rgba(40, 167, 69, 0.15) 0%, rgba(32, 201, 151, 0.15) 100%);
   border-radius: 50%;
   display: flex;

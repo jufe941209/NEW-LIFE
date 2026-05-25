@@ -26,6 +26,9 @@
 .resp-login-logo {
   width: 60px;
   height: 60px;
+  min-width: 60px;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
   background: rgba(255,255,255,0.15);
   border-radius: 50%;
   display: flex;

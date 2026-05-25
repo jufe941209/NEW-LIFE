@@ -90,14 +90,14 @@ const Navbar = () => {
           </Link>
           
           {/* Toggle Button Mobile */}
-          <button 
+          <button
             className={`navbar-toggler ${isMobileMenuOpen ? 'active' : ''}`}
-            type="button" 
+            type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-expanded={isMobileMenuOpen}
             aria-label="Toggle navigation"
           >
-            <span className="navbar-toggler-icon">
+            <span className="hamburger-lines">
               <span></span>
               <span></span>
               <span></span>

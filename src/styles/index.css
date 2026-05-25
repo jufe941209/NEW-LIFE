@@ -82,9 +82,10 @@ img {
 }
 
 @media (max-width: 768px) {
-  /* Touch target minimum */
-  button, a, [role="button"] {
-    min-height: 44px;
+  /* Touch target minimum: solo botones explícitos, no links de navegación */
+  button:not(.nav-link):not(.navbar-toggler):not(.cliente-dropdown-item),
+  [role="button"]:not(.nav-link) {
+    min-height: 36px;
   }
 }
 
