@@ -30,10 +30,13 @@ const responsableService = {
     ) || null
   },
   loginWithPassword: async (correo, contrasena) => {
-    const todos = await responsableService.getAll()
-    return todos.find(
-      r => r.correo === correo && r.contrasena === contrasena && r.estado === 'Activo'
-    ) || null
+    try {
+      const response = await api.post(`${ENDPOINT}/login`, { correo, contrasena })
+      return response.data
+    } catch (err) {
+      if (err?.response?.status === 401) return null
+      throw err
+    }
   }
 }
 

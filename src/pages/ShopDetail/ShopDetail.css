@@ -353,6 +353,27 @@
   .sd-features-row { grid-template-columns: repeat(2, 1fr); }
   .sd-related-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+@media (max-width: 768px) {
+  .sd-main-grid {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .sd-image-wrap {
+    min-height: 280px;
+    padding: 1.25rem;
+  }
+
+  .sd-product-name {
+    font-size: 1.75rem;
+  }
+
+  .sd-price {
+    font-size: 1.9rem;
+  }
+}
+
 @media (max-width: 576px) {
   .sd-main-grid { padding: 1.25rem; }
   .sd-product-name { font-size: 1.5rem; }
@@ -360,4 +381,102 @@
   .sd-specs-grid { grid-template-columns: 1fr; }
   .sd-features-row { grid-template-columns: 1fr; }
   .sd-related-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .sd-main-grid {
+    padding: 1rem;
+    gap: 1rem;
+    border-radius: 14px;
+    margin-bottom: 1rem;
+  }
+
+  .sd-image-wrap {
+    min-height: 220px;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .sd-main-img {
+    max-height: 200px;
+  }
+
+  .sd-product-name {
+    font-size: 1.3rem;
+  }
+
+  .sd-price {
+    font-size: 1.6rem;
+  }
+
+  .sd-price-original {
+    font-size: 1.1rem;
+  }
+
+  .sd-description {
+    font-size: 0.9rem;
+    padding: 0.875rem;
+  }
+
+  .sd-specs-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .sd-spec-item {
+    padding: 0.625rem;
+  }
+
+  .sd-qty-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .sd-qty-display {
+    font-size: 1rem;
+    min-width: 40px;
+  }
+
+  .sd-add-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    min-height: 48px;
+  }
+
+  .sd-features-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .sd-feature-card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .sd-related-section {
+    padding: 1.25rem;
+    border-radius: 14px;
+  }
+
+  .sd-related-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.625rem;
+  }
+
+  .sd-related-img-wrap {
+    height: 110px;
+  }
+
+  .sd-related-info {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .sd-related-name {
+    font-size: 0.75rem;
+  }
+
+  .sd-related-price {
+    font-size: 0.85rem;
+  }
 }

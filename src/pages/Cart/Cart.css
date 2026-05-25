@@ -307,15 +307,19 @@
 
 .summary-total {
   margin-top: 1rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid #e9ecef;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: #ffffff;
   font-size: 1.25rem;
   font-weight: 700;
+  border: none;
 }
 
 .summary-total-amount {
-  color: #28a745;
+  color: #ffffff;
   font-size: 1.5rem;
+  font-weight: 800;
 }
 
 .summary-shipping-info {
@@ -477,5 +481,138 @@
 
   .quantity-controls {
     margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-page {
+    padding-top: 10px;
+  }
+
+  .cart-empty {
+    padding: 2.5rem 1rem;
+    border-radius: 14px;
+  }
+
+  .cart-empty-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .cart-empty-title {
+    font-size: 1.35rem;
+  }
+
+  .cart-empty-text {
+    font-size: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .cart-header {
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+
+  .cart-section-title {
+    font-size: 1.25rem;
+  }
+
+  .cart-items {
+    gap: 1rem;
+  }
+
+  .cart-item {
+    grid-template-columns: 80px 1fr;
+    padding: 0.875rem;
+    border-radius: 12px;
+    gap: 0.875rem;
+  }
+
+  .cart-item-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+  }
+
+  .cart-item-name {
+    font-size: 0.95rem;
+  }
+
+  .cart-item-description {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 1;
+  }
+
+  .cart-item-price-current {
+    font-size: 1rem;
+  }
+
+  .cart-item-price-original {
+    font-size: 0.8rem;
+  }
+
+  .cart-item-quantity {
+    grid-column: 1 / -1;
+    border-top: 1px solid #f8f9fa;
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .quantity-btn {
+    width: 32px;
+    height: 32px;
+    min-height: 32px;
+    font-size: 0.8rem;
+  }
+
+  .quantity-input {
+    width: 45px;
+    font-size: 0.9rem;
+  }
+
+  .cart-item-actions {
+    position: absolute;
+    top: 0.875rem;
+    right: 0.875rem;
+  }
+
+  .remove-btn {
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+    font-size: 0.85rem;
+  }
+
+  .cart-summary {
+    padding: 1.25rem;
+    border-radius: 14px;
+    margin-top: 1.5rem;
+  }
+
+  .cart-summary-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .summary-row {
+    padding: 0.75rem 0;
+    font-size: 0.9rem;
+  }
+
+  .summary-total {
+    font-size: 1.1rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .summary-total-amount {
+    font-size: 1.3rem;
+  }
+
+  .cart-summary-actions {
+    margin-top: 1.5rem;
   }
 }

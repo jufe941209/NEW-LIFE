@@ -25,7 +25,10 @@ const ProductGrid = ({
     )
   }
 
+  const isListView = columns === 1
+
   const gridCols = {
+    1: 'col-12',
     2: 'col-lg-6',
     3: 'col-lg-4',
     4: 'col-lg-3'
@@ -35,9 +38,9 @@ const ProductGrid = ({
 
   return (
     <div className={`product-grid ${className}`}>
-      <div className="row g-4">
+      <div className={`row ${isListView ? 'g-3 list-view' : 'g-4'}`}>
         {products.map((product) => (
-          <div key={product.id} className={`${colClass} col-md-6 col-sm-12`}>
+          <div key={product.id} className={isListView ? 'col-12' : `${colClass} col-md-6 col-sm-12`}>
             <ProductCard
               id={product.id}
               image={product.image}
@@ -48,6 +51,7 @@ const ProductGrid = ({
               originalPrice={product.originalPrice}
               badge={product.badge}
               onAddToCart={onAddToCart}
+              listView={isListView}
             />
           </div>
         ))}

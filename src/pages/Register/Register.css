@@ -314,3 +314,73 @@
   }
 }
 
+@media (max-width: 480px) {
+  .register-page {
+    padding-top: 10px;
+    min-height: 100vh;
+  }
+
+  .register-card {
+    padding: 1.25rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  }
+
+  .register-header {
+    padding-bottom: 1.25rem;
+  }
+
+  .register-logo {
+    height: 55px;
+  }
+
+  .register-title {
+    font-size: 1.4rem;
+  }
+
+  .register-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .register-form {
+    padding-top: 1.25rem;
+  }
+
+  .form-label {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    font-size: 16px; /* prevent iOS zoom */
+    min-height: 48px;
+    padding: 0.75rem 0.875rem;
+  }
+
+  .register-button {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .social-btn {
+    font-size: 0.85rem;
+    min-height: 48px;
+  }
+
+  .code-input {
+    font-size: 1.75rem;
+    letter-spacing: 10px;
+    max-width: 220px;
+    padding: 12px;
+  }
+
+  .step-line {
+    width: 32px;
+  }
+
+  .verify-code-box {
+    padding: 16px;
+  }
+}
+

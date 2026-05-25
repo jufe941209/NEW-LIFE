@@ -18,6 +18,7 @@ const ProductCard = ({
   badge,
   onAddToCart,
   onViewDetail,
+  listView = false,
   className = ''
 }) => {
   const handleAddToCart = (e) => {
@@ -38,12 +39,12 @@ const ProductCard = ({
     }
   }
 
-  const finalPrice = discount && originalPrice 
+  const finalPrice = discount > 0 && originalPrice
     ? originalPrice - (originalPrice * discount / 100)
     : price
 
   return (
-    <div className={`product-card ${className}`}>
+    <div className={`product-card ${listView ? 'product-card--list' : ''} ${className}`}>
       {/* Badge */}
       {badge && (
         <div className="product-badge">
@@ -52,7 +53,7 @@ const ProductCard = ({
       )}
 
       {/* Discount Badge */}
-      {discount && originalPrice && (
+      {discount > 0 && originalPrice && (
         <div className="product-discount-badge">
           -{discount}%
         </div>
@@ -138,7 +139,7 @@ const ProductCard = ({
         {/* Price */}
         <div className="product-price-wrapper">
           <div className="product-price-container">
-            {discount && originalPrice && (
+            {discount > 0 && originalPrice && (
               <span className="product-price-original">
               ${originalPrice.toLocaleString()}
               </span>
@@ -147,7 +148,7 @@ const ProductCard = ({
               ${finalPrice.toLocaleString()}
             </span>
           </div>
-          {discount && originalPrice && (
+          {discount > 0 && originalPrice && (
             <span className="product-discount">
               {discount}% OFF
             </span>

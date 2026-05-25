@@ -30,6 +30,7 @@ import MisCompras from './pages/MisCompras'
 import CambiarPassword from './pages/CambiarPassword'
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
 import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions'
+import PagoResultado from './pages/PagoResultado/PagoResultado'
 
 /**
  * PublicLayout - Envuelve rutas públicas con Navbar y Footer
@@ -93,6 +94,7 @@ function App() {
         <Route path="/shop/:id" element={<PublicLayout><ShopDetail /></PublicLayout>} />
         <Route path="/cart" element={<PublicLayout><Cart /></PublicLayout>} />
         <Route path="/checkout" element={<PublicLayout><Checkout /></PublicLayout>} />
+        <Route path="/pedido-resultado" element={<PagoResultado />} />
         <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
         <Route path="/testimonials" element={<PublicLayout><Testimonial /></PublicLayout>} />
         <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />

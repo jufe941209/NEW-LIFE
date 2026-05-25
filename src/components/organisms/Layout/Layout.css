@@ -2,12 +2,14 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 .main-content {
   flex: 1;
   margin-top: 0;
   padding-top: 0;
+  overflow-x: hidden;
 }
 
 .back-to-top {
@@ -32,5 +34,14 @@
 
 .back-to-top:hover {
   transform: translateY(-5px);
+}
+
+@media (max-width: 480px) {
+  .back-to-top {
+    right: 15px;
+    bottom: 20px;
+    width: 40px;
+    height: 40px;
+  }
 }
 

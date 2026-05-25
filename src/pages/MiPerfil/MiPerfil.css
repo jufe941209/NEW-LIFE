@@ -147,3 +147,89 @@
   .perfil-quick-links { grid-template-columns: repeat(2, 1fr); }
   .perfil-info-grid { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 480px) {
+  .perfil-hero {
+    padding: 1.5rem 1.25rem;
+    border-radius: 14px;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .perfil-avatar {
+    font-size: 3rem;
+  }
+
+  .perfil-nombre {
+    font-size: 1.4rem;
+  }
+
+  .perfil-correo {
+    font-size: 0.875rem;
+  }
+
+  .perfil-hero-actions {
+    justify-content: center;
+  }
+
+  .perfil-info-card,
+  .perfil-edit-card {
+    padding: 1.25rem 1rem;
+    border-radius: 14px;
+    margin-bottom: 1rem;
+  }
+
+  .perfil-section-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .perfil-info-grid {
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
+  }
+
+  .perfil-info-item {
+    padding: 0.75rem;
+  }
+
+  .perfil-info-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .perfil-info-label {
+    font-size: 0.7rem;
+  }
+
+  .perfil-info-value {
+    font-size: 0.875rem;
+  }
+
+  .perfil-quick-links {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .perfil-quick-btn {
+    padding: 0.875rem 0.75rem;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    min-height: 80px;
+  }
+
+  .perfil-quick-btn i {
+    font-size: 1.3rem;
+  }
+
+  .perfil-edit-card .form-control,
+  .perfil-edit-card .form-select {
+    font-size: 16px; /* prevent iOS zoom */
+    min-height: 48px;
+  }
+
+  .perfil-pass-section {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+}

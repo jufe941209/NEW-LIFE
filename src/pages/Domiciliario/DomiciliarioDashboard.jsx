@@ -57,7 +57,6 @@ const PerfilSection = ({ domiciliario, loginDomiciliario }) => {
     let newPassword = undefined
     if (wantsPass) {
       if (!form.contrasenaActual) { setErrorMsg('Ingresa tu contraseña actual'); return }
-      if (form.contrasenaActual !== (domiciliario.contrasena || '')) { setErrorMsg('Contraseña actual incorrecta'); return }
       if (!form.contrasenaNew || form.contrasenaNew.length < 6) { setErrorMsg('La nueva contraseña debe tener al menos 6 caracteres'); return }
       if (form.contrasenaNew !== form.contrasenaNew2) { setErrorMsg('Las contraseñas no coinciden'); return }
       newPassword = form.contrasenaNew
@@ -65,14 +64,20 @@ const PerfilSection = ({ domiciliario, loginDomiciliario }) => {
     setIsSaving(true); setErrorMsg(''); setSuccessMsg('')
     try {
       const payload = { ...domiciliario, nombres: form.nombres, telefono: form.telefono }
-      if (newPassword) payload.contrasena = newPassword
+      if (newPassword) {
+        // Verify current password via backend before updating
+        const verified = await domiciliarioService.login(domiciliario.cedula_domi, form.contrasenaActual)
+        if (!verified) { setErrorMsg('Contraseña actual incorrecta'); setIsSaving(false); return }
+        payload.contrasena = newPassword
+      }
       await domiciliarioService.update(domiciliario.cedula_domi, payload)
-      loginDomiciliario({ ...domiciliario, ...payload })
+      loginDomiciliario({ ...domiciliario, nombres: form.nombres, telefono: form.telefono })
       setSuccessMsg('¡Perfil actualizado!')
       setEditMode(false)
       setForm(p => ({ ...p, contrasenaActual: '', contrasenaNew: '', contrasenaNew2: '' }))
     } catch (err) {
-      setErrorMsg(err?.response?.data?.Message || 'Error al actualizar.')
+      const msg = err?.response?.data?.Message || err?.response?.data || 'Error al actualizar.'
+      setErrorMsg(typeof msg === 'string' ? msg : 'Error al actualizar.')
     } finally { setIsSaving(false) }
   }
 

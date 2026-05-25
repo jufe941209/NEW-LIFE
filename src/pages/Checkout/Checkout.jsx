@@ -9,13 +9,12 @@ import detalleFacturaService from '../../services/detalleFacturaService'
 import despachoService from '../../services/despachoService'
 import responsableService from '../../services/responsableService'
 import api from '../../services/api'
+import { redirigirAPago } from '../../services/wompiService'
 import './Checkout.css'
 
 const METODOS_PAGO = [
-  { value: 'Efectivo', label: 'Efectivo', icon: 'fa-money-bill-wave' },
-  { value: 'Transferencia', label: 'Transferencia bancaria', icon: 'fa-university' },
-  { value: 'PSE', label: 'PSE', icon: 'fa-credit-card' },
-  { value: 'Tarjeta de crédito', label: 'Tarjeta de crédito', icon: 'fa-cc-visa' },
+  { value: 'Wompi', label: 'Tarjeta / PSE / Nequi', icon: 'fa-credit-card', wompi: true },
+  { value: 'Efectivo', label: 'Contra entrega', icon: 'fa-money-bill-wave', wompi: false },
 ]
 
 const generarNumeroFactura = () => {
@@ -32,7 +31,7 @@ const Checkout = () => {
   const [checkoutError, setCheckoutError] = useState('')
   const [formData, setFormData] = useState({
     address: '', city: '', department: '', postalCode: '', notes: '',
-    paymentMethod: 'Efectivo'
+    paymentMethod: 'Wompi'
   })
   const [errors, setErrors] = useState({})
 
@@ -75,8 +74,10 @@ const Checkout = () => {
     const numeroFactura = generarNumeroFactura()
     const direccion = `${formData.address}, ${formData.city}, ${formData.department}${formData.postalCode ? ' ' + formData.postalCode : ''}`
 
+    const usaWompi = formData.paymentMethod === 'Wompi'
+
     try {
-      // 1. Crear factura
+      // 1. Crear factura (estado Pendiente siempre — Wompi o contra entrega)
       await facturaService.create({
         numero_factura: numeroFactura,
         fecha: new Date().toISOString(),
@@ -97,12 +98,12 @@ const Checkout = () => {
         })
       }
 
-      // 3. Reducir stock de cada producto
+      // 3. Reducir stock
       for (const item of items) {
         await api.post(`/producto/reducir-stock/${item.id}/${item.quantity}`).catch(() => {})
       }
 
-      // 4. Auto-crear despacho asignado al primer responsable activo
+      // 4. Auto-crear despacho
       const responsables = await responsableService.getAll().catch(() => [])
       const responsableAsignado = responsables.find(r => r.estado === 'Activo') || responsables[0]
       await despachoService.create({
@@ -113,14 +114,24 @@ const Checkout = () => {
         cc_domiciliario: null,
       }).catch(() => {})
 
-      // 5. Limpiar carrito
-      clearCart()
-
-      // 6. Ir a mis compras con mensaje de éxito
-      navigate('/mis-compras', { state: { nuevaFactura: numeroFactura } })
+      if (usaWompi) {
+        // 5a. Redirigir a Wompi — el carrito se limpia en la página de resultado
+        sessionStorage.setItem('wompi_ref', numeroFactura)
+        sessionStorage.setItem('wompi_total', String(total))
+        const redirectUrl = `${window.location.origin}/pedido-resultado?ref=${encodeURIComponent(numeroFactura)}`
+        await redirigirAPago({
+          referencia: numeroFactura,
+          montoCentavos: Math.round(total * 100),
+          cliente,
+          redirectUrl,
+        })
+      } else {
+        // 5b. Contra entrega — confirmar directamente
+        clearCart()
+        navigate('/mis-compras', { state: { nuevaFactura: numeroFactura } })
+      }
     } catch (e) {
       setCheckoutError(e?.response?.data?.Message || 'Error al procesar el pedido. Por favor intenta de nuevo.')
-    } finally {
       setIsLoading(false)
     }
   }
@@ -301,8 +312,10 @@ const Checkout = () => {
 
                   <Button type="submit" variant="success" size="lg" className="checkout-submit-btn w-100" disabled={isLoading}>
                     {isLoading
-                      ? <><span className="spinner-border spinner-border-sm me-2"></span>Procesando pedido...</>
-                      : <><i className="fas fa-lock me-2"></i>Confirmar Pedido — ${total.toLocaleString('es-CO')}</>
+                      ? <><span className="spinner-border spinner-border-sm me-2"></span>Procesando...</>
+                      : formData.paymentMethod === 'Wompi'
+                        ? <><i className="fas fa-credit-card me-2"></i>Ir a pagar — ${total.toLocaleString('es-CO')}</>
+                        : <><i className="fas fa-check-circle me-2"></i>Confirmar Pedido — ${total.toLocaleString('es-CO')}</>
                     }
                   </Button>
                   <Link to="/cart" className="checkout-back-link">

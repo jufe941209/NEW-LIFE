@@ -483,3 +483,73 @@
     font-size: 1.75rem;
   }
 }
+
+@media (max-width: 480px) {
+  /* Stats - 2 columns */
+  .testimonials-stats .row > [class*="col-"] {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 1.25rem 0.75rem;
+    border-radius: 14px;
+  }
+
+  .stat-icon {
+    width: 52px;
+    height: 52px;
+    font-size: 1.25rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+  }
+
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    min-height: 40px;
+  }
+
+  .testimonial-card {
+    padding: 1.25rem 1rem;
+    border-radius: 14px;
+  }
+
+  .testimonial-name {
+    font-size: 1rem;
+  }
+
+  .testimonial-comment {
+    font-size: 0.9rem;
+    padding-left: 0.875rem;
+  }
+
+  .testimonial-rating {
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .testimonial-footer {
+    padding-top: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .cta-title {
+    font-size: 1.5rem;
+  }
+
+  .cta-text {
+    font-size: 1rem;
+  }
+}

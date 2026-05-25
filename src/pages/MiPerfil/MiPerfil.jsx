@@ -55,9 +55,6 @@ const MiPerfil = () => {
       if (!form.contrasenaActual) { setErrorMsg('Debes ingresar tu contraseña actual'); return }
       if (!form.contrasenaNew)    { setErrorMsg('Debes ingresar la nueva contraseña'); return }
       if (!form.contrasenaNew2)   { setErrorMsg('Debes confirmar la nueva contraseña'); return }
-      if (form.contrasenaActual !== (cliente.contrasena || '')) {
-        setErrorMsg('La contraseña actual no es correcta'); return
-      }
       if (form.contrasenaNew.length < 6) { setErrorMsg('La nueva contraseña debe tener al menos 6 caracteres'); return }
       if (form.contrasenaNew !== form.contrasenaNew2) { setErrorMsg('Las contraseñas nuevas no coinciden'); return }
       newPassword = form.contrasenaNew
@@ -76,15 +73,17 @@ const MiPerfil = () => {
         tipo_documento: form.tipo_documento,
         tipo_cliente: form.tipo_cliente
       }
-      if (newPassword) payload.contrasena = newPassword
-
       await clienteService.update(cliente.numero_identificacion, payload)
-      loginCliente({ ...cliente, ...payload })
+      if (newPassword) {
+        await clienteService.cambiarContrasena(cliente.correo, form.contrasenaActual, newPassword)
+      }
+      loginCliente({ ...cliente, nombres: payload.nombres, correo: payload.correo, telefono: payload.telefono, direccion: payload.direccion })
       setSuccessMsg('¡Perfil actualizado correctamente!')
       setEditMode(false)
       setForm(prev => ({ ...prev, contrasenaActual: '', contrasenaNew: '', contrasenaNew2: '' }))
     } catch (e) {
-      setErrorMsg(e?.response?.data?.Message || 'Error al actualizar el perfil.')
+      const msg = e?.response?.data?.Message || e?.response?.data || 'Error al actualizar el perfil.'
+      setErrorMsg(typeof msg === 'string' ? msg : 'Error al actualizar el perfil.')
     } finally { setIsSaving(false) }
   }
 

@@ -27,11 +27,15 @@ const domiciliarioService = {
     const response = await api.delete(`${ENDPOINT}/${id}`)
     return response.data
   },
+
   login: async (cedula, contrasena) => {
-    const todos = await domiciliarioService.getAll()
-    return todos.find(
-      d => d.cedula_domi === cedula && d.contrasena === contrasena && d.estado !== 'Inactivo'
-    ) || null
+    try {
+      const response = await api.post(`${ENDPOINT}/login`, { cedula, contrasena })
+      return response.data
+    } catch (err) {
+      if (err?.response?.status === 401) return null
+      throw err
+    }
   }
 }
 

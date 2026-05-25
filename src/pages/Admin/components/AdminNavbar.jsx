@@ -1,7 +1,7 @@
 import React from 'react'
 import './AdminNavbar.css'
 
-const AdminNavbar = ({ admin, activeSection, setActiveSection, onLogout }) => {
+const AdminNavbar = ({ admin, activeSection, setActiveSection, onLogout, isOpen }) => {
   const navGroups = [
     {
       label: 'Principal',
@@ -38,7 +38,7 @@ const AdminNavbar = ({ admin, activeSection, setActiveSection, onLogout }) => {
   ]
 
   return (
-    <aside className="admin-sidebar">
+    <aside className={`admin-sidebar${isOpen ? ' open' : ''}`}>
       <div className="admin-sidebar-header">
         <img src="/img/logoNewLife.png" alt="NEW LIFE" className="admin-logo" />
         <h2 className="admin-brand">NEW LIFE</h2>

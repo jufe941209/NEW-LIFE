@@ -70,3 +70,30 @@
   }
 }
 
+@media (max-width: 480px) {
+  .features-section {
+    padding: 2rem 0;
+  }
+
+  .feature-card {
+    padding: 1.25rem 0.875rem;
+    margin-bottom: 0.75rem;
+    border-radius: 12px;
+  }
+
+  .feature-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-title {
+    font-size: 1.1rem;
+  }
+
+  .feature-description {
+    font-size: 0.9rem;
+  }
+}
+

@@ -33,6 +33,7 @@ body {
   line-height: 1.6;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 /* Smooth scroll */
@@ -40,5 +41,50 @@ html {
   scroll-behavior: smooth;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+}
+
+/* Global responsive helpers */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Prevent horizontal overflow globally */
+.container, .container-fluid {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (max-width: 480px) {
+  .container, .container-fluid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Ensure inputs don't zoom on iOS by keeping font-size >= 16px */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  /* Make tables scrollable on small screens */
+  .table-responsive-xs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Touch target minimum */
+  button, a, [role="button"] {
+    min-height: 44px;
+  }
 }
 

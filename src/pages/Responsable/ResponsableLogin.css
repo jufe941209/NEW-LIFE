@@ -158,3 +158,78 @@
   transition: color 0.2s;
 }
 .resp-login-back:hover { color: #1e40af; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .resp-login-page {
+    padding: 0.75rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .resp-login-card {
+    max-width: 100%;
+    border-radius: 20px;
+  }
+
+  .resp-login-brand {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .resp-login-logo {
+    width: 52px;
+    height: 52px;
+    font-size: 1.3rem;
+  }
+
+  .resp-login-brand h1 {
+    font-size: 1.4rem;
+  }
+
+  .resp-login-brand p {
+    font-size: 0.8rem;
+  }
+
+  .resp-login-form {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .resp-login-title {
+    font-size: 1.2rem;
+  }
+
+  .resp-login-sub {
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .resp-login-input-wrap input {
+    font-size: 16px; /* prevent iOS zoom */
+    min-height: 48px;
+    padding: 0.75rem 2.5rem;
+  }
+
+  .resp-login-btn {
+    min-height: 52px;
+    font-size: 0.95rem;
+  }
+
+  .resp-login-back {
+    font-size: 0.85rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .resp-login-page {
+    padding: 0.5rem;
+    padding-top: 1rem;
+  }
+
+  .resp-login-card {
+    border-radius: 16px;
+  }
+}

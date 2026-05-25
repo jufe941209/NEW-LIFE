@@ -363,3 +363,85 @@
   }
 }
 
+@media (max-width: 480px) {
+  .login-page {
+    padding-top: 10px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-card {
+    padding: 1.25rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: 16px;
+  }
+
+  .login-header {
+    padding-bottom: 1.25rem;
+  }
+
+  .login-logo {
+    height: 55px;
+  }
+
+  .login-title {
+    font-size: 1.4rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .login-form {
+    padding-top: 1.25rem;
+  }
+
+  .form-label {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    font-size: 16px; /* prevent iOS zoom */
+    min-height: 48px;
+    padding: 0.75rem 0.875rem;
+  }
+
+  .login-button {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .social-btn {
+    font-size: 0.875rem;
+    min-height: 48px;
+  }
+
+  .portal-selector-cards {
+    gap: 0.5rem;
+  }
+
+  .portal-card {
+    padding: 0.875rem 0.5rem;
+    border-radius: 12px;
+  }
+
+  .portal-card__icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .portal-card__title {
+    font-size: 0.8rem;
+  }
+
+  .portal-card__desc {
+    font-size: 0.7rem;
+  }
+}
+

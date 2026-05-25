@@ -2,6 +2,10 @@
   transition: var(--transition);
   font-weight: 600;
   border-radius: 12px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-primary {
@@ -20,5 +24,24 @@
   background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%);
   border: none;
   color: white;
+}
+
+/* Mobile touch targets */
+@media (max-width: 480px) {
+  .btn {
+    min-height: 48px;
+    font-size: 0.95rem;
+    padding: 0.65rem 1rem;
+  }
+
+  .btn-sm {
+    min-height: 40px;
+    font-size: 0.85rem;
+  }
+
+  .btn-lg {
+    min-height: 52px;
+    font-size: 1rem;
+  }
 }
 

@@ -65,9 +65,6 @@ const AdminPerfilSection = ({ admin, loginAdmin }) => {
       if (!form.contrasenaActual) { setErrorMsg('Debes ingresar tu contraseña actual'); return }
       if (!form.contrasenaNew)    { setErrorMsg('Debes ingresar la nueva contraseña'); return }
       if (!form.contrasenaNew2)   { setErrorMsg('Debes confirmar la nueva contraseña'); return }
-      if (form.contrasenaActual !== (admin.contrasena || '')) {
-        setErrorMsg('La contraseña actual no es correcta'); return
-      }
       if (form.contrasenaNew.length < 6) { setErrorMsg('La nueva contraseña debe tener al menos 6 caracteres'); return }
       if (form.contrasenaNew !== form.contrasenaNew2) { setErrorMsg('Las contraseñas nuevas no coinciden'); return }
       newPassword = form.contrasenaNew
@@ -78,14 +75,17 @@ const AdminPerfilSection = ({ admin, loginAdmin }) => {
     setSuccessMsg('')
     try {
       const payload = { ...admin, nombres: form.nombres, correo: form.correo }
-      if (newPassword) payload.contrasena = newPassword
       await administradorService.update(admin.cedula_adm, payload)
-      loginAdmin({ ...admin, ...payload })
+      if (newPassword) {
+        await administradorService.cambiarContrasena(admin.correo, form.contrasenaActual, newPassword)
+      }
+      loginAdmin({ ...admin, nombres: form.nombres, correo: form.correo })
       setSuccessMsg('¡Perfil actualizado correctamente!')
       setEditMode(false)
       setForm(prev => ({ ...prev, contrasenaActual: '', contrasenaNew: '', contrasenaNew2: '' }))
     } catch (err) {
-      setErrorMsg(err?.response?.data?.Message || 'Error al actualizar el perfil.')
+      const msg = err?.response?.data?.Message || err?.response?.data || 'Error al actualizar el perfil.'
+      setErrorMsg(typeof msg === 'string' ? msg : 'Error al actualizar el perfil.')
     } finally { setIsSaving(false) }
   }
 
@@ -588,13 +588,31 @@ const AdminDashboard = () => {
     perfil: 'Mi Perfil',
   }[activeSection] || 'Dashboard')
 
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   return (
     <div className="admin-layout">
+      <button
+        className="admin-sidebar-toggle"
+        onClick={() => setSidebarOpen(o => !o)}
+        aria-label="Abrir menú"
+      >
+        <i className={`fas ${sidebarOpen ? 'fa-times' : 'fa-bars'}`}></i>
+      </button>
+
+      {sidebarOpen && (
+        <div
+          className="admin-sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       <AdminNavbar
         admin={admin}
         activeSection={activeSection}
-        setActiveSection={setActiveSection}
+        setActiveSection={(s) => { setActiveSection(s); setSidebarOpen(false) }}
         onLogout={handleLogout}
+        isOpen={sidebarOpen}
       />
 
       <div className="admin-content">

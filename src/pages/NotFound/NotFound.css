@@ -5,3 +5,36 @@
   align-items: center;
 }
 
+@media (max-width: 768px) {
+  .not-found-page {
+    padding-top: 80px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found-page {
+    padding-top: 60px;
+    padding-bottom: 2rem;
+    min-height: 100vh;
+    align-items: center;
+  }
+
+  .not-found-page h1 {
+    font-size: 5rem !important;
+  }
+
+  .not-found-page h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .not-found-page p {
+    font-size: 1rem !important;
+  }
+
+  .not-found-page .btn {
+    width: 100%;
+    min-height: 48px;
+  }
+}
+

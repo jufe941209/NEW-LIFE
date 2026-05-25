@@ -309,15 +309,19 @@ textarea.form-control {
 
 .checkout-total-final {
   margin-top: 0.5rem;
-  padding-top: 1rem;
-  border-top: 2px solid #e9ecef;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: #ffffff;
   font-size: 1.25rem;
   font-weight: 700;
+  border: none;
 }
 
 .checkout-total-amount {
-  color: #28a745;
+  color: #ffffff;
   font-size: 1.5rem;
+  font-weight: 800;
 }
 
 /* Botones */
@@ -449,5 +453,118 @@ textarea.form-control {
 
   .checkout-products {
     max-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-page {
+    padding-top: 10px;
+  }
+
+  .checkout-section {
+    padding: 1rem 0.875rem;
+    border-radius: 14px;
+    margin-bottom: 1.25rem;
+  }
+
+  .checkout-section-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control,
+  .form-select {
+    padding: 0.625rem 0.875rem;
+    font-size: 16px; /* prevent iOS zoom */
+    min-height: 48px;
+    border-radius: 8px;
+  }
+
+  .payment-methods {
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
+  }
+
+  .payment-method-option label {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    min-height: 48px;
+    border-radius: 10px;
+  }
+
+  .payment-method-option label i {
+    font-size: 1.1rem;
+  }
+
+  .payment-card-form {
+    padding: 0.875rem;
+    border-radius: 12px;
+  }
+
+  .payment-info-box {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .checkout-summary {
+    padding: 1.25rem 1rem;
+    border-radius: 14px;
+    margin-top: 1.25rem;
+  }
+
+  .checkout-summary-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .checkout-products {
+    max-height: 250px;
+  }
+
+  .checkout-product-item {
+    gap: 0.625rem;
+    padding: 0.75rem 0;
+  }
+
+  .checkout-product-image {
+    width: 48px;
+    height: 48px;
+  }
+
+  .checkout-product-name {
+    font-size: 0.85rem;
+  }
+
+  .checkout-product-details {
+    font-size: 0.78rem;
+  }
+
+  .checkout-product-price {
+    font-size: 0.875rem;
+  }
+
+  .checkout-total-row {
+    font-size: 0.9rem;
+    padding: 0.625rem 0;
+  }
+
+  .checkout-total-final {
+    font-size: 1.1rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .checkout-total-amount {
+    font-size: 1.25rem;
+  }
+
+  .checkout-submit-btn {
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+    min-height: 52px;
   }
 }

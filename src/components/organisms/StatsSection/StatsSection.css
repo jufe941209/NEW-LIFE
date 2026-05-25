@@ -57,3 +57,33 @@
   }
 }
 
+@media (max-width: 480px) {
+  .stats-section {
+    padding: 2rem 0;
+  }
+
+  .stat-card {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .stat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+  }
+
+  /* 2 columns on small mobile */
+  .stats-section .row > [class*="col-"] {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+

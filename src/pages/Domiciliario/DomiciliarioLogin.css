@@ -130,3 +130,73 @@
   text-decoration: none;
 }
 .domi-login-back:hover { color: #047857; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .domi-login-page {
+    padding: 0.75rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .domi-login-card {
+    max-width: 100%;
+    border-radius: 20px;
+  }
+
+  .domi-login-brand {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .domi-login-logo {
+    width: 52px;
+    height: 52px;
+    font-size: 1.3rem;
+  }
+
+  .domi-login-brand h1 {
+    font-size: 1.4rem;
+  }
+
+  .domi-login-brand p {
+    font-size: 0.8rem;
+  }
+
+  .domi-login-form {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .domi-login-title {
+    font-size: 1.2rem;
+  }
+
+  .domi-login-sub {
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .domi-login-input-wrap input {
+    font-size: 16px; /* prevent iOS zoom */
+    min-height: 48px;
+  }
+
+  .domi-login-btn {
+    min-height: 52px;
+    font-size: 0.95rem;
+  }
+
+  .domi-login-back {
+    font-size: 0.85rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .domi-login-page {
+    padding: 0.5rem;
+    padding-top: 1rem;
+  }
+}

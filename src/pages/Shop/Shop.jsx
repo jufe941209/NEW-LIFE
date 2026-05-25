@@ -155,11 +155,17 @@ const Shop = () => {
 
             <div className="col-lg-9">
               <div className="shop-toolbar mb-4">
+                <span className="toolbar-count">
+                  {isLoading
+                    ? <><div className="spinner-border spinner-border-sm text-success me-2" style={{ width: '0.85rem', height: '0.85rem' }}></div> Cargando...</>
+                    : <><i className="fas fa-layer-group me-2" style={{ color: '#28a745' }}></i><strong>{filteredProducts.length}</strong>&nbsp;productos</>
+                  }
+                </span>
                 <div className="view-mode-toggle">
-                  <button className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')}>
-                    <i className="fas fa-th"></i>
+                  <button className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')} title="Vista cuadrícula">
+                    <i className="fas fa-th-large"></i>
                   </button>
-                  <button className={`view-btn ${viewMode === 'list' ? 'active' : ''}`} onClick={() => setViewMode('list')}>
+                  <button className={`view-btn ${viewMode === 'list' ? 'active' : ''}`} onClick={() => setViewMode('list')} title="Vista lista">
                     <i className="fas fa-list"></i>
                   </button>
                 </div>

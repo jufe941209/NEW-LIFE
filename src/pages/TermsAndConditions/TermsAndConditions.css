@@ -88,3 +88,51 @@
   .terms-card { padding: 1.5rem 1rem; }
   .terms-section h3 { font-size: 1rem; }
 }
+
+@media (max-width: 480px) {
+  .terms-page {
+    padding: 0.5rem 0;
+  }
+
+  .terms-card {
+    padding: 1.25rem 1rem;
+    border-radius: 14px;
+  }
+
+  .terms-intro {
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .terms-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .terms-section h3 {
+    font-size: 0.95rem;
+    flex-wrap: nowrap;
+  }
+
+  .terms-num {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .terms-section p,
+  .terms-section ul {
+    font-size: 0.875rem;
+  }
+
+  .terms-footer {
+    padding-top: 1.5rem;
+  }
+
+  .terms-back-btn {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+  }
+}

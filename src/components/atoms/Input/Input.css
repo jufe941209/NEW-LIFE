@@ -2,6 +2,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .input-with-icon i {
@@ -17,6 +18,7 @@
 
 .input-icon-left input {
   padding-left: 45px !important;
+  width: 100%;
 }
 
 .input-icon-right i {
@@ -25,5 +27,38 @@
 
 .input-icon-right input {
   padding-right: 45px !important;
+  width: 100%;
+}
+
+/* Ensure inputs are full-width and touch-friendly on mobile */
+input.form-control,
+select.form-control,
+textarea.form-control {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+@media (max-width: 480px) {
+  .input-with-icon input {
+    font-size: 16px !important; /* prevents zoom on iOS */
+    min-height: 48px;
+  }
+
+  .input-icon-left i {
+    left: 12px;
+  }
+
+  .input-icon-left input {
+    padding-left: 40px !important;
+  }
+
+  .input-icon-right i {
+    right: 12px;
+  }
+
+  .input-icon-right input {
+    padding-right: 40px !important;
+  }
 }
 

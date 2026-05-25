@@ -37,6 +37,11 @@ const clienteService = {
     return null
   },
 
+  cambiarContrasena: async (correo, contrasenaActual, contrasenaNueva) => {
+    const response = await api.post('/cliente/cambiar-contrasena', { correo, contrasenaActual, contrasenaNueva })
+    return response.data
+  },
+
   // Verifica si un correo o número de identificación ya existe (activo o inactivo)
   existsByCorreo: async (correo) => {
     const clientes = await clienteService.getAll()

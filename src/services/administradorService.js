@@ -29,14 +29,18 @@ const administradorService = {
   },
 
   login: async (correo, contrasena) => {
-    const admins = await administradorService.getAll()
-    const found = admins.find(
-      (admin) =>
-        admin.correo === correo &&
-        admin.contrasena === contrasena &&
-        admin.estado === 'Activo'
-    )
-    return found || null
+    try {
+      const response = await api.post(`${ENDPOINT}/login`, { correo, contrasena })
+      return response.data
+    } catch (err) {
+      if (err?.response?.status === 401) return null
+      throw err
+    }
+  },
+
+  cambiarContrasena: async (correo, contrasenaActual, contrasenaNueva) => {
+    const response = await api.post(`${ENDPOINT}/cambiar-contrasena`, { correo, contrasenaActual, contrasenaNueva })
+    return response.data
   }
 }
 

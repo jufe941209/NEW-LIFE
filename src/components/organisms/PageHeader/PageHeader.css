@@ -138,3 +138,27 @@
   }
 }
 
+@media (max-width: 480px) {
+  .page-header {
+    padding: 0.5rem 0 0.4rem;
+    margin-top: 50px;
+  }
+
+  .page-title {
+    font-size: 1.05rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.7rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .breadcrumb-item + .breadcrumb-item::before {
+    padding-right: 0.35rem;
+  }
+}
+
