@@ -2851,12 +2851,7 @@
         height: auto !important;
     }
     
-    /* Texto y contenido */
-    h1, h2, h3, h4, h5, h6,
-    p, span, div {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
+    /* Texto y contenido: NO forzar width en div/span - rompe iconos circulares */
     
     /* Ajuste para mobile muy pequeño */
     @media (max-width: 576px) {

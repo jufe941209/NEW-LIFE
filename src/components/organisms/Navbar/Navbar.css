@@ -374,10 +374,16 @@
 /* ───── Responsive: menú móvil ───── */
 @media (max-width: 1199px) {
 
-  /* Panel colapsable */
+  /* Panel colapsable — scroll si el contenido excede la pantalla */
   .collapse.navbar-collapse {
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     padding-bottom: 0.5rem;
+  }
+
+  .collapse.navbar-collapse.show {
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   /* Links: apilados verticalmente */
@@ -583,18 +589,54 @@
     padding: 1rem;
   }
 
-  .cliente-dropdown {
-    width: calc(100vw - 2rem);
-    max-width: 320px;
-    right: 0;
-  }
 }
+
 
 /* Admin navbar styles */
 .navbar-admin-section {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+/* Animación para cliente dropdown como bottom-sheet */
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); opacity: 0.7; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@media (max-width: 1199px) {
+  /* Hace que admin-btn y logout-btn sean hijos directos del flex .navbar-actions */
+  .navbar-admin-section {
+    display: contents;
+  }
+
+  /* Hace que cliente-trigger sea hijo directo del flex .navbar-actions */
+  .navbar-cliente-section {
+    display: contents;
+  }
+
+  /* Chevron icon en mobile — ocultar para no recargar el tab */
+  .cliente-trigger .fa-chevron-down {
+    display: none !important;
+  }
+
+  /* Cliente dropdown: bottom sheet en mobile */
+  .cliente-dropdown {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    border-radius: 16px 16px 0 0 !important;
+    max-height: 85vh;
+    overflow-y: auto;
+    z-index: 9999 !important;
+    box-shadow: 0 -4px 30px rgba(0,0,0,0.2) !important;
+    animation: slideUpSheet 0.25s ease !important;
+  }
 }
 
 .admin-btn {
