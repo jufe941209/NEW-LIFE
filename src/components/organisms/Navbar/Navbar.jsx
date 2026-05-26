@@ -91,7 +91,7 @@ const Navbar = () => {
           
           {/* Toggle Button Mobile */}
           <button
-            className={`navbar-toggler ${isMobileMenuOpen ? 'active' : ''}`}
+            className={`menu-toggle ${isMobileMenuOpen ? 'open' : ''}`}
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-expanded={isMobileMenuOpen}
@@ -162,7 +162,7 @@ const Navbar = () => {
                 aria-label="Buscar"
               >
                 <i className="fas fa-search"></i>
-                <span className="d-none d-lg-inline ms-2">Buscar</span>
+                <span className="nav-btn-text">Buscar</span>
               </button>
               
               {/* Cart Dropdown */}
@@ -174,6 +174,7 @@ const Navbar = () => {
                 >
                   <i className="fa fa-shopping-bag"></i>
                   {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
+                  <span className="nav-btn-text">Carrito</span>
                 </button>
                 
                 <div className={`dropdown-menu cart-dropdown ${isCartDropdownOpen ? 'show' : ''}`}>
@@ -248,7 +249,7 @@ const Navbar = () => {
                     title="Panel de Administración"
                   >
                     <i className="fas fa-user-shield"></i>
-                    <span className="d-none d-lg-inline ms-2">{admin?.nombres?.split(' ')[0] || 'Admin'}</span>
+                    <span className="nav-btn-text">{admin?.nombres?.split(' ')[0] || 'Admin'}</span>
                   </Link>
                   <button
                     className="navbar-action-btn logout-btn"
@@ -256,7 +257,7 @@ const Navbar = () => {
                     title="Cerrar Sesión"
                   >
                     <i className="fas fa-sign-out-alt"></i>
-                    <span className="d-none d-lg-inline ms-2">Salir</span>
+                    <span className="nav-btn-text">Salir</span>
                   </button>
                 </div>
               )}
@@ -270,7 +271,7 @@ const Navbar = () => {
                     title={cliente?.correo}
                   >
                     <i className="fas fa-user-circle"></i>
-                    <span className="d-none d-lg-inline ms-2">{cliente?.nombres?.split(' ')[0] || 'Cliente'}</span>
+                    <span className="nav-btn-text">{cliente?.nombres?.split(' ')[0] || 'Cliente'}</span>
                     <i className="fas fa-chevron-down ms-1" style={{ fontSize: '0.7rem' }}></i>
                   </button>
 
@@ -324,7 +325,7 @@ const Navbar = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <i className="fas fa-sign-in-alt"></i>
-                  <span className="d-none d-lg-inline ms-2">Iniciar Sesión</span>
+                  <span className="nav-btn-text">Iniciar Sesión</span>
                 </Link>
               )}
             </div>

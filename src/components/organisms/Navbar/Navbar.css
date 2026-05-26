@@ -40,35 +40,39 @@
   transition: all 0.3s ease;
 }
 
-/* Navbar Toggler */
-.navbar-toggler {
-  border: 2px solid rgba(255, 255, 255, 0.8) !important;
-  border-radius: 6px !important;
-  padding: 0 !important;
-  width: 44px !important;
-  height: 36px !important;
+/* Menu Toggle — clase custom, sin interferencia de Bootstrap */
+.menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
+  padding: 0;
+  width: 44px;
+  height: 36px;
   min-width: 44px;
   max-width: 44px;
   min-height: 36px;
   max-height: 36px;
-  background: rgba(255, 255, 255, 0.1) !important;
-  background-image: none !important;
-  transition: all 0.3s ease;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
   align-self: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.navbar-toggler:hover {
-  background: rgba(255, 255, 255, 0.25) !important;
-  border-color: white !important;
+.menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: white;
 }
 
-.navbar-toggler:focus {
-  box-shadow: none !important;
-  outline: none !important;
+.menu-toggle:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+@media (min-width: 1200px) {
+  .menu-toggle { display: none; }
 }
 
 /* Custom hamburger — evita conflicto con Bootstrap .navbar-toggler-icon */
@@ -92,16 +96,16 @@
   transform-origin: center;
 }
 
-.navbar-toggler.active .hamburger-lines span:nth-child(1) {
+.menu-toggle.open .hamburger-lines span:nth-child(1) {
   transform: rotate(45deg) translate(6px, 6px);
 }
 
-.navbar-toggler.active .hamburger-lines span:nth-child(2) {
+.menu-toggle.open .hamburger-lines span:nth-child(2) {
   opacity: 0;
   transform: scaleX(0);
 }
 
-.navbar-toggler.active .hamburger-lines span:nth-child(3) {
+.menu-toggle.open .hamburger-lines span:nth-child(3) {
   transform: rotate(-45deg) translate(6px, -6px);
 }
 
@@ -187,6 +191,11 @@
 
 .navbar-action-btn i {
   font-size: 1.1rem;
+}
+
+.nav-btn-text {
+  display: inline;
+  margin-left: 0.5rem;
 }
 
 /* Cart Button */
@@ -420,20 +429,38 @@
     margin-left: 0 !important;
   }
 
-  /* Botones de acción: tamaño fijo */
+  /* Botones de acción: tab-bar (icono + etiqueta) */
   .navbar-action-btn {
-    flex: 0 0 auto;
+    flex: 1 1 0;
+    flex-direction: column;
     width: auto;
-    min-width: 44px;
-    height: 40px;
-    padding: 0 0.85rem;
+    max-width: 90px;
+    height: auto;
+    min-height: 58px;
+    padding: 0.55rem 0.35rem;
     font-size: 0.88rem;
-    border-radius: 8px;
+    border-radius: 10px;
+    gap: 0.2rem;
+  }
+
+  .nav-btn-text {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    margin-left: 0;
+    text-align: center;
+    line-height: 1.2;
+    white-space: nowrap;
   }
 
   /* Cart dropdown: bottom sheet en mobile */
   .cart-dropdown-container {
     position: static !important;
+    flex: 1 1 0;
+    max-width: 90px;
+    min-width: 55px;
+    display: flex;
+    justify-content: center;
   }
 
   .cart-dropdown {
@@ -490,15 +517,14 @@
     height: 30px;
   }
 
-  /* En pantallas muy pequeñas ocultar el texto de los action-btn */
-  .navbar-action-btn span:not(.cart-badge) {
-    display: none;
+  .navbar-action-btn {
+    min-width: 44px;
+    min-height: 54px;
+    padding: 0.5rem 0.3rem;
   }
 
-  .navbar-action-btn {
-    min-width: 40px;
-    height: 40px;
-    padding: 0 0.6rem;
+  .nav-btn-text {
+    font-size: 0.62rem;
   }
 
   .navbar-actions {
@@ -531,9 +557,10 @@
   }
 
   .navbar-action-btn {
-    min-width: 40px;
-    height: 38px;
-    padding: 0 0.6rem;
+    min-width: 44px;
+    min-height: 52px;
+    height: auto;
+    padding: 0.45rem 0.25rem;
     font-size: 0.85rem;
   }
 
