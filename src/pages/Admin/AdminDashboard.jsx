@@ -374,8 +374,8 @@ const DashboardHome = ({ admin, setActiveSection }) => {
               <i className="fas fa-arrow-right me-1"></i>Ver todas
             </button>
           </div>
-          <div className="inv-chart-card" style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+          <div className="inv-chart-card">
+            <table className="crud-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
               <thead>
                 <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
                   {['N° Factura', 'Cliente', 'Fecha', 'Método', 'Estado', 'PDF'].map(h => (
@@ -388,16 +388,16 @@ const DashboardHome = ({ admin, setActiveSection }) => {
                   const estadoColor = { Pagado: '#16a34a', Pendiente: '#f59e0b', Cancelado: '#ef4444' }[f.estado_pago] || '#6b7280'
                   return (
                     <tr key={f.numero_factura} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>{f.numero_factura}</td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>{f.cedula_cli}</td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>{fmtDate(f.fecha)}</td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#475569' }}>{f.metodo_pago || '—'}</td>
-                      <td style={{ padding: '0.75rem 1rem' }}>
+                      <td data-label="N° Factura" style={{ padding: '0.75rem 1rem', fontWeight: 700 }}>{f.numero_factura}</td>
+                      <td data-label="Cliente" style={{ padding: '0.75rem 1rem', color: '#475569' }}>{f.cedula_cli}</td>
+                      <td data-label="Fecha" style={{ padding: '0.75rem 1rem', color: '#475569' }}>{fmtDate(f.fecha)}</td>
+                      <td data-label="Método" style={{ padding: '0.75rem 1rem', color: '#475569' }}>{f.metodo_pago || '—'}</td>
+                      <td data-label="Estado" style={{ padding: '0.75rem 1rem' }}>
                         <span style={{ background: estadoColor + '18', color: estadoColor, fontWeight: 700, fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}>
                           {f.estado_pago || '—'}
                         </span>
                       </td>
-                      <td style={{ padding: '0.75rem 1rem' }}>
+                      <td data-label="PDF" style={{ padding: '0.75rem 1rem' }}>
                         <button
                           onClick={() => handleImprimirFactura(f)}
                           disabled={printingFac === f.numero_factura}

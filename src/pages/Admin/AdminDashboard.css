@@ -939,11 +939,20 @@
   .admin-sidebar { transform: translateX(-100%); }
   /* Dejar espacio para el botón hamburguesa (44px + 12px left + 12px gap = 68px) */
   .admin-topbar { padding: 1rem 1rem 1rem 68px; flex-wrap: wrap; gap: 0.5rem; }
-  .admin-main { padding: 1rem; }
+  /* overflow-x: hidden aquí es SEGURO: admin-main no es sticky ni padre del topbar sticky */
+  .admin-main { padding: 1rem; overflow-x: hidden; }
   .crud-table-header { flex-direction: column; align-items: flex-start; }
   .crud-search-input { min-width: 150px; }
   .dashboard-stats-grid { grid-template-columns: 1fr 1fr; }
   .info-card-features { grid-template-columns: 1fr; }
+  /* Truncar nombre de usuario largo en topbar */
+  .admin-topbar-user span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+    display: inline-block;
+  }
 }
 
 @media (max-width: 576px) {
@@ -1564,11 +1573,6 @@
 /* ===== MOBILE: CRUD TABLE → CARD LAYOUT (< 576px) ===== */
 @media (max-width: 575px) {
 
-  /* Contener overflow del contenido principal */
-  .admin-content {
-    overflow-x: hidden;
-  }
-
   /* === Tablas CRUD → cards === */
   .crud-table-container {
     overflow-x: visible;
@@ -1680,12 +1684,40 @@
     padding: 0.875rem 1rem;
   }
 
-  /* Inventario: reducir padding de chart card */
+  /* === Inventario: bar chart simplificado (sin rings) === */
   .inv-chart-card {
     padding: 0.875rem 1rem;
   }
 
+  /* Ocultar el gráfico circular en mobile - se sale del layout */
+  .inv-bar-ring {
+    display: none;
+  }
+
+  /* Barra ocupa todo el ancho en 1 columna */
+  .inv-bar-row {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    gap: 0.3rem !important;
+  }
+
+  .inv-bar-info {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .inv-bar-track {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
   .inv-bar-name {
-    max-width: 120px;
+    max-width: 55%;
+    font-size: 0.8rem;
+  }
+
+  .inv-bar-nums {
+    font-size: 0.78rem;
+    font-weight: 700;
   }
 }

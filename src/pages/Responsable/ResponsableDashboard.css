@@ -985,6 +985,18 @@
 }
 
 @media (max-width: 768px) {
+  /* Overflow contenido en resp-main (seguro, no afecta sticky) */
+  .resp-main {
+    overflow-x: hidden;
+  }
+  /* Truncar nombre largo en topbar */
+  .resp-topbar-date {
+    font-size: 0.78rem;
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   /* Sidebar: off-screen por defecto, desliza desde la izquierda */
   .resp-sidebar {
     position: fixed;
@@ -1262,8 +1274,8 @@
 /* ===== MOBILE: TABLAS → CARD LAYOUT (< 576px) ===== */
 @media (max-width: 575px) {
 
-  /* Contener overflow */
-  .resp-content {
+  /* Contener overflow en resp-main (no afecta sticky del topbar) */
+  .resp-main {
     overflow-x: hidden;
   }
 
