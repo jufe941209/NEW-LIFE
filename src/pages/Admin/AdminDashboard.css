@@ -943,7 +943,7 @@
   .admin-main { padding: 1rem; overflow-x: hidden; }
   .crud-table-header { flex-direction: column; align-items: flex-start; }
   .crud-search-input { min-width: 150px; }
-  .dashboard-stats-grid { grid-template-columns: 1fr 1fr; }
+  .dashboard-stats-grid { grid-template-columns: 1fr; }
   .info-card-features { grid-template-columns: 1fr; }
   /* Truncar nombre de usuario largo en topbar */
   .admin-topbar-user span {
@@ -993,7 +993,7 @@
   }
 
   .dashboard-stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 0.75rem;
   }
 
@@ -1510,6 +1510,69 @@
 @media (max-width: 768px) {
   .inv-summary-row { grid-template-columns: 1fr; }
   .inv-bar-name { max-width: 140px; }
+
+  /* ===== FORZAR max-width: 100% en cascada para inv-section ===== */
+  /* Nivel de stock y todo su contenido interno solo puede ocupar 100% */
+  .inv-section {
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .inv-summary-card,
+  .inv-chart-card,
+  .inv-bar-list,
+  .inv-bar-row,
+  .inv-bar-info,
+  .inv-bar-track,
+  .inv-alert-section,
+  .inv-alert-grid,
+  .inv-alert-card,
+  .inv-alert-card-stocks {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Evitar que el contenido flex/grid desborde */
+  .inv-chart-card {
+    overflow: hidden;
+  }
+
+  .inv-bar-list {
+    overflow: hidden;
+  }
+
+  .inv-bar-row {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .inv-bar-info {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .inv-bar-name {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .inv-bar-nums {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .inv-bar-track {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .inv-alert-card {
+    overflow: hidden;
+  }
 }
 
 /* ===== STOCK ALERTAS ===== */
