@@ -274,6 +274,7 @@ const ResponsableDashboard = () => {
   // Facturas
   const [filterFac, setFilterFac] = useState('')
   const [printingFac, setPrintingFac] = useState(null)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const load = async () => {
     setLoading(true)
@@ -437,8 +438,22 @@ const ResponsableDashboard = () => {
 
   return (
     <div className="resp-layout">
+      {/* ── HAMBURGER TOGGLE (mobile) ── */}
+      <button
+        className="resp-sidebar-toggle"
+        onClick={() => setSidebarOpen(o => !o)}
+        aria-label="Abrir menú"
+      >
+        <i className={`fas ${sidebarOpen ? 'fa-times' : 'fa-bars'}`}></i>
+      </button>
+
+      {/* ── OVERLAY (mobile) ── */}
+      {sidebarOpen && (
+        <div className="resp-sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* ── SIDEBAR ── */}
-      <aside className="resp-sidebar">
+      <aside className={`resp-sidebar${sidebarOpen ? ' open' : ''}`}>
         <div className="resp-sidebar-brand">
           <div className="resp-brand-logo"><i className="fas fa-leaf"></i></div>
           <h2>NEW LIFE</h2>
@@ -449,7 +464,7 @@ const ResponsableDashboard = () => {
             <button
               key={item.key}
               className={`resp-nav-item ${section === item.key ? 'active' : ''}`}
-              onClick={() => setSection(item.key)}
+              onClick={() => { setSection(item.key); setSidebarOpen(false) }}
             >
               <i className={`${item.icon} resp-nav-icon`}></i>
               <span>{item.label}</span>

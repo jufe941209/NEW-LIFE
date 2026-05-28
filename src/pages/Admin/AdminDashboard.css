@@ -936,7 +936,8 @@
 @media (max-width: 768px) {
   .admin-content { margin-left: 0; }
   .admin-sidebar { transform: translateX(-100%); }
-  .admin-topbar { padding: 1rem; }
+  /* Dejar espacio para el botón hamburguesa (44px + 12px left + 12px gap = 68px) */
+  .admin-topbar { padding: 1rem 1rem 1rem 68px; flex-wrap: wrap; gap: 0.5rem; }
   .admin-main { padding: 1rem; }
   .crud-table-header { flex-direction: column; align-items: flex-start; }
   .crud-search-input { min-width: 150px; }
@@ -951,7 +952,7 @@
 
 @media (max-width: 480px) {
   .admin-topbar {
-    padding: 0.875rem;
+    padding: 0.875rem 0.875rem 0.875rem 68px;
     flex-wrap: wrap;
     gap: 0.5rem;
   }

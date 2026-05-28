@@ -220,6 +220,7 @@ const DomiciliarioDashboard = () => {
   const [actionLoading, setActionLoading] = useState(null)
   const [filter, setFilter]       = useState('')
   const [filterEstado, setFilterEstado] = useState('')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const load = async () => {
     setLoading(true)
@@ -281,8 +282,23 @@ const DomiciliarioDashboard = () => {
 
   return (
     <div className="resp-layout">
+      {/* ── HAMBURGER TOGGLE (mobile) ── */}
+      <button
+        className="resp-sidebar-toggle"
+        style={{ background: '#064e3b' }}
+        onClick={() => setSidebarOpen(o => !o)}
+        aria-label="Abrir menú"
+      >
+        <i className={`fas ${sidebarOpen ? 'fa-times' : 'fa-bars'}`}></i>
+      </button>
+
+      {/* ── OVERLAY (mobile) ── */}
+      {sidebarOpen && (
+        <div className="resp-sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* ── SIDEBAR ── */}
-      <aside className="resp-sidebar" style={{ background: 'linear-gradient(180deg, #064e3b 0%, #065f46 60%, #047857 100%)' }}>
+      <aside className={`resp-sidebar${sidebarOpen ? ' open' : ''}`} style={{ background: 'linear-gradient(180deg, #064e3b 0%, #065f46 60%, #047857 100%)' }}>
         <div className="resp-sidebar-brand">
           <div className="resp-brand-logo"><i className="fas fa-motorcycle"></i></div>
           <h2>NEW LIFE</h2>
@@ -293,7 +309,7 @@ const DomiciliarioDashboard = () => {
             <button
               key={item.key}
               className={`resp-nav-item ${section === item.key ? 'active' : ''}`}
-              onClick={() => setSection(item.key)}
+              onClick={() => { setSection(item.key); setSidebarOpen(false) }}
             >
               <i className={`${item.icon} resp-nav-icon`}></i>
               <span>{item.label}</span>

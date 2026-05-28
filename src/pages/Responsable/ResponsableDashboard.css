@@ -945,23 +945,83 @@
   margin-top: 2px;
 }
 
+/* ===== MOBILE HAMBURGER TOGGLE ===== */
+.resp-sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1100;
+  width: 44px;
+  height: 44px;
+  background: #0f172a;
+  border: none;
+  border-radius: 8px;
+  color: #a7f3d0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.resp-sidebar-toggle:hover { background: #1e293b; }
+
+/* ===== SIDEBAR OVERLAY (mobile) ===== */
+.resp-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1040;
+  backdrop-filter: blur(2px);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .resp-stats-grid { grid-template-columns: repeat(2, 1fr); }
   .resp-sidebar { width: 220px; }
 }
 
-@media (max-width: 640px) {
-  .resp-layout { flex-direction: column; }
+@media (max-width: 768px) {
+  /* Sidebar: off-screen por defecto, desliza desde la izquierda */
   .resp-sidebar {
-    width: 100%;
-    min-height: auto;
-    height: auto;
-    position: relative;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 260px !important;
+    min-height: 100vh;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1050;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
+
+  .resp-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .resp-sidebar-toggle {
+    display: flex;
+  }
+
+  .resp-sidebar-overlay {
+    display: block;
+  }
+
+  /* Espacio para el botón hamburguesa */
+  .resp-topbar {
+    padding: 1rem 1rem 1rem 68px;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
   .resp-stats-grid { grid-template-columns: repeat(2, 1fr); }
   .resp-main { padding: 1rem; }
-  .resp-topbar { padding: 1rem; }
   .resp-despacho-grid { grid-template-columns: 1fr; }
 }
 
@@ -996,7 +1056,7 @@
   }
 
   .resp-topbar {
-    padding: 0.875rem 1rem;
+    padding: 0.875rem 0.875rem 0.875rem 68px;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
