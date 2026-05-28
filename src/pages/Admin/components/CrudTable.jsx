@@ -78,11 +78,11 @@ const CrudTable = ({
                       className={!isActive ? 'row-inactive' : ''}
                     >
                       {columns.map(col => (
-                        <td key={col.key}>
+                        <td key={col.key} data-label={col.label}>
                           {col.render ? col.render(row[col.key], row) : (row[col.key] ?? '-')}
                         </td>
                       ))}
-                      <td className="crud-row-actions">
+                      <td className="crud-row-actions" data-label="Acciones">
                         <button
                           className="crud-edit-btn"
                           onClick={() => onEdit(row)}

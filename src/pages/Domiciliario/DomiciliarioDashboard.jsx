@@ -431,10 +431,10 @@ const DomiciliarioDashboard = () => {
                           const busy = actionLoading === d.numero_despacho
                           return (
                             <tr key={d.numero_despacho}>
-                              <td><strong>#{d.numero_despacho}</strong></td>
-                              <td>{d.numero_factura}</td>
-                              <td><EstadoBadge estado={d.estado} /></td>
-                              <td>
+                              <td data-label="#"><strong>#{d.numero_despacho}</strong></td>
+                              <td data-label="Factura">{d.numero_factura}</td>
+                              <td data-label="Estado"><EstadoBadge estado={d.estado} /></td>
+                              <td data-label="Acción">
                                 <button
                                   onClick={() => changeEstado(d, 'Entregado')}
                                   disabled={busy}

@@ -1250,3 +1250,146 @@
     font-size: 0.72rem;
   }
 }
+
+/* ===== SHORTCUTS: 2 columnas en pantallas ≤640px ===== */
+@media (max-width: 640px) {
+  .resp-shortcuts {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+/* ===== MOBILE: TABLAS → CARD LAYOUT (< 576px) ===== */
+@media (max-width: 575px) {
+
+  /* Contener overflow */
+  .resp-content {
+    overflow-x: hidden;
+  }
+
+  /* === resp-mini-table → cards === */
+  .resp-mini-table-wrap {
+    overflow-x: visible;
+  }
+
+  .resp-mini-table,
+  .resp-mini-table thead,
+  .resp-mini-table tbody,
+  .resp-mini-table tr,
+  .resp-mini-table th,
+  .resp-mini-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .resp-mini-table thead {
+    display: none;
+  }
+
+  .resp-mini-table tbody tr {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    margin-bottom: 0.625rem;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .resp-mini-table tbody td {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0.875rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.82rem;
+    word-break: break-word;
+    gap: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .resp-mini-table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .resp-mini-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #64748b;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    text-align: left;
+    flex-shrink: 0;
+    min-width: 65px;
+    max-width: 42%;
+  }
+
+  /* === resp-data-table (Facturas completas) → cards === */
+  .resp-table-wrap {
+    overflow-x: visible;
+  }
+
+  .resp-data-table,
+  .resp-data-table thead,
+  .resp-data-table tbody,
+  .resp-data-table tr,
+  .resp-data-table th,
+  .resp-data-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .resp-data-table thead {
+    display: none;
+  }
+
+  .resp-data-table tbody tr {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 0.875rem;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  }
+
+  .resp-data-table tbody td {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0.875rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.82rem;
+    word-break: break-word;
+    white-space: normal !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    gap: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .resp-data-table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .resp-data-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #64748b;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    text-align: left;
+    flex-shrink: 0;
+    min-width: 65px;
+    max-width: 42%;
+  }
+
+  /* PDF button en card */
+  .resp-pdf-btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+}

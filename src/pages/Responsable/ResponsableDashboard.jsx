@@ -575,11 +575,11 @@ const ResponsableDashboard = () => {
                       <tbody>
                         {misDespachos.slice(0, 6).map(d => (
                           <tr key={d.numero_despacho}>
-                            <td><strong>#{d.numero_despacho}</strong></td>
-                            <td>{d.numero_factura}</td>
-                            <td><EstadoBadge estado={d.estado || 'Pendiente'} /></td>
-                            <td>{getNombreDomi(d.cc_domiciliario)}</td>
-                            <td>{fmtDate(d.fecha_despacho)}</td>
+                            <td data-label="#">#{d.numero_despacho}</td>
+                            <td data-label="Factura">{d.numero_factura}</td>
+                            <td data-label="Estado"><EstadoBadge estado={d.estado || 'Pendiente'} /></td>
+                            <td data-label="Domiciliario">{getNombreDomi(d.cc_domiciliario)}</td>
+                            <td data-label="Fecha">{fmtDate(d.fecha_despacho)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -610,12 +610,12 @@ const ResponsableDashboard = () => {
                       <tbody>
                         {facturas.slice(0, 5).map(f => (
                           <tr key={f.numero_factura}>
-                            <td><strong>{f.numero_factura}</strong></td>
-                            <td>{f.cedula_cli}</td>
-                            <td>{fmtDate(f.fecha)}</td>
-                            <td>{f.metodo_pago}</td>
-                            <td>{estadoPagoBadge(f.estado_pago)}</td>
-                            <td>
+                            <td data-label="N° Factura"><strong>{f.numero_factura}</strong></td>
+                            <td data-label="Cliente">{f.cedula_cli}</td>
+                            <td data-label="Fecha">{fmtDate(f.fecha)}</td>
+                            <td data-label="Método">{f.metodo_pago}</td>
+                            <td data-label="Estado">{estadoPagoBadge(f.estado_pago)}</td>
+                            <td data-label="PDF">
                               <button
                                 className="resp-pdf-btn"
                                 onClick={() => handleImprimirFactura(f)}
@@ -805,13 +805,13 @@ const ResponsableDashboard = () => {
                       <tbody>
                         {filteredFacturas.map(f => (
                           <tr key={f.numero_factura}>
-                            <td><strong>{f.numero_factura}</strong></td>
-                            <td>{f.cedula_cli}</td>
-                            <td>{fmtDate(f.fecha)}</td>
-                            <td>{f.metodo_pago || '—'}</td>
-                            <td style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.direccion_envio || '—'}</td>
-                            <td>{estadoPagoBadge(f.estado_pago)}</td>
-                            <td>
+                            <td data-label="N° Factura"><strong>{f.numero_factura}</strong></td>
+                            <td data-label="Cliente">{f.cedula_cli}</td>
+                            <td data-label="Fecha">{fmtDate(f.fecha)}</td>
+                            <td data-label="Método">{f.metodo_pago || '—'}</td>
+                            <td data-label="Dirección" style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.direccion_envio || '—'}</td>
+                            <td data-label="Estado">{estadoPagoBadge(f.estado_pago)}</td>
+                            <td data-label="PDF">
                               <button
                                 className="resp-pdf-btn"
                                 onClick={() => handleImprimirFactura(f)}

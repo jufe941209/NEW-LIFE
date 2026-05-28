@@ -12,6 +12,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-width: 0; /* evita que tablas anchas expandan la página */
 }
 
 /* ===== TOP BAR ===== */
@@ -1558,4 +1559,133 @@
   font-size: 0.82rem;
   color: inherit;
   opacity: 0.85;
+}
+
+/* ===== MOBILE: CRUD TABLE → CARD LAYOUT (< 576px) ===== */
+@media (max-width: 575px) {
+
+  /* Contener overflow del contenido principal */
+  .admin-content {
+    overflow-x: hidden;
+  }
+
+  /* === Tablas CRUD → cards === */
+  .crud-table-container {
+    overflow-x: visible;
+  }
+
+  .crud-table {
+    display: block;
+    width: 100%;
+  }
+
+  .crud-table thead {
+    display: none;
+  }
+
+  .crud-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .crud-table tbody tr {
+    display: block;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 0.875rem;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    width: 100%;
+  }
+
+  .crud-table tbody tr.row-inactive {
+    opacity: 0.65;
+    background: #fafafa;
+  }
+
+  .crud-table tbody td {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.875rem;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 0.83rem;
+    word-break: break-word;
+    gap: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .crud-table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .crud-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #6b7280;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: left;
+    flex-shrink: 0;
+    min-width: 70px;
+    max-width: 42%;
+  }
+
+  /* Fila de acciones */
+  .crud-table td.crud-row-actions {
+    justify-content: flex-end !important;
+    background: #f9fafb;
+    padding: 0.625rem 0.875rem;
+    gap: 0.5rem;
+  }
+
+  .crud-table td.crud-row-actions::before {
+    display: none;
+  }
+
+  /* Estado vacío */
+  .crud-table td.crud-empty {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2rem 1rem;
+    border-bottom: none !important;
+    background: transparent;
+  }
+
+  .crud-table td.crud-empty::before {
+    display: none;
+  }
+
+  /* Botones de acción */
+  .crud-edit-btn,
+  .crud-deactivate-btn,
+  .crud-activate-btn,
+  .crud-delete-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .crud-table .status-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  /* Cabecera de tabla (search + botón) */
+  .crud-table-header {
+    padding: 0.875rem 1rem;
+  }
+
+  /* Inventario: reducir padding de chart card */
+  .inv-chart-card {
+    padding: 0.875rem 1rem;
+  }
+
+  .inv-bar-name {
+    max-width: 120px;
+  }
 }
