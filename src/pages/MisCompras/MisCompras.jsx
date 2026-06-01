@@ -82,13 +82,19 @@ const MisCompras = () => {
     canceladas: facturas.filter(f => f.estado_pago === 'Cancelado').length
   }
 
-  const getFacturaTotal = (numero_factura) => {
+  const getFacturaSubtotal = (numero_factura) => {
     const dets = detallesMap[numero_factura] || []
     return dets.reduce((sum, d) => {
       const precio = Number(d.precio_unitario || 0)
       const desc = Number(d.descuento_porcentaje || 0)
       return sum + (precio * (1 - desc / 100) * d.cantidad)
     }, 0)
+  }
+
+  const getFacturaTotal = (numero_factura) => {
+    const sub = getFacturaSubtotal(numero_factura)
+    const env = sub >= 100000 ? 0 : 15000
+    return sub + sub * 0.19 + env
   }
 
   return (
@@ -165,7 +171,7 @@ const MisCompras = () => {
               const cfg = estadoConfig[factura.estado_pago] || estadoConfig.Pendiente
               const dets = detallesMap[factura.numero_factura] || []
               const isExpanded = expandedFactura === factura.numero_factura
-              const totalFactura = getFacturaTotal(factura.numero_factura) + (getFacturaTotal(factura.numero_factura) >= 100000 ? 0 : 15000)
+              const totalFactura = getFacturaTotal(factura.numero_factura)
 
               return (
                 <div key={factura.numero_factura} className={`compra-card ${cfg.class} ${factura.numero_factura === nuevaFactura ? 'compra-card-new' : ''}`}>
@@ -269,15 +275,17 @@ const MisCompras = () => {
                           <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '0.65rem', marginTop: '0.25rem' }}>
                             {(() => {
                               const sub = dets.reduce((s, d) => s + Number(d.precio_unitario || 0) * (1 - Number(d.descuento_porcentaje || 0) / 100) * d.cantidad, 0)
+                              const iva = sub * 0.19
                               const env = sub >= 100000 ? 0 : 15000
                               return (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', alignItems: 'flex-end' }}>
                                   <span style={{ fontSize: '0.82rem', color: '#64748b' }}>Subtotal: ${fmtCOP(sub)}</span>
+                                  <span style={{ fontSize: '0.82rem', color: '#6366f1' }}>IVA (19%): ${fmtCOP(iva)}</span>
                                   <span style={{ fontSize: '0.82rem', color: '#64748b' }}>
                                     Envío: {env === 0 ? <span style={{ color: '#16a34a' }}>Gratis</span> : `$${fmtCOP(env)}`}
                                   </span>
                                   <span style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
-                                    Total: ${fmtCOP(sub + env)}
+                                    Total: ${fmtCOP(sub + iva + env)}
                                   </span>
                                 </div>
                               )
