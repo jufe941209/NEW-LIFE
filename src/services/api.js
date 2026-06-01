@@ -14,6 +14,14 @@ const api = axios.create({
 const TRANSIENT_CODES = new Set([0, 408, 429, 500, 502, 503, 504])
 const MAX_RETRIES = 4
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('authToken')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {

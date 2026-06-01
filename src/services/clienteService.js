@@ -32,7 +32,10 @@ const clienteService = {
   login: async (correo, contrasena) => {
     const response = await api.post('/cliente/login', { correo, contrasena })
     const data = response.data
-    if (data.success) return { cliente: data.cliente, inactivo: false }
+    if (data.success) {
+      if (data.token) localStorage.setItem('authToken', data.token)
+      return { cliente: data.cliente, inactivo: false }
+    }
     if (data.message && data.message.includes('desactivada')) return { cliente: null, inactivo: true }
     return null
   },

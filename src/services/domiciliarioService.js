@@ -31,7 +31,9 @@ const domiciliarioService = {
   login: async (cedula, contrasena) => {
     try {
       const response = await api.post(`${ENDPOINT}/login`, { cedula, contrasena })
-      return response.data
+      const data = response.data
+      if (data?.token) localStorage.setItem('authToken', data.token)
+      return data
     } catch (err) {
       if (err?.response?.status === 401) return null
       throw err

@@ -5,7 +5,7 @@ const INACTIVITY_LIMIT = 30 * 60 * 1000   // 30 minutos en ms
 const CHECK_INTERVAL   = 60 * 1000         // revisar cada 60 segundos
 
 const ACTIVITY_EVENTS = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click']
-const ALL_KEYS = ['admin', 'cliente', 'responsable', 'domiciliario', 'needsPasswordChange', 'lastActivity']
+const ALL_KEYS = ['admin', 'cliente', 'responsable', 'domiciliario', 'needsPasswordChange', 'lastActivity', 'authToken']
 
 const AuthContext = createContext()
 
