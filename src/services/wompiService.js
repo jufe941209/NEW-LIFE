@@ -2,9 +2,10 @@ import api from './api'
 
 const WOMPI_CHECKOUT = 'https://checkout.wompi.co/p/'
 
-export async function redirigirAPago({ referencia, montoCentavos, cliente, redirectUrl }) {
-  const { data } = await api.post('/pagos/firma', { referencia, montoCentavos })
-  const { firma, llavePublica } = data
+export async function redirigirAPago({ referencia, cliente, redirectUrl }) {
+  // El backend calcula el total con IVA (19%) + envío desde la BD — no confiamos en el frontend
+  const { data } = await api.post('/pagos/firma', { referencia })
+  const { firma, llavePublica, montoCentavos } = data
 
   // Construir la URL manualmente para evitar que URLSearchParams codifique los
   // dos puntos en nombres de parámetros como signature:integrity y customer-data:*

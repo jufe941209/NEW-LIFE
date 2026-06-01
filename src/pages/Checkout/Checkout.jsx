@@ -47,7 +47,8 @@ const Checkout = () => {
 
   const subtotal = items.reduce((s, i) => s + getItemPrice(i) * i.quantity, 0)
   const shipping = subtotal >= 100000 ? 0 : 15000
-  const total = subtotal + shipping
+  const iva = subtotal * 0.19
+  const total = subtotal + iva + shipping
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -121,7 +122,6 @@ const Checkout = () => {
         const redirectUrl = `${window.location.origin}/pedido-resultado?ref=${encodeURIComponent(numeroFactura)}`
         await redirigirAPago({
           referencia: numeroFactura,
-          montoCentavos: Math.round(total * 100),
           cliente,
           redirectUrl,
         })
@@ -295,13 +295,14 @@ const Checkout = () => {
 
                   <div className="checkout-totals">
                     <div className="checkout-total-row"><span>Subtotal</span><span>${subtotal.toLocaleString('es-CO')}</span></div>
+                    <div className="checkout-total-row"><span>IVA (19%)</span><span>${Math.round(iva).toLocaleString('es-CO')}</span></div>
                     <div className="checkout-total-row">
                       <span>Envío</span>
                       <span>{shipping === 0 ? <span className="text-success">Gratis</span> : `$${shipping.toLocaleString('es-CO')}`}</span>
                     </div>
                     <div className="checkout-total-row checkout-total-final">
                       <span>Total a pagar</span>
-                      <span className="checkout-total-amount">${total.toLocaleString('es-CO')}</span>
+                      <span className="checkout-total-amount">${Math.round(total).toLocaleString('es-CO')}</span>
                     </div>
                   </div>
 
@@ -314,8 +315,8 @@ const Checkout = () => {
                     {isLoading
                       ? <><span className="spinner-border spinner-border-sm me-2"></span>Procesando...</>
                       : formData.paymentMethod === 'Wompi'
-                        ? <><i className="fas fa-credit-card me-2"></i>Ir a pagar — ${total.toLocaleString('es-CO')}</>
-                        : <><i className="fas fa-check-circle me-2"></i>Confirmar Pedido — ${total.toLocaleString('es-CO')}</>
+                        ? <><i className="fas fa-credit-card me-2"></i>Ir a pagar — ${Math.round(total).toLocaleString('es-CO')}</>
+                        : <><i className="fas fa-check-circle me-2"></i>Confirmar Pedido — ${Math.round(total).toLocaleString('es-CO')}</>
                     }
                   </Button>
                   <Link to="/cart" className="checkout-back-link">
