@@ -3,7 +3,7 @@ import domiciliarioService from '../../../services/domiciliarioService'
 import CrudTable from './CrudTable'
 
 const DISPONIBILIDAD = ['Disponible', 'No disponible']
-const EMPTY_FORM = { cedula_domi: '', nombres: '', telefono: '', disponibilidad: 'Disponible', estado: 'Activo' }
+const EMPTY_FORM = { cedula_domi: '', nombres: '', telefono: '', disponibilidad: 'Disponible', estado: 'Activo', contrasena: '' }
 
 const DomiciliarioCrud = () => {
   const [data, setData] = useState([])
@@ -14,6 +14,7 @@ const DomiciliarioCrud = () => {
   const [form, setForm] = useState(EMPTY_FORM)
   const [formError, setFormError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const [showPass, setShowPass] = useState(false)
 
   const load = async () => {
     setIsLoading(true)
@@ -53,7 +54,7 @@ const DomiciliarioCrud = () => {
     }
   ]
 
-  const openCreate = () => { setEditingItem(null); setForm(EMPTY_FORM); setFormError(''); setShowModal(true) }
+  const openCreate = () => { setEditingItem(null); setForm(EMPTY_FORM); setFormError(''); setShowPass(false); setShowModal(true) }
   const openEdit = (row) => {
     setEditingItem(row)
     setForm({
@@ -61,9 +62,11 @@ const DomiciliarioCrud = () => {
       nombres: row.nombres || '',
       telefono: row.telefono || '',
       disponibilidad: row.disponibilidad || 'Disponible',
-      estado: row.estado || 'Activo'
+      estado: row.estado || 'Activo',
+      contrasena: ''
     })
     setFormError('')
+    setShowPass(false)
     setShowModal(true)
   }
   const closeModal = () => setShowModal(false)
@@ -71,6 +74,7 @@ const DomiciliarioCrud = () => {
   const handleSave = async (e) => {
     e.preventDefault()
     if (!form.nombres) { setFormError('El nombre es requerido'); return }
+    if (!editingItem && !form.contrasena) { setFormError('La contraseña es requerida para nuevos domiciliarios'); return }
     setIsSaving(true)
     try {
       if (editingItem) {
@@ -146,6 +150,28 @@ const DomiciliarioCrud = () => {
                   onChange={e => setForm(p => ({ ...p, telefono: e.target.value }))}
                   placeholder="3201112233"
                 />
+              </div>
+              <div className="form-group mb-3">
+                <label className="form-label">
+                  Contraseña {editingItem ? <span className="text-muted" style={{ fontSize: '0.8rem' }}>(dejar vacío para no cambiar)</span> : '*'}
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    className="form-control"
+                    type={showPass ? 'text' : 'password'}
+                    value={form.contrasena}
+                    onChange={e => setForm(p => ({ ...p, contrasena: e.target.value }))}
+                    placeholder={editingItem ? 'Nueva contraseña (opcional)' : 'Contraseña de acceso'}
+                    style={{ paddingRight: '2.5rem' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass(p => !p)}
+                    style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer' }}
+                  >
+                    <i className={`fas ${showPass ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                  </button>
+                </div>
               </div>
               <div className="form-group mb-3">
                 <label className="form-label">Disponibilidad</label>
