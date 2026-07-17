@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Button, Input } from '../../components/atoms'
 import { PageHeader } from '../../components/organisms'
@@ -17,6 +17,14 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const successMessage = location.state?.message || null
+  const returnTo = location.state?.returnTo || null
+  const errorRef = useRef(null)
+
+  useEffect(() => {
+    if (errors.general && errorRef.current) {
+      errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [errors.general])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -58,7 +66,7 @@ const Login = () => {
       const result = await clienteService.login(formData.correo, formData.contrasena)
       if (result?.cliente) {
         loginCliente(result.cliente, formData.contrasena)
-        navigate(formData.contrasena === '111111' ? '/cambiar-password' : '/')
+        navigate(formData.contrasena === '111111' ? '/cambiar-password' : (returnTo || '/'))
         return
       }
       if (result?.inactivo) {
@@ -129,7 +137,7 @@ const Login = () => {
                 )}
 
                 {errors.general && (
-                  <div className="alert alert-danger" role="alert">
+                  <div ref={errorRef} className="alert alert-danger" role="alert">
                     <i className="fas fa-exclamation-circle me-2"></i>
                     {errors.general}
                   </div>

@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import { PageHeader } from '../../components/organisms'
 import { Button } from '../../components/atoms'
 import { useCart } from '../../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
 import './Cart.css'
 
 const Cart = () => {
   const navigate = useNavigate()
+  const { cliente } = useAuth()
   const { items, removeItem, updateQuantity } = useCart()
 
   const getItemPrice = (item) =>
@@ -136,8 +138,8 @@ const Cart = () => {
                     </div>
                   </div>
                   <div className="cart-summary-actions">
-                    <Button variant="success" size="lg" className="w-100 mb-3" onClick={() => navigate('/checkout')}>
-                      <i className="fas fa-credit-card me-2"></i>Proceder al Checkout
+                    <Button variant="success" size="lg" className="w-100 mb-3" onClick={() => cliente ? navigate('/checkout') : navigate('/login', { state: { returnTo: '/checkout' } })}>
+                      <i className="fas fa-credit-card me-2"></i>Proceder al Pago
                     </Button>
                     <Link to="/shop" className="continue-shopping-link">
                       <i className="fas fa-arrow-left me-2"></i>Seguir Comprando

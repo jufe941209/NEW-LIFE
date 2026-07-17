@@ -36,7 +36,7 @@ const Checkout = () => {
   const [errors, setErrors] = useState({})
 
   useEffect(() => {
-    if (!cliente) { navigate('/login'); return }
+    if (!cliente) { navigate('/login', { state: { returnTo: '/checkout' } }); return }
     if (items.length === 0) { navigate('/cart') }
   }, [cliente, items, navigate])
 
@@ -68,7 +68,7 @@ const Checkout = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!validate()) return
-    if (!cliente) { navigate('/login'); return }
+    if (!cliente) { navigate('/login', { state: { returnTo: '/checkout' } }); return }
 
     setIsLoading(true)
     setCheckoutError('')

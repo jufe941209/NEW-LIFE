@@ -16,7 +16,8 @@ const MAX_RETRIES = 4
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('authToken')
-  if (token) {
+  const isLoginEndpoint = config.url?.includes('/login')
+  if (token && !isLoginEndpoint) {
     config.headers.Authorization = `Bearer ${token}`
   }
   return config
@@ -28,9 +29,15 @@ api.interceptors.response.use(
     const config = error.config
     if (!config) return Promise.reject(error)
 
+    const status = error.response?.status
+
+    // Token expirado o inválido en endpoint protegido — limpiar para no reintentar con él
+    if (status === 401 && !config.url?.includes('/login')) {
+      localStorage.removeItem('authToken')
+    }
+
     config.__retryCount = (config.__retryCount || 0)
 
-    const status = error.response?.status
     const isTransient = !error.response || TRANSIENT_CODES.has(status)
 
     if (!isTransient || config.__retryCount >= MAX_RETRIES) {
