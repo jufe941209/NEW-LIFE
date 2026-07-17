@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'https://newlife-api-agfzb6a7bdb5b7bq.eastus-01.azurewebsites.net/api'
+const BASE_URL = 'https://newlife-backend.onrender.com/api'
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -38,7 +38,7 @@ api.interceptors.response.use(
     }
 
     config.__retryCount += 1
-    // Exponential back-off: 2s, 4s, 8s, 16s — covers Azure cold-start (15-30s)
+    // Exponential back-off: 2s, 4s, 8s, 16s — covers Render cold-start (15-30s)
     const delay = Math.min(2000 * Math.pow(2, config.__retryCount - 1), 20000)
     await new Promise(res => setTimeout(res, delay))
     return api(config)

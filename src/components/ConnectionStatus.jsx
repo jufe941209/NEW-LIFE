@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 
-const HEALTH_URL = 'https://newlife-api-agfzb6a7bdb5b7bq.eastus-01.azurewebsites.net/api/health'
+const HEALTH_URL = 'https://newlife-backend.onrender.com/api/health'
 const CHECK_INTERVAL = 2 * 60 * 1000  // ping cada 2 min
 const RETRY_INTERVAL = 10 * 1000      // si hay error, reintenta cada 10s
 
