@@ -81,7 +81,7 @@ const Checkout = () => {
       // 1. Crear factura (estado Pendiente siempre — Wompi o contra entrega)
       await facturaService.create({
         numero_factura: numeroFactura,
-        fecha: new Date().toISOString(),
+        fecha: new Date().toISOString().slice(0, -1),
         metodo_pago: formData.paymentMethod,
         estado_pago: 'Pendiente',
         direccion_envio: direccion,

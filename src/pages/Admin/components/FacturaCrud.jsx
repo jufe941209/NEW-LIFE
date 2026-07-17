@@ -121,7 +121,7 @@ const FacturaCrud = () => {
       if (editingItem) {
         await facturaService.update(getId(editingItem), form)
       } else {
-        await facturaService.create({ ...form, fecha: form.fecha || new Date().toISOString() })
+        await facturaService.create({ ...form, fecha: form.fecha || new Date().toISOString().slice(0, -1) })
       }
       await load(); closeModal()
     } catch (e) {

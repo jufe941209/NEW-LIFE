@@ -113,7 +113,7 @@ const DespachoView = () => {
     }
     setActionLoading(despacho.numero_despacho)
     try {
-      const now = new Date().toISOString()
+      const now = new Date().toISOString().slice(0, -1)
       await despachoService.update(despacho.numero_despacho, {
         ...despacho,
         cc_domiciliario: domiCC,

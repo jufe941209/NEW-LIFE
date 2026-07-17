@@ -357,7 +357,7 @@ const ResponsableDashboard = () => {
     }
     setActionLoading(despacho.numero_despacho)
     try {
-      const now = new Date().toISOString()
+      const now = new Date().toISOString().slice(0, -1)
       const isApproving = nuevoEstado === 'En camino' && (!despacho.cc_responsable || despacho.cc_responsable === '')
       await despachoService.update(despacho.numero_despacho, {
         ...despacho,

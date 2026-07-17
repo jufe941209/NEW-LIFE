@@ -131,7 +131,7 @@ const Register = () => {
         direccion: formData.direccion,
         contrasena: formData.contrasena,
         estado: 'Activo',
-        fecha_registro: new Date().toISOString(),
+        fecha_registro: new Date().toISOString().slice(0, -1),
         cedula_adm
       })
       navigate('/login', { state: { message: '¡Cuenta verificada y creada! Ya puedes iniciar sesión.', registeredEmail: formData.correo } })

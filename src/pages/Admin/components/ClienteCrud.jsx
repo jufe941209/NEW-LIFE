@@ -100,7 +100,7 @@ const ClienteCrud = () => {
         if (!form.contrasena) delete payload.contrasena
         await clienteService.update(getId(editingItem), payload)
       } else {
-        const payload = { ...form, fecha_registro: new Date().toISOString() }
+        const payload = { ...form, fecha_registro: new Date().toISOString().slice(0, -1) }
         if (!form.contrasena) delete payload.contrasena
         await clienteService.create(payload)
       }

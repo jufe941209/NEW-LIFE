@@ -93,7 +93,7 @@ const AdministradorCrud = () => {
         await administradorService.update(editingItem.cedula_adm, payload)
       } else {
         if (!form.contrasena) { setFormError('La contraseña es requerida'); setIsSaving(false); return }
-        await administradorService.create({ ...form, fecha_registro: new Date().toISOString() })
+        await administradorService.create({ ...form, fecha_registro: new Date().toISOString().slice(0, -1) })
       }
       await load()
       closeModal()
