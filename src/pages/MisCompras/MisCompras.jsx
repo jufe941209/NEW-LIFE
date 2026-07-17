@@ -10,6 +10,7 @@ import './MisCompras.css'
 
 const estadoConfig = {
   Pagado:    { class: 'pagado',    icon: 'fa-check-circle',  label: 'Pagado',    color: '#16a34a' },
+  Aprobado:  { class: 'pagado',    icon: 'fa-check-circle',  label: 'Aprobado',  color: '#16a34a' },
   Pendiente: { class: 'pendiente', icon: 'fa-clock',         label: 'Pendiente', color: '#f59e0b' },
   Cancelado: { class: 'cancelado', icon: 'fa-times-circle',  label: 'Cancelado', color: '#ef4444' }
 }
@@ -73,12 +74,14 @@ const MisCompras = () => {
 
   const filtered = filter === 'todos'
     ? facturas
-    : facturas.filter(f => (f.estado_pago || 'Pendiente').toLowerCase() === filter)
+    : filter === 'pagado'
+      ? facturas.filter(f => f.estado_pago === 'Pagado' || f.estado_pago === 'Aprobado')
+      : facturas.filter(f => (f.estado_pago || 'Pendiente').toLowerCase() === filter)
 
   const stats = {
     total: facturas.length,
-    pagadas: facturas.filter(f => f.estado_pago === 'Pagado').length,
-    pendientes: facturas.filter(f => f.estado_pago === 'Pendiente').length,
+    pagadas: facturas.filter(f => f.estado_pago === 'Pagado' || f.estado_pago === 'Aprobado').length,
+    pendientes: facturas.filter(f => !f.estado_pago || f.estado_pago === 'Pendiente').length,
     canceladas: facturas.filter(f => f.estado_pago === 'Cancelado').length
   }
 
