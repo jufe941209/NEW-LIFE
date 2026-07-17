@@ -334,17 +334,25 @@ const ResponsableDashboard = () => {
   const getFactura = (num) => facturas.find(f => f.numero_factura === num)
   const domiDisponibles = domiciliarios.filter(d => d.disponibilidad === 'Disponible' && d.estado !== 'Inactivo')
 
+  const getBackendMsg = (e, fallback) =>
+    e?.response?.data?.Message
+    || e?.response?.data?.message
+    || (typeof e?.response?.data === 'string' ? e.response.data : null)
+    || fallback
+
   const changeEstado = async (despacho, nuevoEstado, domiOverride = null) => {
     const domiCC = domiOverride || despacho.cc_domiciliario
-    if (nuevoEstado === 'En camino' && !domiCC) {
+    const requiereDomi = nuevoEstado === 'En camino' || nuevoEstado === 'Entregado'
+    // Valida que el domiciliario sea truthy Y exista en la lista cargada
+    const domiValido = domiCC && domiciliarios.some(d => String(d.cedula_domi) === String(domiCC))
+
+    if (requiereDomi && !domiValido) {
+      const activos = domiciliarios.filter(d => d.estado !== 'Inactivo')
+      const domiList = nuevoEstado === 'Entregado'
+        ? activos
+        : (domiDisponibles.length > 0 ? domiDisponibles : activos)
       setAssignModal({ despacho, nuevoEstado })
-      setSelectedDomi(domiDisponibles[0]?.cedula_domi || '')
-      return
-    }
-    if (nuevoEstado === 'Entregado' && !domiCC) {
-      const allActive = domiciliarios.filter(d => d.estado !== 'Inactivo')
-      setAssignModal({ despacho, nuevoEstado })
-      setSelectedDomi(allActive[0]?.cedula_domi || '')
+      setSelectedDomi(domiList[0]?.cedula_domi || '')
       return
     }
     setActionLoading(despacho.numero_despacho)
@@ -361,7 +369,7 @@ const ResponsableDashboard = () => {
       })
       await load()
     } catch (e) {
-      alert(e?.response?.data?.Message || 'Error al actualizar el estado')
+      alert(getBackendMsg(e, 'Error al actualizar el estado'))
     } finally { setActionLoading(null) }
   }
 
@@ -375,7 +383,7 @@ const ResponsableDashboard = () => {
         await despachoService.update(despacho.numero_despacho, { ...despacho, cc_domiciliario: selectedDomi })
         await load()
       } catch (e) {
-        alert(e?.response?.data?.Message || 'Error al asignar el domiciliario')
+        alert(getBackendMsg(e, 'Error al asignar el domiciliario'))
       } finally { setActionLoading(null) }
     } else {
       await changeEstado(despacho, nuevoEstado, selectedDomi)
@@ -887,9 +895,10 @@ const ResponsableDashboard = () => {
                 {assignModal?.nuevoEstado === 'Entregado' ? 'Confirmar domiciliario de entrega' : 'Seleccionar domiciliario disponible'}
               </label>
               {(() => {
+                const activos = domiciliarios.filter(d => d.estado !== 'Inactivo')
                 const domiList = assignModal?.nuevoEstado === 'Entregado'
-                  ? domiciliarios.filter(d => d.estado !== 'Inactivo')
-                  : domiDisponibles
+                  ? activos
+                  : (domiDisponibles.length > 0 ? domiDisponibles : activos)
                 if (domiList.length === 0) return (
                   <p className="resp-assign-empty"><i className="fas fa-times-circle me-2"></i>No hay domiciliarios disponibles.</p>
                 )
