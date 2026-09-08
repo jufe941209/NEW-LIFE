@@ -12,11 +12,11 @@ jobs:
       - name: Ping API health
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 \
-            https://newlife-backend.onrender.com/api/health)
+            https://newlife-backend.onrender.com/api/categoria || echo "000")
           echo "Health status: $STATUS"
           if [ "$STATUS" != "200" ]; then
             echo "Backend cold-starting, waiting 40s and retrying..."
             sleep 40
             curl -s --max-time 30 \
-              https://newlife-backend.onrender.com/api/health || true
+              https://newlife-backend.onrender.com/api/categoria || true
           fi
